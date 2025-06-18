@@ -96,6 +96,9 @@ export async function bigCommerceFetch<T>({
   headers?: HeadersInit;
   cache?: RequestCache;
 }): Promise<{ status: number; body: T } | never> {
+  // Extract query name for better logging
+  const queryName = query.trim().split(' ')[1] || 'Unknown Query';
+
   try {
     const result = await fetch(endpoint, {
       method: 'POST',
@@ -115,7 +118,19 @@ export async function bigCommerceFetch<T>({
     const body = await result.json();
 
     if (body.errors) {
-      throw body.errors[0];
+      console.error('GraphQL Errors:', {
+        queryName,
+        errors: body.errors,
+        query,
+        variables
+      });
+      throw {
+        status: result.status,
+        message: body.errors[0].message || 'GraphQL Error',
+        errors: body.errors,
+        query,
+        variables
+      };
     }
 
     return {
@@ -123,17 +138,42 @@ export async function bigCommerceFetch<T>({
       body
     };
   } catch (e) {
+    console.error('BigCommerce Fetch Error:', {
+      queryName,
+      error: e,
+      query,
+      variables,
+      endpoint
+    });
+
     if (isVercelCommerceError(e)) {
       throw {
         status: e.status || 500,
         message: e.message,
-        query
+        query,
+        variables
       };
     }
 
+    // Handle different types of errors
+    if (e instanceof Error) {
+      throw {
+        status: 500,
+        message: e.message,
+        name: e.name,
+        stack: e.stack,
+        query,
+        variables
+      };
+    }
+
+    // Handle unknown error types
     throw {
+      status: 500,
+      message: 'Unknown error occurred',
       error: e,
-      query
+      query,
+      variables
     };
   }
 }
@@ -301,7 +341,10 @@ export async function addToCart(
   return bigCommerceToVercelCart(bigCommerceCart, productsByIdList, checkout, checkoutUrl);
 }
 
-export async function removeFromCart(cartId: string, lineIds: string[]): Promise<VercelCart | undefined> {
+export async function removeFromCart(
+  cartId: string,
+  lineIds: string[]
+): Promise<VercelCart | undefined> {
   let cartState: { status: number; body: BigCommerceDeleteCartItemOperation };
   const removeCartItem = async (itemId: string) => {
     const res = await bigCommerceFetch<BigCommerceDeleteCartItemOperation>({
@@ -332,7 +375,7 @@ export async function removeFromCart(cartId: string, lineIds: string[]): Promise
 
   const cart = cartState!.body.data.cart.deleteCartLineItem.cart;
 
-  if (cart === null)  {
+  if (cart === null) {
     return undefined;
   }
 
