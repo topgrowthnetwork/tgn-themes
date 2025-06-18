@@ -1,0 +1,1454 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Swagger with Laravel",
+    "description": "L5 Swagger OpenApi description",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/addresses/all-countries": {
+      "get": {
+        "tags": ["Front Api Addresses"],
+        "summary": "get all countries",
+        "operationId": "e90960bd7f8ebd15a66fb0d97f2e56fa",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "filter search name categories",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/addresses/all-cities": {
+      "get": {
+        "tags": ["Front Api Addresses"],
+        "summary": "get all cities",
+        "operationId": "b29d5a21455e9912555747f726eeeb45",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "filter search name categories",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country_id",
+            "in": "query",
+            "description": "filter search id country",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state_id",
+            "in": "query",
+            "description": "filter search id state",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/addresses/all-states": {
+      "get": {
+        "tags": ["Front Api Addresses"],
+        "summary": "get all states",
+        "operationId": "4d935c6ef220a6622bccbc5f97ead56d",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "filter search name categories",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country_id",
+            "in": "query",
+            "description": "filter search id country",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/forgot-password": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "forgot password user",
+        "operationId": "ecf42ab8e99714705c9719268fa26166",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "1st@app.com"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "Login User in Front",
+        "operationId": "18cbe753c8b615184d542d1c0989f943",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@app.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "12345678"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "Auth Logout",
+        "operationId": "2183d9bfbbc9dabed143252785fb72ab",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/refresh": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "Auth Refresh Token",
+        "operationId": "91e4865419aceef41b53ddcd26753bd6",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/register": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "Register User",
+        "operationId": "bf40be45eccde7e1788cdc437f6b4604",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "example": "user"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "user"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "user@app.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "12345678"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "12345678"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      }
+    },
+    "/api/reset-password": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "reset password user",
+        "operationId": "08118dd88014d197c922f2bfb73e9395",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "example": "@1s#af48"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "1st@app.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "12345678"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "12345678"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        }
+      }
+    },
+    "/api/verify-email": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "email verify",
+        "operationId": "f25de9e481d08d56f712c4e064ceb9be",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email_verify_token": {
+                    "type": "string",
+                    "example": "12345678"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/email/verification-notification": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "send verification code",
+        "operationId": "054e37ed70aa52962978867c5c5d97f8",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/carts": {
+      "get": {
+        "tags": ["Front Api Carts"],
+        "summary": "Get All Carts Of User",
+        "operationId": "42b4d0308d51eca21c5864823cd7edae",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Front Api Carts"],
+        "summary": "Add New cart",
+        "operationId": "9279d8afc3b2bbf8e4520a8fa5c15aff",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "qyt": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "product_id": {
+                    "type": "integer",
+                    "example": "1"
+                  },
+                  "product_variant_id": {
+                    "type": "integer",
+                    "example": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      }
+    },
+    "/api/carts/{cartItem_id}": {
+      "put": {
+        "tags": ["Front Api Carts"],
+        "summary": "update cart",
+        "operationId": "cdef56cfa7c8ce05bc2ce135f2dae86d",
+        "parameters": [
+          {
+            "name": "cartItem_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "qyt": {
+                    "type": "integer",
+                    "example": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Front Api Carts"],
+        "summary": "Delete Cart",
+        "operationId": "bf34112e537d9a533ee095d131319ab7",
+        "parameters": [
+          {
+            "name": "cartItem_id",
+            "in": "path",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Front Api Categories"],
+        "summary": "get all categories",
+        "operationId": "30dc61b78b7bc27f5393ab994823100f",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "filter search name categories",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "description": "category_id",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/contacts": {
+      "post": {
+        "tags": ["Front Api Contact"],
+        "summary": "Add New Contact",
+        "operationId": "5474d445edecf7f4b8a81354e1822ed8",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/apply-coupon": {
+      "post": {
+        "tags": ["Front Api Coupons"],
+        "summary": "Apply coupon",
+        "operationId": "d5972020741725d694ee2fe065be1fc2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "coupon_code": {
+                    "type": "string",
+                    "example": "Zt1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      }
+    },
+    "/api/delete-coupon": {
+      "delete": {
+        "tags": ["Front Api Coupons"],
+        "summary": "Delete Coupon",
+        "operationId": "795dd27b8036d32301c7c7d6bf0b2e83",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      }
+    },
+    "/api/guest-token": {
+      "post": {
+        "tags": ["Front Api Guest Token"],
+        "summary": "Generate a guest token",
+        "operationId": "da0c3819651b6e0e6daf43993f25cfeb",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "422": {
+            "description": "Token already exists"
+          }
+        }
+      }
+    },
+    "/api/newsletters/subscribe": {
+      "post": {
+        "tags": ["Front Api Newsletters"],
+        "summary": "Send Mail Newsletter",
+        "operationId": "d2dc7785536bec6c7720180694210b44",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "ex@app.com"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/newsletters/verify-mail": {
+      "get": {
+        "tags": ["Front Api Newsletters"],
+        "summary": "get subscriber verify token",
+        "operationId": "ddd15583658a891337bc0374058d2a15",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "token verify",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Front Api Orders"],
+        "summary": "Get All Orders Of User",
+        "operationId": "20082823f0306b068563dc786f34d592",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Front Api Orders"],
+        "summary": "Create checkout order",
+        "operationId": "7ad6ee71e83f7bd63eead9dd9b43a307",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["shipping_address", "name", "email", "phone", "payment_gateway"],
+                "properties": {
+                  "shipping_address": {
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "example": "Egypt"
+                      },
+                      "state": {
+                        "type": "string",
+                        "example": "Cairo"
+                      },
+                      "city": {
+                        "type": "string",
+                        "example": "Nasr City"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "Street 123"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john.doe@example.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "01010101010"
+                  },
+                  "payment_gateway": {
+                    "type": "string",
+                    "enum": [
+                      "cash_on_site",
+                      "cash_on_delivery",
+                      "fawaterk_gateway",
+                      "send_receipt",
+                      "paymob_card_gateway",
+                      "paymob_wallet_gateway"
+                    ],
+                    "example": "cash_on_delivery"
+                  },
+                  "coupon_code": {
+                    "type": "string",
+                    "example": "Sfa35",
+                    "nullable": true
+                  },
+                  "receipt_image": {
+                    "type": "string",
+                    "example": "path/to/image.jpg",
+                    "nullable": true
+                  },
+                  "wallet_number": {
+                    "type": "string",
+                    "example": "01010101010",
+                    "nullable": true
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created successfully"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          },
+          {
+            "guestToken": []
+          }
+        ]
+      }
+    },
+    "/api/orders/{order_id}": {
+      "get": {
+        "tags": ["Front Api Orders"],
+        "summary": "show order",
+        "operationId": "12761e124c1eae89ba3ce8242699f933",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Front Api Products"],
+        "summary": "get all products",
+        "operationId": "c755c0bdd1727e9e2e69b0df10d16a8f",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "filter search name products",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Select fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "description": "filter search id category",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "set page number",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recomended",
+            "in": "query",
+            "description": "1 => true",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "selling_count or created_at",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "set limit number",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/products/{product_slug}": {
+      "get": {
+        "tags": ["Front Api Products"],
+        "summary": "show product",
+        "operationId": "566c0aad3cdadd696b1b4835e7fb3a70",
+        "parameters": [
+          {
+            "name": "product_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/global-settings": {
+      "get": {
+        "tags": ["Front Api Settings"],
+        "summary": "get settings",
+        "operationId": "bda94d3a5f021644d2fa339f349102a0",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/payment-settings": {
+      "get": {
+        "tags": ["Front Api Settings"],
+        "summary": "get settings",
+        "operationId": "308522124dba9a188971f732141eddc5",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/language-settings": {
+      "get": {
+        "tags": ["Front Api Settings"],
+        "summary": "get settings",
+        "operationId": "151238f62ddcd2a2667029a48cfde056",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/sliders": {
+      "get": {
+        "tags": ["Front Api Settings"],
+        "summary": "get settings",
+        "operationId": "149bbeedd67c14370c25e09605c78fbd",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/user-addresses": {
+      "get": {
+        "tags": ["Front Api User Addresses"],
+        "summary": "get all addresses user",
+        "operationId": "2abb555b9bdc1406b4688bdaf1dfce7f",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Front Api User Addresses"],
+        "summary": "Add New User Address",
+        "operationId": "8028500bab97b5118206bfbba0082a4b",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "عنوان المنزل"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "01156489713"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "شارع 50 عمارة 6"
+                  },
+                  "country_id": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "state_id": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "city_id": {
+                    "type": "string",
+                    "example": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/user-addresses/{user_address_id}": {
+      "get": {
+        "tags": ["Front Api User Addresses"],
+        "summary": "Show Address",
+        "operationId": "f917155ba0ba336e9d4ff87152b7c1fe",
+        "parameters": [
+          {
+            "name": "user_address_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Front Api User Addresses"],
+        "summary": "Updated Address",
+        "operationId": "73e0a15b2bc864058b5757534ce6ad71",
+        "parameters": [
+          {
+            "name": "user_address_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "عنوان المنزل"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "01156489713"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "شارع 50 عمارة 6"
+                  },
+                  "country_id": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "state_id": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "city_id": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "is_default": {
+                    "type": "string",
+                    "example": "1 => true, 0 => false"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Front Api User Addresses"],
+        "summary": "Delete User Address",
+        "operationId": "a7fe34be1fd3d09bb9784d23aa76773e",
+        "parameters": [
+          {
+            "name": "user_address_id",
+            "in": "path",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": ["Front Api Auth User"],
+        "summary": "Show Data User",
+        "operationId": "dedba9682d7369cb5583673b660952ad",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/profile/update": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "update profile user",
+        "operationId": "72b92665caadf8a00968e7724268a560",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/profile/upload-image": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "upload image user",
+        "operationId": "f7400d733d194a9484cf8be0f9f1d2cf",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "image": {
+                    "type": "file",
+                    "example": "path image"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/profile/change-password": {
+      "post": {
+        "tags": ["Front Api Auth User"],
+        "summary": "change password user",
+        "operationId": "3b93646418bef4d70c4bee614844e961",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "old_password": {
+                    "type": "string",
+                    "example": "12345678"
+                  },
+                  "new_password": {
+                    "type": "string",
+                    "example": "12312312"
+                  },
+                  "new_password_confirmation": {
+                    "type": "string",
+                    "example": "12345678"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/wishlists": {
+      "get": {
+        "tags": ["Front Api Wishlists"],
+        "summary": "Get All Wishlists Of User",
+        "operationId": "fa7776cebb68963561d9fa2c72c893d5",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Front Api Wishlists"],
+        "summary": "Add New wishlist",
+        "operationId": "e72bd142fcc16eed456b890015f1a88b",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "product_id": {
+                    "type": "integer",
+                    "example": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/api/wishlists/{wishlist_id}": {
+      "delete": {
+        "tags": ["Front Api Wishlists"],
+        "summary": "Delete Wishlist",
+        "operationId": "d7f5743b303e27a14e457a3ace8ecc1e",
+        "parameters": [
+          {
+            "name": "wishlist_id",
+            "in": "path",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          },
+          "404": {
+            "description": "Resource Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiAuth": {
+        "type": "http",
+        "description": "Login with email and password to get the authentication token",
+        "bearerFormat": "JWT",
+        "scheme": "bearer"
+      },
+      "guestToken": {
+        "type": "apiKey",
+        "description": "Use this header to authenticate guest users",
+        "name": "X-Guest-Token",
+        "in": "header"
+      }
+    }
+  }
+}
