@@ -1,6 +1,7 @@
 import { GridTileImage } from 'components/grid/tile';
-import { getCollectionProducts } from 'lib/bigcommerce';
-import type { VercelProduct as Product } from 'lib/bigcommerce/types';
+import { createApi } from 'lib/api';
+import { Product } from 'lib/api/types';
+import { getFullPath } from 'lib/utils';
 import Link from 'next/link';
 
 function ThreeItemGridItem({
@@ -16,9 +17,9 @@ function ThreeItemGridItem({
     <div
       className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
     >
-      <Link className="relative block aspect-square h-full w-full" href={`${item.handle}`}>
+      <Link className="relative block aspect-square h-full w-full" href={`/${item.slug}`}>
         <GridTileImage
-          src={item.featuredImage.url}
+          src={getFullPath(item.thumbnail?.path)}
           fill
           sizes={
             size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'
@@ -28,8 +29,8 @@ function ThreeItemGridItem({
           label={{
             position: size === 'full' ? 'center' : 'bottom',
             title: item.title as string,
-            amount: item.priceRange.maxVariantPrice.amount,
-            currencyCode: item.priceRange.maxVariantPrice.currencyCode
+            amount: item.final_price.toString(),
+            currencyCode: 'EGP'
           }}
         />
       </Link>
@@ -38,14 +39,17 @@ function ThreeItemGridItem({
 }
 
 export async function ThreeItemGrid() {
-  // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts({
-    collection: 'hidden-homepage-featured-items'
+  const api = createApi({ language: 'en' });
+  const recommendedProductsResponse = await api.getProducts({
+    recomended: '1',
+    per_page: '3'
   });
 
-  if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
+  const recommendedProducts = recommendedProductsResponse.data.products.data;
 
-  const [firstProduct, secondProduct, thirdProduct] = homepageItems;
+  if (!recommendedProducts[0] || !recommendedProducts[1] || !recommendedProducts[2]) return null;
+
+  const [firstProduct, secondProduct, thirdProduct] = recommendedProducts;
 
   return (
     <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
