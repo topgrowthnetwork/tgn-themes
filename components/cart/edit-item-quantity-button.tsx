@@ -2,9 +2,9 @@
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { updateItemQuantity } from 'components/cart/actions';
+import { updateItemQuantityV2 } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
-import type { VercelCartItem as CartItem } from 'lib/bigcommerce/types';
+import { CartResponse } from 'lib/api/types';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
@@ -37,15 +37,19 @@ function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
   );
 }
 
-export function EditItemQuantityButton({ item, type }: { item: CartItem; type: 'plus' | 'minus' }) {
-  const [message, formAction] = useFormState(updateItemQuantity, null);
-  const payload = {
+export function EditItemQuantityButton({
+  item,
+  type
+}: {
+  item: CartResponse['cart']['cart_items'][number];
+  type: 'plus' | 'minus';
+}) {
+  const [message, formAction] = useFormState(updateItemQuantityV2, null);
+  const newQuantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
+  const actionWithVariant = formAction.bind(null, {
     lineId: item.id,
-    productSlug: item.merchandise.product.handle,
-    variantId: item.merchandise.id,
-    quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
-  };
-  const actionWithVariant = formAction.bind(null, payload);
+    quantity: newQuantity
+  });
 
   return (
     <form action={actionWithVariant}>

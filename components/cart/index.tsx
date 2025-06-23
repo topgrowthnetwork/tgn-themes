@@ -1,13 +1,11 @@
-import { getCart } from 'lib/bigcommerce';
+import { createApi } from 'lib/api';
 import { cookies } from 'next/headers';
 import CartModal from './modal';
 
 export default async function Cart() {
-  const cartId = cookies().get('cartId')?.value;
-  let cart;
+  const guestToken = cookies().get('guest_token')?.value;
+  const api = createApi({ language: 'en', guestToken });
+  const cartResponse = await api.getCart();
 
-  if (cartId) {
-    cart = await getCart(cartId);
-  }
-  return <CartModal cart={cart} />;
+  return <CartModal cartResponse={cartResponse.data} />;
 }

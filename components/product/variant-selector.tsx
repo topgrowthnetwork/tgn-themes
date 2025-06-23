@@ -1,74 +1,59 @@
 'use client';
 
 import clsx from 'clsx';
-import {
-  VercelProductOption as ProductOption,
-  VercelProductVariant as ProductVariant
-} from 'lib/bigcommerce/types';
+import { ProductAttributes, ProductVariant } from 'lib/api/types';
 import { createUrl } from 'lib/utils';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type Combination = {
   id: string;
   availableForSale: boolean;
-  [key: string]: string | boolean; // ie. { color: 'Red', size: 'Large', ... }
+  [key: string]: string | boolean;
 };
 
 export function VariantSelector({
   options,
   variants
 }: {
-  options: ProductOption[];
+  options: ProductAttributes;
   variants: ProductVariant[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const hasNoOptionsOrJustOneOption =
-    !options.length || (options.length === 1 && options[0]?.values.length === 1);
+    !Object.keys(options).length ||
+    (Object.keys(options).length === 1 && Object.values(options)[0]?.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
 
   const combinations: Combination[] = variants.map((variant) => ({
-    id: variant.id,
-    availableForSale: variant.availableForSale,
-    // Adds key / value pairs for each variant (ie. "color": "Black" and "size": 'M").
-    ...variant.selectedOptions.reduce(
-      (accumulator, option) => ({ ...accumulator, [option.name.toLowerCase()]: option.value }),
+    id: variant.id.toString(),
+    availableForSale: variant.stock > 0,
+    ...variant.attribute_values.reduce(
+      (accumulator, option) => ({
+        ...accumulator,
+        [option.attribute.name.toLowerCase()]: option.value
+      }),
       {}
     )
   }));
 
-  return options.map((option) => (
-    <dl className="mb-8" key={option.id}>
-      <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
+  return Object.keys(options).map((option) => (
+    <dl className="mb-8" key={option}>
+      <dt className="mb-4 text-sm uppercase tracking-wide">{option}</dt>
       <dd className="flex flex-wrap gap-3">
-        {option.values.map((value) => {
-          const optionNameLowerCase = option.name.toLowerCase();
+        {options[option]?.map((value) => {
+          const optionNameLowerCase = option.toLowerCase();
 
-          // Base option params on current params so we can preserve any other param state in the url.
           const optionSearchParams = new URLSearchParams(searchParams.toString());
-
-          // Update the option params using the current option to reflect how the url *would* change,
-          // if the option was clicked.
-          optionSearchParams.set(optionNameLowerCase, value);
+          optionSearchParams.set(optionNameLowerCase, value.value);
           const optionUrl = createUrl(pathname, optionSearchParams);
 
-          // In order to determine if an option is available for sale, we need to:
-          //
-          // 1. Filter out all other param state
-          // 2. Filter out invalid options
-          // 3. Check if the option combination is available for sale
-          //
-          // This is the "magic" that will cross check possible variant combinations and preemptively
-          // disable combinations that are not available. For example, if the color gray is only available in size medium,
-          // then all other sizes should be disabled.
-          const filtered = Array.from(optionSearchParams.entries()).filter(([key, value]) =>
-            options.find(
-              (option) => option.name.toLowerCase() === key && option.values.includes(value)
-            )
+          const filtered = Array.from(optionSearchParams.entries()).filter(
+            ([key, value]) => options[key]?.some((attrValue) => attrValue.value === value)
           );
           const isAvailableForSale = combinations.find((combination) =>
             filtered.every(
@@ -76,18 +61,17 @@ export function VariantSelector({
             )
           );
 
-          // The option is active if it's in the url params.
-          const isActive = searchParams.get(optionNameLowerCase) === value;
+          const isActive = searchParams.get(optionNameLowerCase) === value.value;
 
           return (
             <button
-              key={value}
+              key={value.value}
               aria-disabled={!isAvailableForSale}
               disabled={!isAvailableForSale}
               onClick={() => {
                 router.replace(optionUrl, { scroll: false });
               }}
-              title={`${option.name} ${value}${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
+              title={`${option} ${value.value}${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
               className={clsx(
                 'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                 {
@@ -99,7 +83,7 @@ export function VariantSelector({
                 }
               )}
             >
-              {value}
+              {value.value}
             </button>
           );
         })}

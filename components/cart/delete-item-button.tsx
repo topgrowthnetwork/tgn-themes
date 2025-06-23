@@ -2,9 +2,9 @@
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { removeItem } from 'components/cart/actions';
+import { removeItemV2 } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
-import type { VercelCartItem as CartItem } from 'lib/bigcommerce/types';
+import { CartResponse } from 'lib/api/types';
 import { useFormState, useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -34,8 +34,8 @@ function SubmitButton() {
   );
 }
 
-export function DeleteItemButton({ item }: { item: CartItem }) {
-  const [message, formAction] = useFormState(removeItem, null);
+export function DeleteItemButton({ item }: { item: CartResponse['cart']['cart_items'][number] }) {
+  const [message, formAction] = useFormState(removeItemV2, null);
   const itemId = item.id;
   const actionWithVariant = formAction.bind(null, itemId);
 

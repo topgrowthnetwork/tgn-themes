@@ -61,3 +61,11 @@ export function getFullPath(path: string | null | undefined): string {
   // Prefix with API URL
   return `${process.env.NEXT_PUBLIC_API_URL}/${cleanPath}`;
 }
+
+export function getItemPrice(
+  product: { price: number; final_price: number },
+  variant?: { price: number }
+) {
+  // Use variant price if available, otherwise use product's final price
+  return variant?.price ?? product.final_price;
+}

@@ -1,9 +1,39 @@
 'use server';
 
+import { createApi } from 'lib/api';
 import { addToCart, removeFromCart, updateCart } from 'lib/bigcommerce';
 import { TAGS } from 'lib/constants';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
+
+export async function addItemV2(
+  prevState: any,
+  {
+    selectedProductId,
+    selectedVariantId
+  }: {
+    selectedProductId: number;
+    selectedVariantId: number;
+  }
+) {
+  const guestToken = cookies().get('guest_token')?.value;
+  const api = createApi({ language: 'en', guestToken });
+
+  try {
+    const response = await api.addToCart({
+      qyt: 1,
+      product_id: selectedProductId,
+      product_variant_id: selectedVariantId
+    });
+
+    revalidateTag(TAGS.cart);
+    cookies().set('cartId', response.data.cart_item.cart_id.toString());
+
+    return response.message || 'Added to cart successfully';
+  } catch (error: any) {
+    return 'Error adding item to cart';
+  }
+}
 
 export async function addItem(
   prevState: any,
@@ -32,6 +62,19 @@ export async function addItem(
   }
 }
 
+export async function removeItemV2(prevState: any, lineId: number) {
+  const guestToken = cookies().get('guest_token')?.value;
+  const api = createApi({ language: 'en', guestToken });
+
+  try {
+    const response = await api.deleteCartItem(lineId);
+    revalidateTag(TAGS.cart);
+    return response.message || 'Removed from cart successfully';
+  } catch (error: any) {
+    return 'Error removing item from cart';
+  }
+}
+
 export async function removeItem(prevState: any, lineId: string) {
   const cartId = cookies().get('cartId')?.value;
 
@@ -48,6 +91,28 @@ export async function removeItem(prevState: any, lineId: string) {
     }
   } catch (e) {
     return 'Error removing item from cart';
+  }
+}
+
+export async function updateItemQuantityV2(
+  prevState: any,
+  {
+    lineId,
+    quantity
+  }: {
+    lineId: number;
+    quantity: number;
+  }
+) {
+  const guestToken = cookies().get('guest_token')?.value;
+  const api = createApi({ language: 'en', guestToken });
+
+  try {
+    const response = await api.updateCartItem(lineId, { qyt: quantity });
+    revalidateTag(TAGS.cart);
+    return response.message || 'Updated item quantity successfully';
+  } catch (error: any) {
+    return 'Error updating item quantity';
   }
 }
 

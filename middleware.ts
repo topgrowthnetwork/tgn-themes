@@ -2,7 +2,6 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { createApi } from 'lib/api';
-import { getProductIdBySlug } from 'lib/bigcommerce';
 
 export async function middleware(request: NextRequest) {
   // Check if guest token exists
@@ -28,24 +27,11 @@ export async function middleware(request: NextRequest) {
           path: '/'
         });
 
-        // Handle product rewrite if needed
-        const pageNode = await getProductIdBySlug(request.nextUrl.pathname);
-        if (pageNode?.__typename === 'Product') {
-          return NextResponse.rewrite(new URL(`/product/${pageNode.entityId}`, request.url));
-        }
-
         return response;
       }
     } catch (error) {
       console.error('Failed to generate guest token:', error);
     }
-  }
-
-  // If guest token exists or generation failed, continue with normal flow
-  const pageNode = await getProductIdBySlug(request.nextUrl.pathname);
-
-  if (pageNode?.__typename === 'Product') {
-    return NextResponse.rewrite(new URL(`/product/${pageNode.entityId}`, request.url));
   }
 
   return NextResponse.next();

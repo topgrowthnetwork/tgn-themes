@@ -131,8 +131,102 @@ export interface UpdateCartRequest {
   qyt: number;
 }
 
+// Response for addToCart() - single cart item
+export interface CartItemResponse {
+  cart_item: {
+    id: number;
+    cart_id: number;
+    product_id: number;
+    product_variant_id: number;
+    qyt: number;
+    product: {
+      id: number;
+      price: number;
+      discount: number;
+      discount_type: 'fixed' | 'percentage';
+      thumbnail_img: string;
+      final_price: number;
+      title: string;
+      description: string;
+      product_attributes: Record<string, any>;
+      thumbnail: ProductImage;
+      translations: ProductTranslation[];
+    };
+    variant: {
+      id: number;
+      product_id: number;
+      sku: string;
+      price: number;
+      stock: number;
+      images: number[];
+      created_at: string;
+      updated_at: string;
+      images_url: string[];
+    };
+  };
+  message: string;
+}
+
+// Response for getCart() - full cart with multiple items
 export interface CartResponse {
-  cart: CartItem[] | null;
+  cart: {
+    id: number;
+    user_id: number | null;
+    guest_token: string;
+    coupon_code: string | null;
+    created_at: string;
+    updated_at: string;
+    cart_items: Array<{
+      id: number;
+      cart_id: number;
+      product_id: number;
+      product_variant_id: number;
+      qyt: number;
+      product: {
+        id: number;
+        price: number;
+        discount: number;
+        discount_type: 'fixed' | 'percentage';
+        thumbnail_img: string;
+        final_price: number;
+        title: string;
+        description: string;
+        product_attributes: Record<string, any>;
+        thumbnail: ProductImage;
+        translations: ProductTranslation[];
+      };
+      variant: {
+        id: number;
+        product_id: number;
+        sku: string;
+        price: number;
+        stock: number;
+        images: number[];
+        created_at: string;
+        updated_at: string;
+        images_url: string[];
+        attribute_values: Array<{
+          id: number;
+          attribute_id: number;
+          value: string;
+          hex: string | null;
+          created_at: string;
+          updated_at: string;
+          pivot: {
+            product_variant_id: string;
+            attribute_value_id: string;
+          };
+          attribute: {
+            id: number;
+            name: string;
+            created_at: string;
+            updated_at: string;
+          };
+        }>;
+      };
+    }>;
+    coupon: any | null;
+  };
   sub_total: number;
   total_price: number;
   discount: number;
@@ -201,6 +295,47 @@ export interface ProductTranslation {
   locale: string;
 }
 
+export interface ProductAttributeValue {
+  value: string;
+  hex?: string;
+}
+
+export interface ProductAttributes {
+  [key: string]: ProductAttributeValue[];
+}
+
+export interface ProductAttributeValueDetail {
+  id: number;
+  attribute_id: number;
+  value: string;
+  hex: string | null;
+  created_at: string;
+  updated_at: string;
+  pivot: {
+    product_variant_id: string;
+    attribute_value_id: string;
+  };
+  attribute: {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
+export interface ProductVariant {
+  id: number;
+  product_id: number;
+  sku: string;
+  price: number;
+  stock: number;
+  images: number[];
+  created_at: string;
+  updated_at: string;
+  images_url: string[];
+  attribute_values: ProductAttributeValueDetail[];
+}
+
 export interface Product {
   id: number;
   images: string[];
@@ -226,6 +361,7 @@ export interface Product {
   product_attributes?: Record<string, any>;
   thumbnail?: ProductImage;
   category: Category;
+  variants: ProductVariant[];
   translations: ProductTranslation[];
 }
 
@@ -262,18 +398,54 @@ export interface ProductsResponse {
   };
 }
 
+export interface ProductCombination {
+  Color: string;
+  Size: string;
+  variant_id: number;
+  stock: number;
+  price: number;
+  images: number[];
+}
+
 export interface ProductResponse {
   product: Product;
   images: ProductImage[];
-  attributes: any[];
-  combinations: any[];
+  attributes: ProductAttributes;
+  combinations: ProductCombination[];
 }
 
 // Settings types
 export interface GlobalSettings {
   site_title: string;
-  site_description: string;
+  site_description: string | null;
   site_footer_copyright: string;
+  site_logo: ProductImage;
+  site_favicon: ProductImage;
+  invoice_logo: ProductImage;
+  footer_logo: ProductImage;
+  page_header_img: ProductImage;
+  site_color: string;
+  tax_fee_amount: string;
+  tax_fee_type: string;
+  site_global_currency: string;
+  show_social_links: string;
+  facebook_link: string;
+  youtube_link: string;
+  twitter_link: string;
+  instagram_link: string;
+  linkedin_link: string;
+  contact_phone: string;
+  contact_email: string;
+  contact_address: string;
+  max_order_amount: string;
+  min_order_amount: string;
+  avilable_guest_orders: string;
+  back_primary_color: string | null;
+  back_secondary_color: string | null;
+  front_primary_color: string | null;
+  front_primary_color_hover: string | null;
+  front_secondary_color: string | null;
+  front_secondary_color_hover: string | null;
   [key: string]: any;
 }
 

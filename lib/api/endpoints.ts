@@ -1,8 +1,10 @@
+import { TAGS } from 'lib/constants';
 import { ApiClient } from './client';
 import {
   AddressListParams,
   AddToCartRequest,
   AuthResponse,
+  CartItemResponse,
   CartResponse,
   CategoriesResponse,
   CategoryListParams,
@@ -90,11 +92,11 @@ export class ApiEndpoints {
 
   // Cart
   async getCart() {
-    return this.client.get<CartResponse>('/api/carts');
+    return this.client.get<CartResponse>('/api/carts', undefined, [TAGS.cart]);
   }
 
   async addToCart(data: AddToCartRequest) {
-    return this.client.post<CartResponse>('/api/carts', data);
+    return this.client.post<CartItemResponse>('/api/carts', data);
   }
 
   async updateCartItem(cartItemId: number, data: UpdateCartRequest) {
