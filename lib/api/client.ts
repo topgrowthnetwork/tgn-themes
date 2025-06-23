@@ -80,6 +80,9 @@ export class ApiClient {
     }
 
     const response = await fetch(url, fetchOptions);
+    if (url.includes('products')) {
+      console.log('🤯', url, fetchOptions);
+    }
 
     if (!response.ok) {
       // Get the error response body for better debugging

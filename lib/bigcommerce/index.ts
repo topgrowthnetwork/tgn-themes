@@ -5,7 +5,6 @@ import { BIGCOMMERCE_GRAPHQL_API_ENDPOINT } from './constants';
 
 import {
   bigCommerceToVercelCart,
-  bigCommerceToVercelCollection,
   bigCommerceToVercelPageContent,
   bigCommerceToVercelProduct,
   bigCommerceToVercelProducts,
@@ -19,7 +18,6 @@ import {
   updateCartLineItemMutation
 } from './mutations/cart';
 import { getCartQuery } from './queries/cart';
-import { getCategoryQuery, getStoreCategoriesQuery } from './queries/category';
 import { getCheckoutQuery } from './queries/checkout';
 import { getMenuQuery } from './queries/menu';
 import { getPageQuery, getPagesQuery } from './queries/page';
@@ -33,6 +31,7 @@ import {
   searchProductsQuery
 } from './queries/product';
 import { getEntityIdByRouteQuery } from './queries/route';
+// import { getCategoryQuery, getStoreCategoriesQuery } from './queries/category';
 import { memoizedCartRedirectUrl } from './storefront-config';
 import {
   BigCommerceAddToCartOperation,
@@ -40,8 +39,6 @@ import {
   BigCommerceCartOperation,
   BigCommerceCategoryTreeItem,
   BigCommerceCheckoutOperation,
-  BigCommerceCollectionOperation,
-  BigCommerceCollectionsOperation,
   BigCommerceCreateCartOperation,
   BigCommerceDeleteCartItemOperation,
   BigCommerceEntityIdOperation,
@@ -59,7 +56,6 @@ import {
   BigCommerceSearchProductsOperation,
   BigCommerceUpdateCartItemOperation,
   VercelCart,
-  VercelCollection,
   VercelMenu,
   VercelPage,
   VercelProduct
@@ -450,17 +446,17 @@ export async function getCart(cartId: string): Promise<VercelCart | undefined> {
   return bigCommerceToVercelCart(cart, productsByIdList, checkout, checkoutUrl);
 }
 
-export async function getCollection(handle: string): Promise<VercelCollection> {
-  const entityId = await getCategoryEntityIdbyHandle(handle);
-  const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
-    query: getCategoryQuery,
-    variables: {
-      entityId
-    }
-  });
+// export async function getCollection(handle: string): Promise<VercelCollection> {
+//   const entityId = await getCategoryEntityIdbyHandle(handle);
+//   const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
+//     query: getCategoryQuery,
+//     variables: {
+//       entityId
+//     }
+//   });
 
-  return bigCommerceToVercelCollection(res.body.data.site.category);
-}
+//   return bigCommerceToVercelCollection(res.body.data.site.category);
+// }
 
 export async function getCollectionProducts({
   collection,
@@ -531,25 +527,25 @@ export async function getCollectionProducts({
   return bigCommerceToVercelProducts(productList);
 }
 
-export async function getCollections(): Promise<VercelCollection[]> {
-  const res = await bigCommerceFetch<BigCommerceCollectionsOperation>({
-    query: getStoreCategoriesQuery
-  });
-  const collectionIdList = res.body.data.site.categoryTree.map(({ entityId }) => entityId);
-  const collections = await Promise.all(
-    collectionIdList.map(async (entityId) => {
-      const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
-        query: getCategoryQuery,
-        variables: {
-          entityId
-        }
-      });
-      return bigCommerceToVercelCollection(res.body.data.site.category);
-    })
-  );
+// export async function getCollections(): Promise<VercelCollection[]> {
+//   const res = await bigCommerceFetch<BigCommerceCollectionsOperation>({
+//     query: getStoreCategoriesQuery
+//   });
+//   const collectionIdList = res.body.data.site.categoryTree.map(({ entityId }) => entityId);
+//   const collections = await Promise.all(
+//     collectionIdList.map(async (entityId) => {
+//       const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
+//         query: getCategoryQuery,
+//         variables: {
+//           entityId
+//         }
+//       });
+//       return bigCommerceToVercelCollection(res.body.data.site.category);
+//     })
+//   );
 
-  return collections;
-}
+//   return collections;
+// }
 
 export async function getMenu(handle: string): Promise<VercelMenu[]> {
   const configureMenuPath = (path: string) =>

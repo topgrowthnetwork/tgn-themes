@@ -3,17 +3,20 @@ import Link from 'next/link';
 import GitHubIcon from 'components/icons/github';
 import FooterMenu from 'components/layout/footer-menu';
 import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/bigcommerce';
+import { createApi } from 'lib/api';
 import { Suspense } from 'react';
 
-const { COMPANY_NAME, SITE_NAME } = process.env;
-
 export default async function Footer() {
+  const api = createApi({ language: 'en' });
+  const settingsResponse = await api.getGlobalSettings();
+  const settings = settingsResponse.data;
+
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
   const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700';
-  const menu = await getMenu('next-js-frontend-footer-menu');
-  const copyrightName = COMPANY_NAME || SITE_NAME || '';
+  const categoriesResponse = await api.getCategories();
+  const categories = categoriesResponse.data.categories;
+  const copyrightName = settings.site_title;
 
   return (
     <footer className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -21,7 +24,7 @@ export default async function Footer() {
         <div>
           <Link className="flex items-center gap-2 text-black dark:text-white md:pt-1" href="/">
             <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
+            <span className="uppercase">{settings.site_title}</span>
           </Link>
         </div>
         <Suspense
@@ -36,7 +39,7 @@ export default async function Footer() {
             </div>
           }
         >
-          <FooterMenu menu={menu} />
+          <FooterMenu menu={categories} />
         </Suspense>
         <div className="md:ml-auto">
           <a aria-label="Github Repository" href="https://github.com/bigcommerce/nextjs-commerce">
@@ -49,11 +52,6 @@ export default async function Footer() {
           <p>
             &copy; {copyrightDate} {copyrightName}
             {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
-          </p>
-          <p className="md:ml-auto">
-            <a href="https://bigcommerce.com" className="text-black dark:text-white">
-              Crafted by BigCommerce
-            </a>
           </p>
         </div>
       </div>

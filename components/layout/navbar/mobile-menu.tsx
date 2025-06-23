@@ -6,10 +6,10 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { VercelMenu as Menu } from 'lib/bigcommerce/types';
+import { Category } from 'lib/api/types';
 import Search from './search';
 
-export default function MobileMenu({ menu }: { menu: Menu[] }) {
+export default function MobileMenu({ menu }: { menu: Category[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -76,13 +76,13 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                 </div>
                 {menu.length ? (
                   <ul className="flex w-full flex-col">
-                    {menu.map((item: Menu) => (
+                    {menu.map((item) => (
                       <li
                         className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
-                        key={item.title}
+                        key={item.id}
                       >
-                        <Link href={item.path} onClick={closeMobileMenu}>
-                          {item.title}
+                        <Link href={`/category/${item.id}`} onClick={closeMobileMenu}>
+                          {item.name}
                         </Link>
                       </li>
                     ))}

@@ -1,7 +1,12 @@
 import clsx from 'clsx';
-import LogoIcon from './icons/logo';
+import { createApi } from 'lib/api';
+import { getFullPath } from 'lib/utils';
+import Image from 'next/image';
 
-export default function LogoSquare({ size }: { size?: 'sm' | undefined }) {
+export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) {
+  const api = createApi({ language: 'en' });
+  const settingsResponse = await api.getGlobalSettings();
+  const settings = settingsResponse.data;
   return (
     <div
       className={clsx(
@@ -12,11 +17,11 @@ export default function LogoSquare({ size }: { size?: 'sm' | undefined }) {
         }
       )}
     >
-      <LogoIcon
-        className={clsx({
-          'h-[16px] w-[16px]': !size,
-          'h-[10px] w-[10px]': size === 'sm'
-        })}
+      <Image
+        src={getFullPath(settings.site_logo.path)}
+        alt={settings.site_title}
+        width={40}
+        height={40}
       />
     </div>
   );

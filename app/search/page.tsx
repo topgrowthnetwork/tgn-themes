@@ -1,7 +1,6 @@
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
-import { getProducts } from 'lib/bigcommerce';
-import { defaultSort, sorting } from 'lib/constants';
+import { createApi } from 'lib/api';
 
 export const runtime = 'edge';
 
@@ -15,10 +14,11 @@ export default async function SearchPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { sort, q: searchValue } = searchParams as { [key: string]: string };
-  const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
+  const { q: searchValue } = searchParams as { [key: string]: string };
 
-  const products = await getProducts({ sortKey, reverse, query: searchValue });
+  const api = createApi({ language: 'en' });
+  const productsResponse = await api.getProducts({ search: searchValue });
+  const products = productsResponse.data.products.data;
   const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (

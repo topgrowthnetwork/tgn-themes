@@ -1,26 +1,26 @@
-import { getCollection, getCollectionProducts } from 'lib/bigcommerce';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
-import { defaultSort, sorting } from 'lib/constants';
+import { createApi } from 'lib/api';
 
 export const runtime = 'edge';
 
 export async function generateMetadata({
   params
 }: {
-  params: { collection: string };
+  params: { categoryId: string };
 }): Promise<Metadata> {
-  const collection = await getCollection(params.collection);
+  const api = createApi({ language: 'en' });
+  const categoryResponse = await api.getCategories({ categoryId: params.categoryId });
+  const category = categoryResponse.data.categories[0];
 
-  if (!collection) return notFound();
+  if (!category) return notFound();
 
   return {
-    title: collection.seo?.title || collection.title,
-    description:
-      collection.seo?.description || collection.description || `${collection.title} products`
+    title: category.name,
+    description: `${category.name} products`
   };
 }
 
@@ -28,12 +28,15 @@ export default async function CategoryPage({
   params,
   searchParams
 }: {
-  params: { collection: string };
+  params: { categoryId: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { sort } = searchParams as { [key: string]: string };
-  const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
-  const products = await getCollectionProducts({ collection: params.collection, sortKey, reverse });
+  const api = createApi({ language: 'en' });
+  const productsResponse = await api.getProducts({
+    category_id: params.categoryId
+  });
+  const products = productsResponse.data.products.data;
 
   return (
     <section>
