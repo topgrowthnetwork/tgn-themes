@@ -7,7 +7,6 @@ import { Product } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 export const runtime = 'edge';
@@ -18,11 +17,13 @@ export async function generateMetadata({
   params: { handle: string };
 }): Promise<Metadata> {
   const api = createApi({ language: 'en' });
-  const productResponse = await api.getProduct(params.handle);
-  const { product } = productResponse.data;
+  const productResult = await api.getProduct(params.handle);
 
-  if (!product) return notFound();
+  if (productResult.isErr()) {
+    throw new Error('Failed to get product');
+  }
 
+  const { product } = productResult.value.data;
   return {
     title: product.title,
     description: product.description,
@@ -51,10 +52,11 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: { handle: string } }) {
   const api = createApi({ language: 'en' });
-  const productResponse = await api.getProduct(params.handle);
-  const { product, images, attributes, combinations } = productResponse.data;
-
-  if (!product) return notFound();
+  const productResult = await api.getProduct(params.handle);
+  if (productResult.isErr()) {
+    throw new Error('Failed to get product');
+  }
+  const { product, images, attributes, combinations } = productResult.value.data;
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -108,12 +110,14 @@ export default async function ProductPage({ params }: { params: { handle: string
 
 async function RelatedProducts({ product }: { product: Product }) {
   const api = createApi({ language: 'en' });
-  const relatedProductsResponse = await api.getProducts({
+  const relatedProductsResult = await api.getProducts({
     category_id: product.category_id.toString()
   });
+  if (relatedProductsResult.isErr()) {
+    return null;
+  }
 
-  const relatedProducts = relatedProductsResponse.data.products.data;
-
+  const relatedProducts = relatedProductsResult.value.data.products.data;
   if (!relatedProducts.length) return null;
 
   return (

@@ -5,6 +5,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface ApiError {
+  success: false;
+  message: string;
+  status_code?: number;
+  errors?: Record<string, string[]>;
+  [key: string]: any;
+}
+
 export interface PaginatedResponse<T> {
   current_page: number;
   data: T[];
@@ -226,7 +234,7 @@ export interface CartResponse {
       };
     }>;
     coupon: any | null;
-  };
+  } | null;
   sub_total: number;
   total_price: number;
   discount: number;

@@ -73,7 +73,7 @@ export default function CartModal({ cartResponse }: { cartResponse: CartResponse
                 </button>
               </div>
 
-              {!cartResponse || cartResponse.cart.cart_items.length === 0 ? (
+              {!cartResponse.cart || cartResponse.cart.cart_items.length === 0 ? (
                 <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
                   <ShoppingCartIcon className="h-16" />
                   <p className="mt-6 text-center text-2xl font-bold">Your cart is empty.</p>

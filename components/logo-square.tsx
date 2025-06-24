@@ -5,8 +5,11 @@ import Image from 'next/image';
 
 export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) {
   const api = createApi({ language: 'en' });
-  const settingsResponse = await api.getGlobalSettings();
-  const settings = settingsResponse.data;
+  const settingsResult = await api.getGlobalSettings();
+  if (settingsResult.isErr()) {
+    return null;
+  }
+  const settings = settingsResult.value.data;
   return (
     <div
       className={clsx(

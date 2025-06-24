@@ -6,10 +6,11 @@ import FilterList from './filter';
 
 async function CategoryList() {
   const api = createApi({ language: 'en' });
-  const categoriesResponse = await api.getCategories();
-
-  // Transform categories to match FilterList expected format
-  const categories = categoriesResponse.data.categories.map((category) => ({
+  const categoriesResult = await api.getCategories();
+  if (categoriesResult.isErr()) {
+    throw new Error('Failed to get categories');
+  }
+  const categories = categoriesResult.value.data.categories.map((category) => ({
     title: category.name,
     path: `/search/${category.name.toLowerCase().replace(/\s+/g, '-')}`
   }));

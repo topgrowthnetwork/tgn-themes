@@ -13,8 +13,11 @@ export async function generateMetadata({
   params: { categoryId: string };
 }): Promise<Metadata> {
   const api = createApi({ language: 'en' });
-  const categoryResponse = await api.getCategories({ categoryId: params.categoryId });
-  const category = categoryResponse.data.categories[0];
+  const categoryResult = await api.getCategories({ categoryId: params.categoryId });
+  if (categoryResult.isErr()) {
+    throw new Error('Failed to get category');
+  }
+  const category = categoryResult.value.data.categories[0];
 
   if (!category) return notFound();
 
@@ -33,10 +36,13 @@ export default async function CategoryPage({
 }) {
   const { sort } = searchParams as { [key: string]: string };
   const api = createApi({ language: 'en' });
-  const productsResponse = await api.getProducts({
+  const productsResult = await api.getProducts({
     category_id: params.categoryId
   });
-  const products = productsResponse.data.products.data;
+  if (productsResult.isErr()) {
+    throw new Error('Failed to get products');
+  }
+  const products = productsResult.value.data.products.data;
 
   return (
     <section>

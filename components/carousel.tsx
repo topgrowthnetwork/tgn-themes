@@ -6,11 +6,15 @@ import { GridTileImage } from './grid/tile';
 export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.
   const api = createApi({ language: 'en' });
-  const carouselProductsResponse = await api.getProducts({
+  const carouselProductsResult = await api.getProducts({
     recomended: '1'
   });
 
-  const products = carouselProductsResponse.data.products.data;
+  if (carouselProductsResult.isErr()) {
+    return null;
+  }
+
+  const products = carouselProductsResult.value.data.products.data;
 
   if (!products?.length) return null;
 

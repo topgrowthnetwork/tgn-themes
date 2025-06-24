@@ -1,4 +1,19 @@
-import { ApiConfig, ApiResponse } from './types';
+import { err, ok, Result } from 'neverthrow';
+import { ApiConfig, ApiError, ApiResponse } from './types';
+
+// Helper function to create ApiError objects
+function createApiError(
+  message: string,
+  statusCode?: number,
+  additionalData?: Record<string, any>
+): ApiError {
+  return {
+    success: false,
+    message,
+    status_code: statusCode,
+    ...additionalData
+  };
+}
 
 export class ApiClient {
   private config: ApiConfig;
@@ -32,7 +47,7 @@ export class ApiClient {
     endpoint: string,
     options: RequestInit = {},
     tags?: string[]
-  ): Promise<ApiResponse<T>> {
+  ): Promise<Result<ApiResponse<T>, ApiError>> {
     const url = `${this.config.baseURL}${endpoint}`;
     const headers = new Headers({
       ...this.config.headers,
@@ -79,30 +94,53 @@ export class ApiClient {
       };
     }
 
-    const response = await fetch(url, fetchOptions);
-    if (url.includes('products')) {
-      console.log('🤯', url, fetchOptions);
-    }
+    try {
+      const response = await fetch(url, fetchOptions);
 
-    if (!response.ok) {
-      // Get the error response body for better debugging
-      const errorText = await response.text();
-      console.error('API Error Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText
-      });
-      throw new Error(`API Error: ${response.statusText} - ${errorText}`);
-    }
+      if (!response.ok) {
+        // Get the error response body for better debugging
+        const errorText = await response.text();
+        let errorData: any = {};
 
-    return response.json();
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          // If response is not JSON, use the text as message
+          errorData = { message: errorText };
+        }
+
+        // Create a proper ApiError object
+        const apiError = createApiError(errorData.message || response.statusText, response.status, {
+          errors: errorData.errors,
+          ...errorData // Include any additional error properties
+        });
+
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: apiError
+        });
+
+        return err(apiError);
+      }
+
+      const data = await response.json();
+      return ok(data);
+    } catch (error) {
+      // Handle network errors or other unexpected errors
+      const apiError = createApiError(
+        error instanceof Error ? error.message : 'Network error occurred',
+        error instanceof Error && 'status' in error ? (error as any).status : undefined
+      );
+      return err(apiError);
+    }
   }
 
   async get<T>(
     endpoint: string,
     params?: Record<string, string | number | undefined>,
     tags?: string[]
-  ): Promise<ApiResponse<T>> {
+  ): Promise<Result<ApiResponse<T>, ApiError>> {
     const filteredParams = params
       ? (Object.fromEntries(
           Object.entries(params).filter(([_, value]) => value !== undefined)
@@ -115,7 +153,7 @@ export class ApiClient {
     return this.fetch<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
     const body = data instanceof FormData ? data : JSON.stringify(data);
     return this.fetch<T>(endpoint, {
       method: 'POST',
@@ -123,14 +161,14 @@ export class ApiClient {
     });
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
     return this.fetch<T>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data)
     });
   }
 
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+  async delete<T>(endpoint: string): Promise<Result<ApiResponse<T>, ApiError>> {
     return this.fetch<T>(endpoint, {
       method: 'DELETE'
     });

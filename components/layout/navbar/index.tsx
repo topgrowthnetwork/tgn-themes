@@ -9,11 +9,17 @@ import Search from './search';
 
 export default async function Navbar() {
   const api = createApi({ language: 'en' });
-  const settingsResponse = await api.getGlobalSettings();
-  const settings = settingsResponse.data;
+  const settingsResult = await api.getGlobalSettings();
+  if (settingsResult.isErr()) {
+    return null;
+  }
+  const settings = settingsResult.value.data;
 
-  const categoriesResponse = await api.getCategories();
-  const categories = categoriesResponse.data.categories;
+  const categoriesResult = await api.getCategories();
+  if (categoriesResult.isErr()) {
+    return null;
+  }
+  const categories = categoriesResult.value.data.categories;
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">

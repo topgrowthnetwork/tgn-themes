@@ -9,8 +9,11 @@ export type Props = {
 
 export default async function OpengraphImage(props?: Props): Promise<ImageResponse> {
   const api = createApi({ language: 'en' });
-  const globalSettingsResponse = await api.getGlobalSettings();
-  const globalSettings = globalSettingsResponse.data;
+  const globalSettingsResult = await api.getGlobalSettings();
+  if (globalSettingsResult.isErr()) {
+    throw new Error('Failed to get global settings');
+  }
+  const globalSettings = globalSettingsResult.value.data;
 
   return new ImageResponse(
     (

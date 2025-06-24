@@ -17,8 +17,11 @@ export default async function SearchPage({
   const { q: searchValue } = searchParams as { [key: string]: string };
 
   const api = createApi({ language: 'en' });
-  const productsResponse = await api.getProducts({ search: searchValue });
-  const products = productsResponse.data.products.data;
+  const productsResult = await api.getProducts({ search: searchValue });
+  if (productsResult.isErr()) {
+    throw new Error('Failed to get products');
+  }
+  const products = productsResult.value.data.products.data;
   const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (

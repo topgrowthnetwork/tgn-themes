@@ -40,12 +40,15 @@ function ThreeItemGridItem({
 
 export async function ThreeItemGrid() {
   const api = createApi({ language: 'en' });
-  const recommendedProductsResponse = await api.getProducts({
+  const recommendedProductsResult = await api.getProducts({
     recomended: '1',
     per_page: '3'
   });
+  if (recommendedProductsResult.isErr()) {
+    return null;
+  }
 
-  const recommendedProducts = recommendedProductsResponse.data.products.data;
+  const recommendedProducts = recommendedProductsResult.value.data.products.data;
 
   if (!recommendedProducts[0] || !recommendedProducts[1] || !recommendedProducts[2]) return null;
 

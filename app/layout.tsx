@@ -11,8 +11,13 @@ export async function generateMetadata(): Promise<Metadata> {
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : 'http://localhost:3000';
   const api = createApi({ language: 'en' });
-  const globalSettingsResponse = await api.getGlobalSettings();
-  const globalSettings = globalSettingsResponse.data;
+  const globalSettingsResult = await api.getGlobalSettings();
+
+  if (globalSettingsResult.isErr()) {
+    throw new Error('Failed to get global settings');
+  }
+
+  const globalSettings = globalSettingsResult.value.data;
   return {
     metadataBase: new URL(baseUrl),
     title: {

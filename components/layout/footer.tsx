@@ -8,14 +8,20 @@ import { Suspense } from 'react';
 
 export default async function Footer() {
   const api = createApi({ language: 'en' });
-  const settingsResponse = await api.getGlobalSettings();
-  const settings = settingsResponse.data;
+  const settingsResult = await api.getGlobalSettings();
+  if (settingsResult.isErr()) {
+    throw new Error('Failed to get global settings');
+  }
+  const settings = settingsResult.value.data;
 
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
   const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700';
-  const categoriesResponse = await api.getCategories();
-  const categories = categoriesResponse.data.categories;
+  const categoriesResult = await api.getCategories();
+  if (categoriesResult.isErr()) {
+    throw new Error('Failed to get categories');
+  }
+  const categories = categoriesResult.value.data.categories;
   const copyrightName = settings.site_title;
 
   return (

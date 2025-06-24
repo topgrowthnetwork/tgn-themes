@@ -15,5 +15,6 @@ export function createApi({
     authToken
   });
 
-  return new ApiEndpoints(client);
+  const apiEndpoints = new ApiEndpoints(client);
+  return apiEndpoints;
 }

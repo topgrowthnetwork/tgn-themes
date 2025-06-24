@@ -12,14 +12,14 @@ export async function middleware(request: NextRequest) {
     try {
       // Use the createApi function to generate guest token
       const api = createApi({ language: 'en' });
-      const apiResponse = await api.generateGuestToken();
+      const apiResult = await api.generateGuestToken();
 
-      if (apiResponse.success && apiResponse.data.guest_token) {
+      if (apiResult.isOk() && apiResult.value.data.guest_token) {
         // Create response with the guest token cookie
         const response = NextResponse.next();
 
         // Set the guest token cookie
-        response.cookies.set('guest_token', apiResponse.data.guest_token, {
+        response.cookies.set('guest_token', apiResult.value.data.guest_token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

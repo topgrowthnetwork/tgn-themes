@@ -20,16 +20,18 @@ export async function addItemV2(
   const api = createApi({ language: 'en', guestToken });
 
   try {
-    const response = await api.addToCart({
+    const result = await api.addToCart({
       qyt: 1,
       product_id: selectedProductId,
       product_variant_id: selectedVariantId
     });
-
+    if (result.isErr()) {
+      throw new Error('Failed to add item to cart');
+    }
     revalidateTag(TAGS.cart);
-    cookies().set('cartId', response.data.cart_item.cart_id.toString());
+    cookies().set('cartId', result.value.data.cart_item.cart_id.toString());
 
-    return response.message || 'Added to cart successfully';
+    return result.value.data.message || 'Added to cart successfully';
   } catch (error: any) {
     return 'Error adding item to cart';
   }
@@ -67,9 +69,12 @@ export async function removeItemV2(prevState: any, lineId: number) {
   const api = createApi({ language: 'en', guestToken });
 
   try {
-    const response = await api.deleteCartItem(lineId);
+    const result = await api.deleteCartItem(lineId);
+    if (result.isErr()) {
+      throw new Error('Failed to remove item from cart');
+    }
     revalidateTag(TAGS.cart);
-    return response.message || 'Removed from cart successfully';
+    return result.value.data.message || 'Removed from cart successfully';
   } catch (error: any) {
     return 'Error removing item from cart';
   }
@@ -108,9 +113,12 @@ export async function updateItemQuantityV2(
   const api = createApi({ language: 'en', guestToken });
 
   try {
-    const response = await api.updateCartItem(lineId, { qyt: quantity });
+    const result = await api.updateCartItem(lineId, { qyt: quantity });
+    if (result.isErr()) {
+      throw new Error('Failed to update item quantity');
+    }
     revalidateTag(TAGS.cart);
-    return response.message || 'Updated item quantity successfully';
+    return 'Updated item quantity successfully';
   } catch (error: any) {
     return 'Error updating item quantity';
   }

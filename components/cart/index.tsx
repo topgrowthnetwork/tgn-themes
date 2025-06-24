@@ -5,7 +5,11 @@ import CartModal from './modal';
 export default async function Cart() {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
-  const cartResponse = await api.getCart();
+  const cartResult = await api.getCart();
 
-  return <CartModal cartResponse={cartResponse.data} />;
+  if (cartResult.isErr()) {
+    return null;
+  }
+
+  return <CartModal cartResponse={cartResult.value.data} />;
 }
