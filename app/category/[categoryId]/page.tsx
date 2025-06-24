@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
 import { createApi } from 'lib/api';
+import { getProductParams } from 'lib/utils';
 
 export const runtime = 'edge';
 
@@ -35,10 +36,11 @@ export default async function CategoryPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { sort } = searchParams as { [key: string]: string };
+
   const api = createApi({ language: 'en' });
-  const productsResult = await api.getProducts({
-    category_id: params.categoryId
-  });
+  const productParams = getProductParams(sort, undefined, params.categoryId);
+
+  const productsResult = await api.getProducts(productParams);
   if (productsResult.isErr()) {
     throw new Error('Failed to get products');
   }

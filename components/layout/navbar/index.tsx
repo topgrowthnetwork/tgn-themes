@@ -4,6 +4,7 @@ import LogoSquare from 'components/logo-square';
 import { createApi } from 'lib/api';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import CategoryLink from './category-link';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 
@@ -38,12 +39,7 @@ export default async function Navbar() {
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
               {categories.map((item) => (
                 <li key={item.id}>
-                  <Link
-                    href={`/category/${item.id}`}
-                    className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                  >
-                    {item.name}
-                  </Link>
+                  <CategoryLink category={item} />
                 </li>
               ))}
             </ul>

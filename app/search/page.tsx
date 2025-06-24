@@ -1,6 +1,7 @@
 import Grid from 'components/grid';
 import ProductGridItems from 'components/layout/product-grid-items';
 import { createApi } from 'lib/api';
+import { getProductParams } from 'lib/utils';
 
 export const runtime = 'edge';
 
@@ -14,10 +15,11 @@ export default async function SearchPage({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { q: searchValue } = searchParams as { [key: string]: string };
+  const { q: searchValue, sort } = searchParams as { [key: string]: string };
+  const productParams = getProductParams(sort, searchValue);
 
   const api = createApi({ language: 'en' });
-  const productsResult = await api.getProducts({ search: searchValue });
+  const productsResult = await api.getProducts(productParams);
   if (productsResult.isErr()) {
     throw new Error('Failed to get products');
   }

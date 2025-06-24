@@ -69,3 +69,48 @@ export function getItemPrice(
   // Use variant price if available, otherwise use product's final price
   return variant?.price ?? product.final_price;
 }
+
+/**
+ * Helper function to convert URL parameters to API parameters
+ * @param sort The sort parameter from URL (e.g., 'latest-desc', 'popular')
+ * @param search The search query parameter
+ * @param categoryId Optional category ID for filtering
+ * @returns Object with order_by, search, and category_id for API calls
+ */
+export function getProductParams(
+  sort?: string,
+  search?: string,
+  categoryId?: string
+): { order_by?: 'selling_count' | 'created_at'; search?: string; category_id?: string } {
+  const params: {
+    order_by?: 'selling_count' | 'created_at';
+    search?: string;
+    category_id?: string;
+  } = {};
+
+  // Add search query if provided
+  if (search) {
+    params.search = search;
+  }
+
+  // Add category_id if provided
+  if (categoryId) {
+    params.category_id = categoryId;
+  }
+
+  // Handle sorting logic
+  switch (sort) {
+    case 'latest-desc':
+      params.order_by = 'created_at';
+      break;
+    case 'popular':
+      params.order_by = 'selling_count';
+      break;
+    default:
+      // Default to latest products
+      params.order_by = 'created_at';
+      break;
+  }
+
+  return params;
+}
