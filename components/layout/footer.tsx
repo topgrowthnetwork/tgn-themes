@@ -4,10 +4,13 @@ import GitHubIcon from 'components/icons/github';
 import FooterMenu from 'components/layout/footer-menu';
 import LogoSquare from 'components/logo-square';
 import { createApi } from 'lib/api';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 export default async function Footer() {
-  const api = createApi({ language: 'en' });
+  const t = await getTranslations('Footer');
+  const locale = await getLocale();
+  const api = createApi({ language: locale });
   const settingsResult = await api.getGlobalSettings();
   if (settingsResult.isErr()) {
     throw new Error('Failed to get global settings');
@@ -57,7 +60,8 @@ export default async function Footer() {
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
           <p>
             &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
+            {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''}{' '}
+            {t('allRightsReserved')}
           </p>
         </div>
       </div>

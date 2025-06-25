@@ -2,14 +2,17 @@ import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
 import LogoSquare from 'components/logo-square';
 import { createApi } from 'lib/api';
+import { getLocale } from 'next-intl/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import CategoryLink from './category-link';
+import LanguageSwitcher from './language-switcher';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 
 export default async function Navbar() {
-  const api = createApi({ language: 'en' });
+  const locale = await getLocale();
+  const api = createApi({ language: locale });
   const settingsResult = await api.getGlobalSettings();
   if (settingsResult.isErr()) {
     return null;
@@ -49,9 +52,12 @@ export default async function Navbar() {
           <Search />
         </div>
         <div className="flex justify-end md:w-1/3">
-          <Suspense fallback={<OpenCart />}>
-            <Cart />
-          </Suspense>
+          <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
+            <Suspense fallback={<OpenCart />}>
+              <Cart />
+            </Suspense>
+          </div>
         </div>
       </div>
     </nav>

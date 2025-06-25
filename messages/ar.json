@@ -1,0 +1,19 @@
+{
+  "Cart": {
+    "myCart": "سلة التسوق",
+    "emptyCart": "سلة التسوق فارغة.",
+    "subtotal": "المجموع الفرعي",
+    "taxes": "الضرائب",
+    "shipping": "الشحن",
+    "calculatedAtCheckout": "يتم حسابه عند الدفع",
+    "total": "المجموع",
+    "proceedToCheckout": "المتابعة إلى الدفع"
+  },
+  "Footer": {
+    "allRightsReserved": "جميع الحقوق محفوظة."
+  },
+  "Common": {
+    "openCart": "فتح السلة",
+    "closeCart": "إغلاق السلة"
+  }
+}

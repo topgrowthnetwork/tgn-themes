@@ -1,0 +1,19 @@
+{
+  "Cart": {
+    "myCart": "My Cart",
+    "emptyCart": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "taxes": "Taxes",
+    "shipping": "Shipping",
+    "calculatedAtCheckout": "Calculated at checkout",
+    "total": "Total",
+    "proceedToCheckout": "Proceed to Checkout"
+  },
+  "Footer": {
+    "allRightsReserved": "All rights reserved."
+  },
+  "Common": {
+    "openCart": "Open cart",
+    "closeCart": "Close cart"
+  }
+}
