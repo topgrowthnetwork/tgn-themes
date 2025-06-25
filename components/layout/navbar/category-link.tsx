@@ -21,9 +21,10 @@ export default function CategoryLink({ category }: CategoryLinkProps) {
     <Link
       href={`/category/${category.id}`}
       className={clsx(
-        'text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300',
+        'underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300',
         {
-          'text-black underline dark:text-neutral-300': isActive
+          'text-black underline dark:text-neutral-300': isActive,
+          'text-neutral-500 dark:text-neutral-400': !isActive
         }
       )}
     >
