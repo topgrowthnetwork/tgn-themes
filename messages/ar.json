@@ -7,13 +7,38 @@
     "shipping": "الشحن",
     "calculatedAtCheckout": "يتم حسابه عند الدفع",
     "total": "المجموع",
-    "proceedToCheckout": "المتابعة إلى الدفع"
+    "proceedToCheckout": "المتابعة إلى الدفع",
+    "openCart": "فتح السلة",
+    "closeCart": "إغلاق السلة",
+    "removeCartItem": "إزالة عنصر من السلة",
+    "increaseItemQuantity": "زيادة كمية العنصر",
+    "reduceItemQuantity": "تقليل كمية العنصر",
+    "addToCart": "إضافة إلى السلة",
+    "pleaseSelectOption": "يرجى اختيار خيار",
+    "outOfStock": "نفذت الكمية"
   },
   "Footer": {
-    "allRightsReserved": "جميع الحقوق محفوظة."
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "githubRepository": "مستودع جيثب"
+  },
+  "Search": {
+    "placeholder": "البحث عن المنتجات..."
+  },
+  "Navigation": {
+    "openMobileMenu": "فتح القائمة المحمولة",
+    "closeMobileMenu": "إغلاق القائمة المحمولة"
+  },
+  "Product": {
+    "previousProductImage": "الصورة السابقة للمنتج",
+    "nextProductImage": "الصورة التالية للمنتج",
+    "enlargeProductImage": "تكبير صورة المنتج"
   },
   "Common": {
-    "openCart": "فتح السلة",
-    "closeCart": "إغلاق السلة"
+    "categories": "الفئات",
+    "sortBy": "ترتيب حسب"
+  },
+  "Sorting": {
+    "popularity": "الشعبية",
+    "latestArrivals": "أحدث المنتجات"
   }
 }

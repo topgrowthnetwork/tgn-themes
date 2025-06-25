@@ -32,7 +32,7 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
       }
 
       return (
-        <div className="ml-4">
+        <div className="ms-4">
           <div className="flex cursor-pointer items-center gap-1" onClick={() => toggleExpand(key)}>
             {isExpanded ? (
               <ChevronDownIcon className="h-4 w-4 text-gray-500" />
@@ -45,7 +45,7 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
           {isExpanded && (
             <>
               {Object.entries(value).map(([k, v], index) => (
-                <div key={k} className="ml-4">
+                <div key={k} className="ms-4">
                   <span className="text-blue-600">{k}</span>
                   <span className="text-gray-500">: </span>
                   {renderValue(v, `${key}.${k}`, depth + 1)}
@@ -54,7 +54,7 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
                   )}
                 </div>
               ))}
-              <div className="ml-4">
+              <div className="ms-4">
                 <span className="text-gray-500">{isArray ? ']' : '}'}</span>
               </div>
             </>

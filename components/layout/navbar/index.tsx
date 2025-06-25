@@ -6,7 +6,6 @@ import { getLocale } from 'next-intl/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import CategoryLink from './category-link';
-import LanguageSwitcher from './language-switcher';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 
@@ -32,9 +31,9 @@ export default async function Navbar() {
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-1/3">
-          <Link href="/" className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6">
+          <Link href="/" className="me-2 flex w-full items-center justify-center md:w-auto lg:me-6">
             <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
+            <div className="ms-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
               {settings.site_title}
             </div>
           </Link>
@@ -52,12 +51,9 @@ export default async function Navbar() {
           <Search />
         </div>
         <div className="flex justify-end md:w-1/3">
-          <div className="flex items-center space-x-4">
-            <LanguageSwitcher />
-            <Suspense fallback={<OpenCart />}>
-              <Cart />
-            </Suspense>
-          </div>
+          <Suspense fallback={<OpenCart />}>
+            <Cart />
+          </Suspense>
         </div>
       </div>
     </nav>

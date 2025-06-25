@@ -6,6 +6,7 @@ import LogoSquare from 'components/logo-square';
 import { createApi } from 'lib/api';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
+import LanguageSwitcher from './language-switcher';
 
 export default async function Footer() {
   const t = await getTranslations('Footer');
@@ -50,19 +51,23 @@ export default async function Footer() {
         >
           <FooterMenu menu={categories} />
         </Suspense>
-        <div className="md:ml-auto">
-          <a aria-label="Github Repository" href="https://github.com/bigcommerce/nextjs-commerce">
+        <div className="md:ms-auto">
+          <a
+            aria-label={t('githubRepository')}
+            href="https://github.com/bigcommerce/nextjs-commerce"
+          >
             <GitHubIcon className="h-6" />
           </a>
         </div>
       </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-4 px-4 md:flex-row md:justify-between md:gap-0 md:px-4 min-[1320px]:px-0">
           <p>
             &copy; {copyrightDate} {copyrightName}
             {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''}{' '}
             {t('allRightsReserved')}
           </p>
+          <LanguageSwitcher />
         </div>
       </div>
     </footer>

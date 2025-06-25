@@ -7,13 +7,38 @@
     "shipping": "Shipping",
     "calculatedAtCheckout": "Calculated at checkout",
     "total": "Total",
-    "proceedToCheckout": "Proceed to Checkout"
+    "proceedToCheckout": "Proceed to Checkout",
+    "openCart": "Open cart",
+    "closeCart": "Close cart",
+    "removeCartItem": "Remove cart item",
+    "increaseItemQuantity": "Increase item quantity",
+    "reduceItemQuantity": "Reduce item quantity",
+    "addToCart": "Add to cart",
+    "pleaseSelectOption": "Please select an option",
+    "outOfStock": "Out Of Stock"
   },
   "Footer": {
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "githubRepository": "Github Repository"
+  },
+  "Search": {
+    "placeholder": "Search for products..."
+  },
+  "Navigation": {
+    "openMobileMenu": "Open mobile menu",
+    "closeMobileMenu": "Close mobile menu"
+  },
+  "Product": {
+    "previousProductImage": "Previous product image",
+    "nextProductImage": "Next product image",
+    "enlargeProductImage": "Enlarge product image"
   },
   "Common": {
-    "openCart": "Open cart",
-    "closeCart": "Close cart"
+    "categories": "Categories",
+    "sortBy": "Sort by"
+  },
+  "Sorting": {
+    "popularity": "Popularity",
+    "latestArrivals": "Latest arrivals"
   }
 }

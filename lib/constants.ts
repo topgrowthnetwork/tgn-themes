@@ -39,6 +39,16 @@ export const defaultSort: SortFilterItem = {
   reverse: false
 };
 
+export const getSortingOptions = (t: (key: string) => string): SortFilterItem[] => [
+  // defaultSort,
+  // { title: 'Trending', slug: 'trending-desc', sortKey: 'BEST_SELLING', reverse: false }, // asc
+  { title: t('popularity'), slug: 'popular', sortKey: 'BEST_SELLING', reverse: false },
+  { title: t('latestArrivals'), slug: 'latest-desc', sortKey: 'CREATED_AT', reverse: true }
+  // { title: 'Price: Low to high', slug: 'price-asc', sortKey: 'PRICE', reverse: false }, // asc
+  // { title: 'Price: High to low', slug: 'price-desc', sortKey: 'PRICE', reverse: true }
+];
+
+// Keep the original for backward compatibility
 export const sorting: SortFilterItem[] = [
   // defaultSort,
   // { title: 'Trending', slug: 'trending-desc', sortKey: 'BEST_SELLING', reverse: false }, // asc

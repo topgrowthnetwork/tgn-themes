@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from 'react';
 
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Category } from 'lib/api/types';
+import { useTranslations } from 'next-intl';
 import Search from './search';
 
 export default function MobileMenu({ menu }: { menu: Category[] }) {
@@ -15,6 +16,7 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
+  const t = useTranslations('Navigation');
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,7 +36,7 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
     <>
       <button
         onClick={openMobileMenu}
-        aria-label="Open mobile menu"
+        aria-label={t('openMobileMenu')}
         className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white md:hidden"
       >
         <Bars3Icon className="h-4" />
@@ -66,7 +68,7 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
                 <button
                   className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
                   onClick={closeMobileMenu}
-                  aria-label="Close mobile menu"
+                  aria-label={t('closeMobileMenu')}
                 >
                   <XMarkIcon className="h-6" />
                 </button>

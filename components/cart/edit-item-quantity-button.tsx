@@ -1,59 +1,55 @@
 'use client';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import clsx from 'clsx';
 import { updateItemQuantityV2 } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
-import { CartResponse } from 'lib/api/types';
+import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 
-function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
-  const { pending } = useFormStatus();
+function SubmitButton({
+  type,
+  item,
+  pending
+}: {
+  type: 'plus' | 'minus';
+  item: any;
+  pending: boolean;
+}) {
+  const t = useTranslations('Cart');
 
   return (
     <button
-      type="submit"
+      aria-label={type === 'plus' ? t('increaseItemQuantity') : t('reduceItemQuantity')}
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
         if (pending) e.preventDefault();
       }}
-      aria-label={type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'}
-      aria-disabled={pending}
-      className={clsx(
-        'ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80',
-        {
-          'cursor-not-allowed': pending,
-          'ml-auto': type === 'minus'
-        }
-      )}
+      disabled={pending}
+      className="ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 dark:hover:border-white"
     >
       {pending ? (
         <LoadingDots className="bg-black dark:bg-white" />
-      ) : type === 'plus' ? (
-        <PlusIcon className="h-4 w-4 dark:text-neutral-500" />
       ) : (
-        <MinusIcon className="h-4 w-4 dark:text-neutral-500" />
+        <span className="mx-1 h-4 w-4 text-black dark:text-white">
+          {type === 'plus' ? (
+            <PlusIcon className="h-full w-full" />
+          ) : (
+            <MinusIcon className="h-full w-full" />
+          )}
+        </span>
       )}
     </button>
   );
 }
 
-export function EditItemQuantityButton({
-  item,
-  type
-}: {
-  item: CartResponse['cart']['cart_items'][number];
-  type: 'plus' | 'minus';
-}) {
+export function EditItemQuantityButton({ item, type }: { item: any; type: 'plus' | 'minus' }) {
   const [message, formAction] = useFormState(updateItemQuantityV2, null);
-  const newQuantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
-  const actionWithVariant = formAction.bind(null, {
-    lineId: item.id,
-    quantity: newQuantity
-  });
+  const { pending } = useFormStatus();
+
+  const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
   return (
-    <form action={actionWithVariant}>
-      <SubmitButton type={type} />
+    <form action={formAction.bind(null, { lineId: item.id, quantity })}>
+      <SubmitButton type={type} item={item} pending={pending} />
       <p aria-live="polite" className="sr-only" role="status">
         {message}
       </p>

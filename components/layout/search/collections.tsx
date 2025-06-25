@@ -2,10 +2,13 @@ import clsx from 'clsx';
 import { Suspense } from 'react';
 
 import { createApi } from 'lib/api';
+import { getLocale, getTranslations } from 'next-intl/server';
 import FilterList from './filter';
 
 async function CategoryList() {
-  const api = createApi({ language: 'en' });
+  const locale = await getLocale();
+  const t = await getTranslations('Common');
+  const api = createApi({ language: locale });
   const categoriesResult = await api.getCategories();
   if (categoriesResult.isErr()) {
     throw new Error('Failed to get categories');
@@ -15,7 +18,7 @@ async function CategoryList() {
     path: `/search/${category.name.toLowerCase().replace(/\s+/g, '-')}`
   }));
 
-  return <FilterList list={categories} title="Categories" />;
+  return <FilterList list={categories} title={t('categories')} />;
 }
 
 const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded';

@@ -3,6 +3,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from 'components/grid/tile';
 import { createUrl } from 'lib/utils';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -12,6 +13,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
   const searchParams = useSearchParams();
   const imageSearchParam = searchParams.get('image');
   const imageIndex = imageSearchParam ? parseInt(imageSearchParam) : 0;
+  const t = useTranslations('Product');
 
   const nextSearchParams = new URLSearchParams(searchParams.toString());
   const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
@@ -44,7 +46,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
           <div className="absolute bottom-[15%] flex w-full justify-center">
             <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur dark:border-black dark:bg-neutral-900/80">
               <Link
-                aria-label="Previous product image"
+                aria-label={t('previousProductImage')}
                 href={previousUrl}
                 className={buttonClassName}
                 scroll={false}
@@ -53,7 +55,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
               </Link>
               <div className="mx-1 h-6 w-px bg-neutral-500"></div>
               <Link
-                aria-label="Next product image"
+                aria-label={t('nextProductImage')}
                 href={nextUrl}
                 className={buttonClassName}
                 scroll={false}
@@ -76,7 +78,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
             return (
               <li key={image.src} className="h-20 w-20">
                 <Link
-                  aria-label="Enlarge product image"
+                  aria-label={t('enlargeProductImage')}
                   href={createUrl(pathname, imageSearchParams)}
                   scroll={false}
                   className="h-full w-full"
