@@ -15,7 +15,7 @@ export function ProductDescription({
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
         <h1 className="mb-2 text-5xl font-medium">{product.title}</h1>
-        <div className="me-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
+        <div className="me-auto w-auto rounded-full bg-primary-600 p-2 text-sm text-white">
           <Price amount={product.final_price.toString()} currencyCode={'EGP'} />
         </div>
       </div>

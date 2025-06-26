@@ -23,7 +23,7 @@ export function NotificationMessage({
         return 'bg-yellow-50 text-yellow-800 border border-yellow-200';
       case 'info':
       default:
-        return 'bg-blue-50 text-blue-800 border border-blue-200';
+        return 'bg-primary-50 text-primary-800 border border-primary-200';
     }
   };
 

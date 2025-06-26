@@ -4,7 +4,7 @@ import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { Inter } from 'next/font/google';
+import { Inter, Noto_Sans_Arabic, Noto_Serif } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
@@ -48,6 +48,18 @@ const inter = Inter({
   variable: '--font-inter'
 });
 
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--font-noto-sans-arabic'
+});
+
+const notoSerif = Noto_Serif({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-noto-serif'
+});
+
 export default async function LocaleLayout({
   children,
   params
@@ -70,8 +82,25 @@ export default async function LocaleLayout({
   // Get current theme from environment variable
   const theme = process.env.NEXT_PUBLIC_THEME || 'active';
 
+  // Get font variables based on theme
+  const getFontVariables = () => {
+    switch (theme) {
+      case 'classic':
+        return `${notoSerif.variable} ${notoSansArabic.variable}`;
+      case 'minimal':
+      case 'active':
+      default:
+        return `${inter.variable} ${notoSansArabic.variable}`;
+    }
+  };
+
   return (
-    <html lang={language} dir={isRTL ? 'rtl' : 'ltr'} className={inter.variable} data-theme={theme}>
+    <html
+      lang={language}
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className={getFontVariables()}
+      data-theme={theme}
+    >
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${
           isRTL ? 'rtl' : 'ltr'

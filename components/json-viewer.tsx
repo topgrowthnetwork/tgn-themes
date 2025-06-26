@@ -46,7 +46,7 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
             <>
               {Object.entries(value).map(([k, v], index) => (
                 <div key={k} className="ms-4">
-                  <span className="text-blue-600">{k}</span>
+                  <span className="text-primary-600">{k}</span>
                   <span className="text-gray-500">: </span>
                   {renderValue(v, `${key}.${k}`, depth + 1)}
                   {index < Object.keys(value).length - 1 && (
