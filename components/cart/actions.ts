@@ -73,6 +73,6 @@ export async function updateItemQuantityV2(
     revalidateTag(TAGS.cart);
     return 'Updated item quantity successfully';
   } catch (error: any) {
-    return 'Error updating item quantity';
+    return 'Error updating item quantity.';
   }
 }
