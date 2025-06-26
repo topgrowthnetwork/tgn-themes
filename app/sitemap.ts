@@ -1,10 +1,12 @@
-import { getCollections, getPages, getProducts } from 'lib/bigcommerce';
-import { validateEnvironmentVariables } from 'lib/utils';
+import { createApi } from 'lib/api';
+import { routing } from 'lib/i18n/routing';
 import { MetadataRoute } from 'next';
 
 type Route = {
   url: string;
   lastModified: string;
+  changeFrequency?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  priority?: number;
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
@@ -12,41 +14,67 @@ const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   : 'http://localhost:3000';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  validateEnvironmentVariables();
+  const sitemapEntries: Route[] = [];
 
-  const routesMap = [''].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString()
-  }));
+  // Add static routes for each language
+  const staticRoutes = [
+    '', // Homepage
+    '/search', // Search page
+    '/theme-demo', // Theme demo page
+    '/theme-example' // Theme example page
+  ];
 
-  const collectionsPromise = getCollections().then((collections) =>
-    collections.map((collection) => ({
-      url: `${baseUrl}${collection.path}`,
-      lastModified: collection.updatedAt
-    }))
-  );
-
-  const productsPromise = getProducts({}).then((products) =>
-    products.map((product) => ({
-      url: `${baseUrl}${product.handle}`,
-      lastModified: product.updatedAt
-    }))
-  );
-
-  const pagesPromise = getPages().then((pages) =>
-    pages.map((page) => ({
-      url: `${baseUrl}/${page.handle}`,
-      lastModified: page.updatedAt
-    }))
-  );
-
-  let fetchedRoutes: Route[] = [];
-
-  try {
-    fetchedRoutes = (await Promise.all([collectionsPromise, productsPromise, pagesPromise])).flat();
-  } catch (error) {
-    throw JSON.stringify(error, null, 2);
+  for (const locale of routing.locales) {
+    for (const route of staticRoutes) {
+      sitemapEntries.push({
+        url: `${baseUrl}/${locale}${route}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: route === '' ? 'daily' : 'weekly',
+        priority: route === '' ? 1.0 : 0.8
+      });
+    }
   }
 
-  return [...routesMap, ...fetchedRoutes];
+  try {
+    // Fetch categories for each language
+    for (const locale of routing.locales) {
+      const api = createApi({ language: locale });
+      const categoriesResult = await api.getCategories();
+
+      if (categoriesResult.isOk()) {
+        const categories = categoriesResult.value.data.categories;
+        categories.forEach((category) => {
+          sitemapEntries.push({
+            url: `${baseUrl}/${locale}/category/${category.id}`,
+            lastModified: category.updated_at,
+            changeFrequency: 'weekly',
+            priority: 0.7
+          });
+        });
+      }
+    }
+
+    // Fetch products for each language
+    for (const locale of routing.locales) {
+      const api = createApi({ language: locale });
+      const productsResult = await api.getProducts({ per_page: '1000' }); // Get all products
+
+      if (productsResult.isOk()) {
+        const products = productsResult.value.data.products.data;
+        products.forEach((product) => {
+          sitemapEntries.push({
+            url: `${baseUrl}/${locale}/product/${product.slug}`,
+            lastModified: product.updated_at,
+            changeFrequency: 'weekly',
+            priority: 0.6
+          });
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    // Return static routes even if API calls fail
+  }
+
+  return sitemapEntries;
 }
