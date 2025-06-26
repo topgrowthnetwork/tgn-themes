@@ -1,9 +1,7 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.2.0",
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=7"
+    "node": ">=18"
   },
   "scripts": {
     "dev": "next dev",
@@ -12,7 +10,7 @@
     "lint": "next lint",
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
-    "test": "pnpm lint && pnpm prettier:check"
+    "test": "npm run lint && npm run prettier:check"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
