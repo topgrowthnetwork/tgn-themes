@@ -13,7 +13,7 @@
     "test": "npm run lint && npm run prettier:check"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
     "clsx": "^2.0.0",
     "cookies-next": "4.3.0",

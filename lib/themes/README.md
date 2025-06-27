@@ -64,7 +64,7 @@ Use the theme font classes:
 Import and use the theme-aware components:
 
 ```tsx
-import { ThemeButton, ThemeCard } from 'components/theme';
+import { ThemeButton, ThemeCard } from '@theme/theme';
 
 export function MyComponent() {
   return (

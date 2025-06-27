@@ -1,6 +1,6 @@
-import { Carousel } from 'components/carousel';
-import { ThreeItemGrid } from 'components/grid/three-items';
-import Footer from 'components/layout/footer';
+import { Carousel } from '@theme/carousel';
+import { ThreeItemGrid } from '@theme/grid/three-items';
+import Footer from '@theme/layout/footer';
 import { setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 

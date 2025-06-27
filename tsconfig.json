@@ -15,6 +15,12 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
+    "paths": {
+      "@theme": ["components/themes/active"],
+      "@theme/*": ["components/themes/active/*"],
+      "@shared": ["components/shared"],
+      "@shared/*": ["components/shared/*"]
+    },
     "plugins": [
       {
         "name": "next"

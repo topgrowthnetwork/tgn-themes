@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import Grid from 'components/grid';
-import ProductGridItems from 'components/layout/product-grid-items';
+import Grid from '@theme/grid';
+import ProductGridItems from '@theme/layout/product-grid-items';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
 

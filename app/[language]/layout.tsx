@@ -1,4 +1,4 @@
-import Navbar from 'components/layout/navbar';
+import Navbar from '@theme/layout/navbar';
 import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
