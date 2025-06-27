@@ -1,6 +1,7 @@
 import SearchPage from '@theme/pages/search';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
+import { setRequestLocale } from 'next-intl/server';
 
 export const runtime = 'edge';
 
@@ -10,10 +11,16 @@ export const metadata = {
 };
 
 export default async function Page({
-  searchParams
+  searchParams,
+  params
 }: {
+  params: Promise<{ language: string }>;
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
+  const { language } = await params;
+
+  setRequestLocale(language);
+
   const { q: searchValue, sort } = searchParams as { [key: string]: string };
   const productParams = getProductParams(sort, searchValue);
 

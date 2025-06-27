@@ -2,16 +2,19 @@ import ProductPage from '@theme/pages/product';
 import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
+import { setRequestLocale } from 'next-intl/server';
 
 export const runtime = 'edge';
 
 export async function generateMetadata({
   params
 }: {
-  params: { handle: string };
+  params: Promise<{ language: string; handle: string }>;
 }): Promise<Metadata> {
+  const { handle } = await params;
+
   const api = createApi({ language: 'en' });
-  const productResult = await api.getProduct(params.handle);
+  const productResult = await api.getProduct(handle);
 
   if (productResult.isErr()) {
     throw new Error('Failed to get product');
@@ -44,9 +47,17 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: { params: { handle: string } }) {
+export default async function Page({
+  params
+}: {
+  params: Promise<{ language: string; handle: string }>;
+}) {
+  const { language, handle } = await params;
+
+  setRequestLocale(language);
+
   const api = createApi({ language: 'en' });
-  const productResult = await api.getProduct(params.handle);
+  const productResult = await api.getProduct(handle);
   if (productResult.isErr()) {
     throw new Error('Failed to get product');
   }
