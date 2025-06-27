@@ -2,7 +2,7 @@ import { createApi } from 'lib/api';
 import { Product } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import Link from 'next/link';
-import { GridTileImage } from '../grid/tile';
+import { GridTileImage } from './tile';
 
 function ThreeItemGridItem({
   item,

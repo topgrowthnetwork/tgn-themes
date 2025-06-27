@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import Grid from '@theme/grid';
-import ProductGridItems from '@theme/layout/product-grid-items';
+import CategoryPage from '@theme/pages/category';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
 
@@ -28,7 +27,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CategoryPage({
+export default async function Page({
   params,
   searchParams
 }: {
@@ -46,15 +45,5 @@ export default async function CategoryPage({
   }
   const products = productsResult.value.data.products.data;
 
-  return (
-    <section>
-      {products.length === 0 ? (
-        <p className="py-3 text-lg">{`No products found in this collection`}</p>
-      ) : (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      )}
-    </section>
-  );
+  return <CategoryPage products={products} />;
 }

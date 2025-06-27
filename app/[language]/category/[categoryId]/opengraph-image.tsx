@@ -1,4 +1,4 @@
-import OpengraphImage from '@theme/opengraph-image';
+import OpengraphImage from '@theme/components/opengraph-image';
 import { createApi } from 'lib/api';
 
 export const runtime = 'edge';

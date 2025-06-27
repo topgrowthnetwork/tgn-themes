@@ -1,5 +1,4 @@
-import Grid from '@theme/grid';
-import ProductGridItems from '@theme/layout/product-grid-items';
+import SearchPage from '@theme/pages/search';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
 
@@ -10,7 +9,7 @@ export const metadata = {
   description: 'Search for products in the store.'
 };
 
-export default async function SearchPage({
+export default async function Page({
   searchParams
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -24,23 +23,6 @@ export default async function SearchPage({
     throw new Error('Failed to get products');
   }
   const products = productsResult.value.data.products.data;
-  const resultsText = products.length > 1 ? 'results' : 'result';
 
-  return (
-    <>
-      {searchValue ? (
-        <p className="mb-4">
-          {products.length === 0
-            ? 'There are no products that match '
-            : `Showing ${products.length} ${resultsText} for `}
-          <span className="font-bold">&quot;{searchValue}&quot;</span>
-        </p>
-      ) : null}
-      {products.length > 0 ? (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      ) : null}
-    </>
-  );
+  return <SearchPage products={products} searchValue={searchValue} />;
 }

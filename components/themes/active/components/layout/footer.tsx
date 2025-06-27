@@ -4,8 +4,8 @@ import { createApi } from 'lib/api';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import GitHubIcon from '../icons/github';
-import FooterMenu from '../layout/footer-menu';
 import LogoSquare from '../logo-square';
+import FooterMenu from './footer-menu';
 import LanguageSwitcher from './language-switcher';
 
 export default async function Footer() {

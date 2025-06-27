@@ -1,5 +1,5 @@
-import Footer from '@theme/layout/footer';
-import FilterList from '@theme/layout/search/filter';
+import Footer from '@theme/components/layout/footer';
+import FilterList from '@theme/components/layout/search/filter';
 import { getSortingOptions } from 'lib/constants';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
