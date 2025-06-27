@@ -9,8 +9,9 @@ export async function Carousel() {
   const carouselProductsResult = await api.getProducts({
     recomended: '1'
   });
+  const settingsResult = await api.getGlobalSettings();
 
-  if (carouselProductsResult.isErr()) {
+  if (carouselProductsResult.isErr() || settingsResult.isErr()) {
     return null;
   }
 
@@ -35,7 +36,7 @@ export async function Carousel() {
                 label={{
                   title: product.title,
                   amount: product.final_price.toString(),
-                  currencyCode: 'EGP'
+                  currencyCode: settingsResult.value.data.site_global_currency
                 }}
                 src={getFullPath(product.thumbnail?.path)}
                 fill

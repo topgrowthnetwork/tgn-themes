@@ -4,7 +4,13 @@ import Link from 'next/link';
 import Grid from '../grid';
 import { GridTileImage } from '../grid/tile';
 
-export default function ProductGridItems({ products }: { products: Product[] }) {
+export default function ProductGridItems({
+  products,
+  currency
+}: {
+  products: Product[];
+  currency: string;
+}) {
   return (
     <>
       {products.map((product) => (
@@ -15,7 +21,7 @@ export default function ProductGridItems({ products }: { products: Product[] }) 
               label={{
                 title: product.title,
                 amount: product.price.toString(),
-                currencyCode: 'EGP'
+                currencyCode: currency
               }}
               src={getFullPath(product.thumbnail?.path)}
               fill

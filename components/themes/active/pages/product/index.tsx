@@ -13,13 +13,15 @@ interface ProductPageProps {
   images: Array<{ path: string; title: string }>;
   attributes: any;
   combinations: any[];
+  currency: string;
 }
 
 export default function ProductPage({
   product,
   images,
   attributes,
-  combinations
+  combinations,
+  currency
 }: ProductPageProps) {
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -31,7 +33,7 @@ export default function ProductPage({
       '@type': 'AggregateOffer',
       availability:
         product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      priceCurrency: 'EGP',
+      priceCurrency: currency,
       highPrice: product.price,
       lowPrice: product.price
     }
@@ -57,11 +59,11 @@ export default function ProductPage({
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <ProductDescription product={product} attributes={attributes} />
+            <ProductDescription product={product} attributes={attributes} currency={currency} />
           </div>
         </div>
         <Suspense>
-          <RelatedProducts product={product} />
+          <RelatedProducts product={product} currency={currency} />
         </Suspense>
       </div>
       <Suspense>
@@ -71,7 +73,7 @@ export default function ProductPage({
   );
 }
 
-async function RelatedProducts({ product }: { product: Product }) {
+async function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
   const api = createApi({ language: 'en' });
   const relatedProductsResult = await api.getProducts({
     category_id: product.category_id.toString()
@@ -98,7 +100,7 @@ async function RelatedProducts({ product }: { product: Product }) {
                 label={{
                   title: relatedProduct.title,
                   amount: relatedProduct.price.toString(),
-                  currencyCode: 'EGP'
+                  currencyCode: currency
                 }}
                 src={getFullPath(relatedProduct.thumbnail?.path || '')}
                 fill

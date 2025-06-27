@@ -58,7 +58,9 @@ export default async function Page({
 
   const api = createApi({ language: 'en' });
   const productResult = await api.getProduct(handle);
-  if (productResult.isErr()) {
+  const settingsResult = await api.getGlobalSettings();
+
+  if (productResult.isErr() || settingsResult.isErr()) {
     throw new Error('Failed to get product');
   }
   const { product, images, attributes, combinations } = productResult.value.data;
@@ -69,6 +71,7 @@ export default async function Page({
       images={images}
       attributes={attributes}
       combinations={combinations}
+      currency={settingsResult.value.data.site_global_currency}
     />
   );
 }

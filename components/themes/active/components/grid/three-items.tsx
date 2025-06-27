@@ -7,11 +7,13 @@ import { GridTileImage } from './tile';
 function ThreeItemGridItem({
   item,
   size,
-  priority
+  priority,
+  currency
 }: {
   item: Product;
   size: 'full' | 'half';
   priority?: boolean;
+  currency: string;
 }) {
   return (
     <div
@@ -30,7 +32,7 @@ function ThreeItemGridItem({
             position: size === 'full' ? 'center' : 'bottom',
             title: item.title as string,
             amount: item.final_price.toString(),
-            currencyCode: 'EGP'
+            currencyCode: currency
           }}
         />
       </Link>
@@ -44,7 +46,9 @@ export async function ThreeItemGrid() {
     recomended: '1',
     per_page: '3'
   });
-  if (recommendedProductsResult.isErr()) {
+  const settingsResult = await api.getGlobalSettings();
+
+  if (recommendedProductsResult.isErr() || settingsResult.isErr()) {
     return null;
   }
 
@@ -56,9 +60,23 @@ export async function ThreeItemGrid() {
 
   return (
     <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
-      <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={thirdProduct} />
+      <ThreeItemGridItem
+        size="full"
+        item={firstProduct}
+        priority={true}
+        currency={settingsResult.value.data.site_global_currency}
+      />
+      <ThreeItemGridItem
+        size="half"
+        item={secondProduct}
+        priority={true}
+        currency={settingsResult.value.data.site_global_currency}
+      />
+      <ThreeItemGridItem
+        size="half"
+        item={thirdProduct}
+        currency={settingsResult.value.data.site_global_currency}
+      />
     </section>
   );
 }
