@@ -1,24 +1,10 @@
-import Container from '@theme/components/container';
-import Footer from '@theme/components/layout/footer';
-import FilterList from '@theme/components/layout/search/filter';
-import { getSortingOptions } from 'lib/constants';
-import { getTranslations } from 'next-intl/server';
+import CategoryLayout from '@theme/pages/category/layout';
 import { Suspense } from 'react';
 
-export default async function SearchLayout({ children }: { children: React.ReactNode }) {
-  const t = await getTranslations('Sorting');
-  const commonT = await getTranslations('Common');
-  const sortingOptions = getSortingOptions(t);
-
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Suspense>
-      <Container>
-        <div className="flex flex-col gap-8">
-          <FilterList list={sortingOptions} title={commonT('sortBy')} />
-          {children}
-        </div>
-      </Container>
-      <Footer />
+      <CategoryLayout>{children}</CategoryLayout>
     </Suspense>
   );
 }
