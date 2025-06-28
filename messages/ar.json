@@ -37,6 +37,10 @@
     "nextProductImage": "الصورة التالية للمنتج",
     "enlargeProductImage": "تكبير صورة المنتج"
   },
+  "Products": {
+    "bestSelling": "أفضل المنتجات مبيعاً",
+    "categories": "تسوق حسب الفئة"
+  },
   "Common": {
     "categories": "الفئات",
     "sortBy": "ترتيب حسب"

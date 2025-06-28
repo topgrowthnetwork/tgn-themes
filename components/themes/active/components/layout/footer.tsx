@@ -1,7 +1,6 @@
-import Link from 'next/link';
-
 import { createApi } from 'lib/api';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { Suspense } from 'react';
 import GitHubIcon from '../icons/github';
 import LogoSquare from '../logo-square';
@@ -9,23 +8,21 @@ import FooterMenu from './footer-menu';
 import LanguageSwitcher from './language-switcher';
 
 export default async function Footer() {
-  const t = await getTranslations('Footer');
-  const locale = await getLocale();
-  const api = createApi({ language: locale });
-  const settingsResult = await api.getGlobalSettings();
-  if (settingsResult.isErr()) {
-    throw new Error('Failed to get global settings');
+  const api = createApi({ language: 'en' });
+  const [settingsResult, categoriesResult] = await Promise.all([
+    api.getGlobalSettings(),
+    api.getCategories()
+  ]);
+  if (settingsResult.isErr() || categoriesResult.isErr()) {
+    throw new Error('Failed to get settings or categories');
   }
   const settings = settingsResult.value.data;
+  const categories = categoriesResult.value.data.categories;
+  const t = await getTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
   const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700';
-  const categoriesResult = await api.getCategories();
-  if (categoriesResult.isErr()) {
-    throw new Error('Failed to get categories');
-  }
-  const categories = categoriesResult.value.data.categories;
   const copyrightName = settings.site_title;
 
   return (

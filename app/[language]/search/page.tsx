@@ -21,19 +21,24 @@ export default async function Page({
 
   setRequestLocale(language);
 
-  const { q: searchValue, sort } = searchParams as { [key: string]: string };
+  const { q: searchValue, sort, page = '1' } = searchParams as { [key: string]: string };
   const productParams = getProductParams(sort, searchValue);
 
   const api = createApi({ language: 'en' });
   const [productsResult, settingsResult] = await Promise.all([
-    api.getProducts(productParams),
+    api.getProducts({ ...productParams, page, per_page: '12' }),
     api.getGlobalSettings()
   ]);
   if (productsResult.isErr() || settingsResult.isErr()) {
     throw new Error('Failed to get products or settings');
   }
-  const products = productsResult.value.data.products.data;
   const settings = settingsResult.value.data;
 
-  return <SearchPage products={products} searchValue={searchValue} settings={settings} />;
+  return (
+    <SearchPage
+      productsResult={productsResult.value.data}
+      searchValue={searchValue}
+      settings={settings}
+    />
+  );
 }

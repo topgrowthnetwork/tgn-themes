@@ -132,6 +132,7 @@ export class ApiClient {
         error instanceof Error ? error.message : 'Network error occurred',
         error instanceof Error && 'status' in error ? (error as any).status : undefined
       );
+      console.error('API Error:', apiError);
       return err(apiError);
     }
   }

@@ -3,6 +3,7 @@ import Footer from '@theme/components/layout/footer';
 import FilterList from '@theme/components/layout/search/filter';
 import { getSortingOptions } from 'lib/constants';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 export default async function CategoryLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations('Sorting');
@@ -17,7 +18,9 @@ export default async function CategoryLayout({ children }: { children: React.Rea
           {children}
         </div>
       </Container>
-      <Footer />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </>
   );
 }

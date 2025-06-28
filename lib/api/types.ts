@@ -487,12 +487,13 @@ export interface Slider {
   id: number;
   title: string;
   description?: string;
-  image: string;
   link?: string;
-  active: boolean;
-  order: number;
+  image: string;
+  mobile_image: string;
   created_at: string;
   updated_at: string;
+  img: ProductImage;
+  mob_img: ProductImage;
 }
 
 export interface SlidersResponse {

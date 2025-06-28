@@ -1,12 +1,34 @@
 import { createApi } from 'lib/api';
 import createMiddleware from 'next-intl/middleware';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './lib/i18n/routing';
 
 // Create the next-intl middleware
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
+  // Check if this is a category page without page parameter
+  const url = new URL(request.url);
+  const pathname = url.pathname;
+
+  // Check if it's a category page (matches pattern like /category/123 or /en/category/123)
+  const categoryMatch = pathname.match(/\/category\/(\d+)$/);
+
+  if (categoryMatch && !url.searchParams.has('page')) {
+    // Add page=1 parameter and redirect
+    url.searchParams.set('page', '1');
+    return NextResponse.redirect(url);
+  }
+
+  // Check if it's a search page without page parameter
+  const searchMatch = pathname.match(/\/search$/);
+
+  if (searchMatch && !url.searchParams.has('page')) {
+    // Add page=1 parameter and redirect
+    url.searchParams.set('page', '1');
+    return NextResponse.redirect(url);
+  }
+
   // First, handle locale routing with next-intl
   const response = intlMiddleware(request);
 

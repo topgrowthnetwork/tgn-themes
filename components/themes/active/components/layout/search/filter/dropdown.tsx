@@ -1,11 +1,9 @@
 'use client';
 
+import FormDropdown from '@shared/components/form-dropdown';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 import type { ListItem } from '.';
-import { FilterItem } from './item';
 
 export default function FilterItemDropdown({
   list,
@@ -17,19 +15,6 @@ export default function FilterItemDropdown({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [active, setActive] = useState('');
-  const [openSelect, setOpenSelect] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setOpenSelect(false);
-      }
-    };
-
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  }, []);
 
   useEffect(() => {
     list.forEach((listItem: ListItem) => {
@@ -42,29 +27,51 @@ export default function FilterItemDropdown({
     });
   }, [pathname, list, searchParams]);
 
+  const handleChange = (value: string) => {
+    const selectedItem = list.find((item) => item.title === value);
+    if (!selectedItem) return;
+
+    if ('path' in selectedItem) {
+      // Handle path-based navigation
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete('q');
+      window.location.href = createUrl(selectedItem.path, newParams);
+    } else if ('slug' in selectedItem) {
+      // Handle sort-based navigation
+      const q = searchParams.get('q');
+      const href = createUrl(
+        pathname,
+        new URLSearchParams({
+          ...(q && { q }),
+          ...(selectedItem.slug && selectedItem.slug.length && { sort: selectedItem.slug })
+        })
+      );
+      window.location.href = href;
+    }
+  };
+
+  // Convert list items to dropdown options
+  const options = list.map((item, index) => ({
+    id: index,
+    name: item.title,
+    path: 'path' in item ? item.path : undefined,
+    slug: 'slug' in item ? item.slug : undefined
+  }));
+
   return (
-    <div className="relative w-auto" ref={ref}>
-      <div
-        onClick={() => {
-          setOpenSelect(!openSelect);
-        }}
-        className="flex w-auto cursor-pointer items-center justify-between rounded border border-black/30 px-4 py-2 text-sm  dark:border-white/30"
-      >
-        <div>{active || placeholder}</div>
-        <ChevronDownIcon className="h-4" />
-      </div>
-      {openSelect && (
-        <div
-          onClick={() => {
-            setOpenSelect(false);
-          }}
-          className="absolute z-40 w-full cursor-pointer rounded-b-md bg-white p-4 shadow-md dark:bg-black"
-        >
-          {list.map((item: ListItem, i) => (
-            <FilterItem key={i} item={item} />
-          ))}
-        </div>
-      )}
-    </div>
+    <FormDropdown
+      label=""
+      options={options}
+      value={active}
+      onChange={handleChange}
+      placeholder={placeholder}
+    />
   );
+}
+
+// Helper function to create URLs (copied from lib/utils)
+function createUrl(pathname: string, params: URLSearchParams) {
+  const paramsString = params.toString();
+  const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
+  return `${pathname}${queryString}`;
 }

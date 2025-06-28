@@ -2,6 +2,7 @@ import Footer from '@theme/components/layout/footer';
 import FilterList from '@theme/components/layout/search/filter';
 import { getSortingOptions } from 'lib/constants';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 export default async function SearchLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations('Sorting');
@@ -20,7 +21,9 @@ export default async function SearchLayout({ children }: { children: React.React
           <div className="w-full max-w-7xl">{children}</div>
         </div>
       </div>
-      <Footer />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </>
   );
 }

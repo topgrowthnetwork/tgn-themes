@@ -37,6 +37,10 @@
     "nextProductImage": "Next product image",
     "enlargeProductImage": "Enlarge product image"
   },
+  "Products": {
+    "bestSelling": "Best Selling Products",
+    "categories": "Shop by Category"
+  },
   "Common": {
     "categories": "Categories",
     "sortBy": "Sort by"

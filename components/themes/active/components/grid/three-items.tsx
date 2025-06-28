@@ -1,5 +1,4 @@
-import { createApi } from 'lib/api';
-import { Product } from 'lib/api/types';
+import { GlobalSettings, Product } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import Link from 'next/link';
 import { GridTileImage } from './tile';
@@ -40,43 +39,32 @@ function ThreeItemGridItem({
   );
 }
 
-export async function ThreeItemGrid() {
-  const api = createApi({ language: 'en' });
-  const recommendedProductsResult = await api.getProducts({
-    recomended: '1',
-    per_page: '3'
-  });
-  const settingsResult = await api.getGlobalSettings();
+export function ThreeItemGrid({
+  products,
+  settings
+}: {
+  products: Product[];
+  settings: GlobalSettings;
+}) {
+  if (!products[0] || !products[1] || !products[2]) return null;
 
-  if (recommendedProductsResult.isErr() || settingsResult.isErr()) {
-    return null;
-  }
-
-  const recommendedProducts = recommendedProductsResult.value.data.products.data;
-
-  if (!recommendedProducts[0] || !recommendedProducts[1] || !recommendedProducts[2]) return null;
-
-  const [firstProduct, secondProduct, thirdProduct] = recommendedProducts;
+  const [firstProduct, secondProduct, thirdProduct] = products;
 
   return (
-    <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
+    <section className="grid gap-4 md:grid-cols-6 md:grid-rows-2">
       <ThreeItemGridItem
         size="full"
         item={firstProduct}
         priority={true}
-        currency={settingsResult.value.data.site_global_currency}
+        currency={settings.site_global_currency}
       />
       <ThreeItemGridItem
         size="half"
         item={secondProduct}
         priority={true}
-        currency={settingsResult.value.data.site_global_currency}
+        currency={settings.site_global_currency}
       />
-      <ThreeItemGridItem
-        size="half"
-        item={thirdProduct}
-        currency={settingsResult.value.data.site_global_currency}
-      />
+      <ThreeItemGridItem size="half" item={thirdProduct} currency={settings.site_global_currency} />
     </section>
   );
 }

@@ -43,20 +43,19 @@ export default async function Page({
 
   setRequestLocale(language);
 
-  const { sort } = searchParams as { [key: string]: string };
+  const { sort, page = '1' } = searchParams as { [key: string]: string };
 
   const api = createApi({ language: 'en' });
   const productParams = getProductParams(sort, undefined, categoryId);
 
   const [productsResult, settingsResult] = await Promise.all([
-    api.getProducts(productParams),
+    api.getProducts({ ...productParams, page, per_page: '12' }),
     api.getGlobalSettings()
   ]);
   if (productsResult.isErr() || settingsResult.isErr()) {
     throw new Error('Failed to get products or settings');
   }
-  const products = productsResult.value.data.products.data;
   const settings = settingsResult.value.data;
 
-  return <CategoryPage products={products} settings={settings} />;
+  return <CategoryPage productsResult={productsResult.value.data} settings={settings} />;
 }
