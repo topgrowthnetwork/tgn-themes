@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import CategoryPage from '@theme/pages/category';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
-import { setRequestLocale } from 'next-intl/dist/types/server/react-server';
+import { setRequestLocale } from 'next-intl/server';
 
 export const runtime = 'edge';
 
