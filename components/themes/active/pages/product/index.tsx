@@ -3,7 +3,7 @@ import Footer from '@theme/components/layout/footer';
 import { Gallery } from '@theme/components/product/gallery';
 import { ProductDescription } from '@theme/components/product/product-description';
 import { createApi } from 'lib/api';
-import { Product } from 'lib/api/types';
+import { GlobalSettings, Product } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -13,7 +13,7 @@ interface ProductPageProps {
   images: Array<{ path: string; title: string }>;
   attributes: any;
   combinations: any[];
-  currency: string;
+  settings: GlobalSettings;
 }
 
 export default function ProductPage({
@@ -21,7 +21,7 @@ export default function ProductPage({
   images,
   attributes,
   combinations,
-  currency
+  settings
 }: ProductPageProps) {
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -33,7 +33,7 @@ export default function ProductPage({
       '@type': 'AggregateOffer',
       availability:
         product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      priceCurrency: currency,
+      priceCurrency: settings.site_global_currency,
       highPrice: product.price,
       lowPrice: product.price
     }
@@ -59,11 +59,15 @@ export default function ProductPage({
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <ProductDescription product={product} attributes={attributes} currency={currency} />
+            <ProductDescription
+              product={product}
+              attributes={attributes}
+              currency={settings.site_global_currency}
+            />
           </div>
         </div>
         <Suspense>
-          <RelatedProducts product={product} currency={currency} />
+          <RelatedProducts product={product} currency={settings.site_global_currency} />
         </Suspense>
       </div>
       <Suspense>

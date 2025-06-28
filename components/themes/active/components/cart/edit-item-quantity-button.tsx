@@ -1,7 +1,7 @@
 'use client';
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { updateItemQuantityV2 } from '@shared/cart-actions';
+import { updateItemQuantityV2 } from '@shared/components/cart-actions';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';

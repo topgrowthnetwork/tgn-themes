@@ -8,6 +8,8 @@ import {
   CartResponse,
   CategoriesResponse,
   CategoryListParams,
+  CheckoutRequest,
+  CheckoutResponse,
   City,
   Country,
   ForgotPasswordRequest,
@@ -105,6 +107,11 @@ export class ApiEndpoints {
 
   async deleteCartItem(cartItemId: number) {
     return this.client.delete<{ message: string }>(`/api/carts/${cartItemId}`);
+  }
+
+  // Checkout
+  async checkout(data: CheckoutRequest) {
+    return this.client.post<CheckoutResponse>('/api/orders', data);
   }
 
   // Products

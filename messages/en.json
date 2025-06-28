@@ -15,7 +15,11 @@
     "reduceItemQuantity": "Reduce item quantity",
     "addToCart": "Add to cart",
     "pleaseSelectOption": "Please select an option",
-    "outOfStock": "Out Of Stock"
+    "outOfStock": "Out Of Stock",
+    "orderSummary": "Order Summary",
+    "quantity": "Qty",
+    "moreItems": "more items",
+    "discount": "Discount"
   },
   "Footer": {
     "allRightsReserved": "All rights reserved.",
@@ -40,5 +44,30 @@
   "Sorting": {
     "popularity": "Popularity",
     "latestArrivals": "Latest arrivals"
+  },
+  "Checkout": {
+    "title": "Checkout",
+    "shippingAddress": "Shipping Address",
+    "paymentMethod": "Payment Method",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "country": "Country",
+    "state": "State/Province",
+    "city": "City",
+    "address": "Street Address",
+    "next": "Next",
+    "back": "Back",
+    "edit": "Edit",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "cashOnDelivery": "Cash on Delivery",
+    "cashOnSite": "Cash on Site",
+    "fawaterkGateway": "Fawaterk Gateway",
+    "sendReceipt": "Send Receipt",
+    "paymobCardGateway": "Paymob Card Gateway",
+    "paymobWalletGateway": "Paymob Wallet Gateway",
+    "walletNumber": "Wallet Number",
+    "receiptImage": "Receipt Image"
   }
 }

@@ -498,3 +498,58 @@ export interface Slider {
 export interface SlidersResponse {
   sliders: Slider[];
 }
+
+// Order types
+export interface ShippingAddress {
+  country: string;
+  state: string;
+  city: string;
+  address: string;
+}
+
+export interface CheckoutRequest {
+  shipping_address: ShippingAddress;
+  name: string;
+  email: string;
+  phone: string;
+  payment_gateway:
+    | 'cash_on_site'
+    | 'cash_on_delivery'
+    | 'fawaterk_gateway'
+    | 'send_receipt'
+    | 'paymob_card_gateway'
+    | 'paymob_wallet_gateway';
+  coupon_code?: string;
+  receipt_image?: string;
+  wallet_number?: string;
+}
+
+export interface Order {
+  user_id: number | null;
+  guest_token: string;
+  guest_name: string;
+  guest_email: string;
+  phone: string;
+  shipping_address: ShippingAddress;
+  invoice_no: string;
+  payment_gateway: string;
+  discount: number;
+  wallet_number: string | null;
+  tax_fee_amount: number;
+  shipping_amount: number;
+  total_price: number;
+  payable_amount: number;
+  refund_amount: number;
+  refund_status: boolean;
+  status: number;
+  payment_status: string;
+  updated_at: string;
+  created_at: string;
+  id: number;
+  receipt_image_url: string | null;
+}
+
+export interface CheckoutResponse {
+  order: Order;
+  response: any | null;
+}

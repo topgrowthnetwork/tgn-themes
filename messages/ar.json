@@ -15,7 +15,11 @@
     "reduceItemQuantity": "تقليل كمية العنصر",
     "addToCart": "إضافة إلى السلة",
     "pleaseSelectOption": "يرجى اختيار خيار",
-    "outOfStock": "نفذت الكمية"
+    "outOfStock": "نفذت الكمية",
+    "orderSummary": "ملخص الطلب",
+    "quantity": "الكمية",
+    "moreItems": "عناصر إضافية",
+    "discount": "الخصم"
   },
   "Footer": {
     "allRightsReserved": "جميع الحقوق محفوظة.",
@@ -40,5 +44,30 @@
   "Sorting": {
     "popularity": "الشعبية",
     "latestArrivals": "أحدث المنتجات"
+  },
+  "Checkout": {
+    "title": "إتمام الطلب",
+    "shippingAddress": "عنوان الشحن",
+    "paymentMethod": "طريقة الدفع",
+    "name": "الاسم الكامل",
+    "email": "عنوان البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "country": "البلد",
+    "state": "الولاية/المحافظة",
+    "city": "المدينة",
+    "address": "عنوان الشارع",
+    "next": "التالي",
+    "back": "رجوع",
+    "edit": "تعديل",
+    "placeOrder": "إتمام الطلب",
+    "processing": "جاري المعالجة...",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "cashOnSite": "الدفع في الموقع",
+    "fawaterkGateway": "بوابة فواترك",
+    "sendReceipt": "إرسال الإيصال",
+    "paymobCardGateway": "بوابة بايموب للبطاقات",
+    "paymobWalletGateway": "بوابة بايموب للمحفظة",
+    "walletNumber": "رقم المحفظة",
+    "receiptImage": "صورة الإيصال"
   }
 }

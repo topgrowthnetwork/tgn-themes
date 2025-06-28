@@ -15,6 +15,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^5.1.1",
     "clsx": "^2.0.0",
     "cookies-next": "4.3.0",
     "geist": "^1.0.0",
@@ -25,7 +26,9 @@
     "react": "18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hook-form": "^7.59.0",
+    "react-hot-toast": "^2.5.2",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@tailwindcss/container-queries": "^0.1.1",

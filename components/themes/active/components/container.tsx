@@ -1,4 +1,4 @@
-import Container from '@shared/container';
+import Container from '@shared/components/container';
 import { ReactNode } from 'react';
 
 type Props = {

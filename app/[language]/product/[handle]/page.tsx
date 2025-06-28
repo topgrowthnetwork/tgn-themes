@@ -57,13 +57,16 @@ export default async function Page({
   setRequestLocale(language);
 
   const api = createApi({ language: 'en' });
-  const productResult = await api.getProduct(handle);
-  const settingsResult = await api.getGlobalSettings();
+  const [productResult, settingsResult] = await Promise.all([
+    api.getProduct(handle),
+    api.getGlobalSettings()
+  ]);
 
   if (productResult.isErr() || settingsResult.isErr()) {
     throw new Error('Failed to get product');
   }
   const { product, images, attributes, combinations } = productResult.value.data;
+  const settings = settingsResult.value.data;
 
   return (
     <ProductPage
@@ -71,7 +74,7 @@ export default async function Page({
       images={images}
       attributes={attributes}
       combinations={combinations}
-      currency={settingsResult.value.data.site_global_currency}
+      settings={settings}
     />
   );
 }
