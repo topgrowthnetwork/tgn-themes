@@ -25,11 +25,15 @@ export default async function Page({
   const productParams = getProductParams(sort, searchValue);
 
   const api = createApi({ language: 'en' });
-  const productsResult = await api.getProducts(productParams);
-  if (productsResult.isErr()) {
-    throw new Error('Failed to get products');
+  const [productsResult, settingsResult] = await Promise.all([
+    api.getProducts(productParams),
+    api.getGlobalSettings()
+  ]);
+  if (productsResult.isErr() || settingsResult.isErr()) {
+    throw new Error('Failed to get products or settings');
   }
   const products = productsResult.value.data.products.data;
+  const settings = settingsResult.value.data;
 
-  return <SearchPage products={products} searchValue={searchValue} />;
+  return <SearchPage products={products} searchValue={searchValue} settings={settings} />;
 }

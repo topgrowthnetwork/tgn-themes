@@ -1,13 +1,14 @@
 import Grid from '@theme/components/grid';
 import ProductGridItems from '@theme/components/layout/product-grid-items';
-import { Product } from 'lib/api/types';
+import { GlobalSettings, Product } from 'lib/api/types';
 
 interface SearchPageProps {
   products: Product[];
   searchValue?: string;
+  settings: GlobalSettings;
 }
 
-export default function SearchPage({ products, searchValue }: SearchPageProps) {
+export default function SearchPage({ products, searchValue, settings }: SearchPageProps) {
   const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (
@@ -22,7 +23,7 @@ export default function SearchPage({ products, searchValue }: SearchPageProps) {
       ) : null}
       {products.length > 0 ? (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
+          <ProductGridItems products={products} currency={settings.site_global_currency} />
         </Grid>
       ) : null}
     </>
