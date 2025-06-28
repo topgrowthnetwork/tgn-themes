@@ -16,6 +16,7 @@
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^5.1.1",
+    "@sentry/nextjs": "^9.33.0",
     "clsx": "^2.0.0",
     "cookies-next": "4.3.0",
     "geist": "^1.0.0",
