@@ -1,3 +1,4 @@
+import FontProvider from '@theme/components/font-provider';
 import Navbar from '@theme/components/layout/navbar';
 import { Inter, Noto_Sans_Arabic } from 'next/font/google';
 import { ReactNode } from 'react';
@@ -17,9 +18,9 @@ const notoSansArabic = Noto_Sans_Arabic({
 
 export default function ThemeContent({ children }: { children: ReactNode }) {
   return (
-    <div className={`${inter.className} ${notoSansArabic.className}`}>
+    <FontProvider fontClasses={[inter.variable, notoSansArabic.variable]}>
       <Navbar />
       {children}
-    </div>
+    </FontProvider>
   );
 }

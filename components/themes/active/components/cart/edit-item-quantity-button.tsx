@@ -6,16 +6,11 @@ import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 
-function SubmitButton({
-  type,
-  item,
-  pending
-}: {
-  type: 'plus' | 'minus';
-  item: any;
-  pending: boolean;
-}) {
+function SubmitButton({ type, item }: { type: 'plus' | 'minus'; item: any }) {
   const t = useTranslations('Cart');
+  const { pending } = useFormStatus();
+
+  console.log('🙈', { pending });
 
   return (
     <button
@@ -43,13 +38,12 @@ function SubmitButton({
 
 export function EditItemQuantityButton({ item, type }: { item: any; type: 'plus' | 'minus' }) {
   const [message, formAction] = useFormState(updateItemQuantityV2, null);
-  const { pending } = useFormStatus();
 
   const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
   return (
     <form action={formAction.bind(null, { lineId: item.id, quantity })}>
-      <SubmitButton type={type} item={item} pending={pending} />
+      <SubmitButton type={type} item={item} />
       <p aria-live="polite" className="sr-only" role="status">
         {message}
       </p>
