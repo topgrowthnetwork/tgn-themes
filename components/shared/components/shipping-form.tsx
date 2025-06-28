@@ -2,11 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
-import { CheckoutRequest } from 'lib/api/types';
+import { CheckoutRequest, City, Country, State } from 'lib/api/types';
+import { useAddressCascade } from 'lib/hooks/use-address-cascade';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import FieldError from './field-error';
+import FormDropdown from './form-dropdown';
 
 const shippingSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -28,6 +30,9 @@ interface ShippingFormProps {
   onSubmit: () => void;
   isActive: boolean;
   onEdit?: () => void;
+  countries: Country[];
+  states: State[];
+  cities: City[];
 }
 
 export default function ShippingForm({
@@ -35,15 +40,20 @@ export default function ShippingForm({
   onFormDataChange,
   onSubmit,
   isActive,
-  onEdit
+  onEdit,
+  countries,
+  states,
+  cities
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch
+    control,
+    watch,
+    setValue,
+    formState: { errors }
   } = useForm<ShippingFormData>({
     resolver: zodResolver(shippingSchema),
     defaultValues: {
@@ -58,6 +68,37 @@ export default function ShippingForm({
       }
     }
   });
+
+  const watchedCountry = watch('shipping_address.country');
+  const watchedState = watch('shipping_address.state');
+
+  // Use custom hook for address cascade logic
+  const { availableStates, availableCities, clearState, clearCity } = useAddressCascade({
+    countries,
+    states,
+    cities,
+    selectedCountry: watchedCountry,
+    selectedState: watchedState
+  });
+
+  // Clear dependent fields when parent selection changes
+  const handleCountryChange = (country: string) => {
+    if (formData.shipping_address?.country !== country) {
+      setValue('shipping_address.state', '');
+      setValue('shipping_address.city', '');
+      clearState();
+      clearCity();
+    }
+    setValue('shipping_address.country', country);
+  };
+
+  const handleStateChange = (state: string) => {
+    if (formData.shipping_address?.state !== state) {
+      setValue('shipping_address.city', '');
+      clearCity();
+    }
+    setValue('shipping_address.state', state);
+  };
 
   const watchedValues = watch();
 
@@ -104,21 +145,52 @@ export default function ShippingForm({
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div>
-              <label className="form-label">{t('country')} *</label>
-              <input type="text" {...register('shipping_address.country')} className="form-input" />
-              <FieldError message={errors.shipping_address?.country?.message} />
-            </div>
-            <div>
-              <label className="form-label">{t('state')} *</label>
-              <input type="text" {...register('shipping_address.state')} className="form-input" />
-              <FieldError message={errors.shipping_address?.state?.message} />
-            </div>
-            <div>
-              <label className="form-label">{t('city')} *</label>
-              <input type="text" {...register('shipping_address.city')} className="form-input" />
-              <FieldError message={errors.shipping_address?.city?.message} />
-            </div>
+            <Controller
+              name="shipping_address.country"
+              control={control}
+              render={({ field }) => (
+                <FormDropdown
+                  label={`${t('country')} *`}
+                  options={countries}
+                  value={field.value}
+                  onChange={handleCountryChange}
+                  error={errors.shipping_address?.country?.message}
+                  placeholder={t('selectCountry')}
+                />
+              )}
+            />
+
+            <Controller
+              name="shipping_address.state"
+              control={control}
+              render={({ field }) => (
+                <FormDropdown
+                  label={`${t('state')} *`}
+                  options={availableStates}
+                  value={field.value}
+                  onChange={handleStateChange}
+                  error={errors.shipping_address?.state?.message}
+                  placeholder={t('selectState')}
+                  disabled={!watchedCountry}
+                />
+              )}
+            />
+
+            <Controller
+              name="shipping_address.city"
+              control={control}
+              render={({ field }) => (
+                <FormDropdown
+                  label={`${t('city')} *`}
+                  options={availableCities}
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors.shipping_address?.city?.message}
+                  placeholder={t('selectCity')}
+                  disabled={!watchedState}
+                />
+              )}
+            />
           </div>
 
           <div>

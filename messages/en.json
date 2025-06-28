@@ -68,6 +68,9 @@
     "paymobCardGateway": "Paymob Card Gateway",
     "paymobWalletGateway": "Paymob Wallet Gateway",
     "walletNumber": "Wallet Number",
-    "receiptImage": "Receipt Image"
+    "receiptImage": "Receipt Image",
+    "selectCountry": "Select a country",
+    "selectState": "Select a state",
+    "selectCity": "Select a city"
   }
 }

@@ -68,6 +68,9 @@
     "paymobCardGateway": "بوابة بايموب للبطاقات",
     "paymobWalletGateway": "بوابة بايموب للمحفظة",
     "walletNumber": "رقم المحفظة",
-    "receiptImage": "صورة الإيصال"
+    "receiptImage": "صورة الإيصال",
+    "selectCountry": "اختر البلد",
+    "selectState": "اختر الولاية",
+    "selectCity": "اختر المدينة"
   }
 }

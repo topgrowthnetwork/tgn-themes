@@ -19,25 +19,41 @@ export default async function Page({ params }: { params: Promise<{ language: str
   // Fetch payment settings and cart data
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language, guestToken });
-  const [paymentSettingsResult, cartResult, settingsResult] = await Promise.all([
+  const [
+    paymentSettingsResult,
+    cartResult,
+    settingsResult,
+    countriesResult,
+    statesResult,
+    citiesResult
+  ] = await Promise.all([
     api.getPaymentSettings(),
     api.getCart(),
-    api.getGlobalSettings()
+    api.getGlobalSettings(),
+    api.getAllCountries(),
+    api.getAllStates(),
+    api.getAllCities()
   ]);
 
-  if (paymentSettingsResult.isErr() || cartResult.isErr() || settingsResult.isErr()) {
-    throw new Error('Failed to get payment settings');
+  if (
+    paymentSettingsResult.isErr() ||
+    cartResult.isErr() ||
+    settingsResult.isErr() ||
+    countriesResult.isErr() ||
+    statesResult.isErr() ||
+    citiesResult.isErr()
+  ) {
+    throw new Error('Failed to get data');
   }
-
-  const paymentSettings = paymentSettingsResult.value.data;
-  const cartResponse = cartResult.value.data;
-  const settings = settingsResult.value.data;
 
   return (
     <CheckoutPage
-      paymentSettings={paymentSettings}
-      cartResponse={cartResponse}
-      settings={settings}
+      paymentSettings={paymentSettingsResult.value.data}
+      cartResponse={cartResult.value.data}
+      settings={settingsResult.value.data}
+      countries={countriesResult.value.data.countries}
+      states={statesResult.value.data.states}
+      cities={citiesResult.value.data.cities}
     />
   );
 }

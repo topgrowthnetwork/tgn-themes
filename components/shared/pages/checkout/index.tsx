@@ -6,7 +6,15 @@ import PaymentForm from '@shared/components/payment-form';
 import ShippingForm from '@shared/components/shipping-form';
 import Container from '@theme/components/container';
 import clsx from 'clsx';
-import { CartResponse, CheckoutRequest, GlobalSettings, PaymentSettings } from 'lib/api/types';
+import {
+  CartResponse,
+  CheckoutRequest,
+  City,
+  Country,
+  GlobalSettings,
+  PaymentSettings,
+  State
+} from 'lib/api/types';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
@@ -15,12 +23,18 @@ interface CheckoutPageProps {
   paymentSettings: PaymentSettings;
   cartResponse: CartResponse;
   settings: GlobalSettings;
+  countries: Country[];
+  states: State[];
+  cities: City[];
 }
 
 export default function CheckoutPage({
   paymentSettings,
   cartResponse,
-  settings
+  settings,
+  countries,
+  states,
+  cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
@@ -92,6 +106,9 @@ export default function CheckoutPage({
               onSubmit={() => setStep('payment')}
               isActive={step === 'shipping'}
               onEdit={handleBackToShipping}
+              countries={countries}
+              states={states}
+              cities={cities}
             />
 
             {/* Payment Form */}
