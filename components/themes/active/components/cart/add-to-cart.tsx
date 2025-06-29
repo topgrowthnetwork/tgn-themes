@@ -24,10 +24,7 @@ function SubmitButton({
     'relative flex w-full items-center justify-center rounded-full bg-primary-600 p-4 tracking-wide text-white';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
 
-  // Check if the selected variant is out of stock
-  const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
-
-  if (!availableForSale || isOutOfStock) {
+  if (!availableForSale) {
     return (
       <button aria-disabled className={clsx(buttonClasses, disabledClasses)}>
         {t('outOfStock')}

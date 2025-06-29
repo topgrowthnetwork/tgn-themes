@@ -21,6 +21,14 @@ export function ProductDescription({
   // Use selected variant price if available, otherwise fall back to product price
   const displayPrice = selectedVariant ? selectedVariant.price : product.final_price;
 
+  const availableForSale = (function isAvailableForSale() {
+    if (selectedVariant) {
+      return selectedVariant.stock > 0;
+    }
+
+    return product.stock > 0;
+  })();
+
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
@@ -40,7 +48,7 @@ export function ProductDescription({
         </ExpandableContent>
       ) : null}
 
-      <AddToCart selectedVariant={selectedVariant} availableForSale={product.stock > 0} />
+      <AddToCart selectedVariant={selectedVariant} availableForSale={availableForSale} />
     </>
   );
 }
