@@ -34,7 +34,8 @@ export function ProductCard({
         label={{
           title: product.title,
           amount: product.final_price.toString(),
-          currencyCode: currencyCode
+          currencyCode: currencyCode,
+          originalAmount: product.price.toString()
         }}
         src={getFullPath(product.thumbnail?.path)}
         fill

@@ -43,16 +43,16 @@ export default async function Navbar() {
           <Link href="/" className="me-2 flex w-full items-center justify-center md:w-auto lg:me-6">
             <LogoSquare />
           </Link>
-          <div className="ms-6 hidden items-center gap-6 lg:flex">
+          <div className="ms-6 hidden items-center gap-4 lg:flex">
             <Link
               href="/products"
-              className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
             >
-              {t('products')}
+              {t('shopAll')}
             </Link>
             <Link
               href="/contact-us"
-              className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
             >
               {t('contactUs')}
             </Link>

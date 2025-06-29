@@ -77,7 +77,7 @@ export default function ProductsPage({
           </div>
 
           {products.length > 0 ? (
-            <Grid className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <Grid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <ProductGridItems products={products} currency={settings.site_global_currency} />
             </Grid>
           ) : (

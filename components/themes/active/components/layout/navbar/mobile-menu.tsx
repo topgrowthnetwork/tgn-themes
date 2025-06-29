@@ -105,13 +105,13 @@ export default function MobileMenu({
                       <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
                         Recommended Products
                       </h3>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid gap-3">
                         {products.map((product) => (
                           <ProductCard
                             key={product.id}
                             product={product}
                             currency={settings.site_global_currency}
-                            className="aspect-square"
+                            className="aspect-[4/2]"
                             sizes="(min-width: 768px) 50vw, 50vw"
                             isInteractive={false}
                           />
