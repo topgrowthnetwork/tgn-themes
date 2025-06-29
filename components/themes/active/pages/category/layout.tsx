@@ -1,6 +1,4 @@
 import Container from '@theme/components/container';
-import Footer from '@theme/components/layout/footer';
-import { Suspense } from 'react';
 
 export default async function CategoryLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,9 +6,6 @@ export default async function CategoryLayout({ children }: { children: React.Rea
       <Container>
         <div className="flex flex-col gap-8">{children}</div>
       </Container>
-      <Suspense>
-        <Footer />
-      </Suspense>
     </>
   );
 }

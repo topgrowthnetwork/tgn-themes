@@ -3,6 +3,7 @@
 import clsx from 'clsx';
 import { Category } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -32,6 +33,8 @@ const FooterMenuItem = ({ item }: { item: Category }) => {
 };
 
 export default function FooterMenu({ menu }: { menu: Category[] }) {
+  const t = useTranslations('Navigation');
+
   if (!menu.length) return null;
 
   return (
@@ -42,7 +45,7 @@ export default function FooterMenu({ menu }: { menu: Category[] }) {
             href="/products"
             className="block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
           >
-            All
+            {t('all')}
           </Link>
         </li>
         {menu.map((item) => {

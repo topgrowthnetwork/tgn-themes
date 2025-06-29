@@ -27,7 +27,7 @@ export function ProductsCarousel({
 
       {/* Carousel Section */}
       <div className="overflow-x-auto pb-6 pt-1">
-        <ul className="flex animate-carousel gap-4">
+        <ul dir="ltr" className="flex animate-carousel gap-4">
           {carouselProducts.map((product, i) => (
             <li
               key={`${product.slug}${i}`}

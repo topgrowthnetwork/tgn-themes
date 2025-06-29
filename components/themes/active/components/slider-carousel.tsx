@@ -55,7 +55,7 @@ function SlideContent({ slider }: SlideContentProps) {
             >
               Learn More
               <svg
-                className="ml-2 h-4 w-4 md:h-5 md:w-5"
+                className="ms-2 h-4 w-4 md:h-5 md:w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -80,7 +80,7 @@ function CarouselDots({ scrollSnaps, selectedIndex, onDotClick }: CarouselDotsPr
   if (scrollSnaps.length <= 1) return null;
 
   return (
-    <div className="mt-4 flex justify-center space-x-2">
+    <div className="mt-4 flex justify-center gap-x-2">
       {scrollSnaps.map((_, index) => (
         <button
           key={index}

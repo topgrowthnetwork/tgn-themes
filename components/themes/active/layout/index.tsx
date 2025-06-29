@@ -1,7 +1,8 @@
 import FontProvider from '@theme/components/font-provider';
+import Footer from '@theme/components/layout/footer';
 import Navbar from '@theme/components/layout/navbar';
 import { Inter, Noto_Sans_Arabic } from 'next/font/google';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 // Theme-specific fonts - only loaded when this theme is active
 const inter = Inter({
@@ -21,6 +22,9 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
     <FontProvider fontClasses={[inter.variable, notoSansArabic.variable]}>
       <Navbar />
       {children}
+      <Suspense>
+        <Footer />
+      </Suspense>
     </FontProvider>
   );
 }

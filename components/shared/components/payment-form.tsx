@@ -101,7 +101,7 @@ export default function PaymentForm({
           {paymentGateways.map((gateway) => (
             <label
               key={gateway.key}
-              className="flex cursor-pointer items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              className="flex cursor-pointer items-center gap-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
             >
               <input
                 type="radio"
@@ -143,7 +143,7 @@ export default function PaymentForm({
           </div>
         )}
 
-        <div className="flex space-x-4">
+        <div className="flex gap-x-4">
           <button
             type="button"
             onClick={onBack}

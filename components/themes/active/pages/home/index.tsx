@@ -1,11 +1,9 @@
 import { CategoriesGrid } from '@theme/components/categories-grid';
 import Container from '@theme/components/container';
 import { ThreeItemGrid } from '@theme/components/grid/three-items';
-import Footer from '@theme/components/layout/footer';
 import { ProductsCarousel } from '@theme/components/products-carousel';
 import { SliderCarousel } from '@theme/components/slider-carousel';
 import { Category, GlobalSettings, Product, Slider } from 'lib/api/types';
-import { Suspense } from 'react';
 
 interface HomePageProps {
   sliders: Slider[];
@@ -28,11 +26,6 @@ export default function HomePage({ sliders, products, categories, settings }: Ho
       </Container>
       <Container>
         <CategoriesGrid categories={categories} settings={settings} />
-      </Container>
-      <Container className="!py-0">
-        <Suspense>
-          <Footer />
-        </Suspense>
       </Container>
     </>
   );

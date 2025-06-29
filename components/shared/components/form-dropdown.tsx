@@ -39,7 +39,7 @@ export default function FormDropdown({
         <div className="relative">
           <Listbox.Button
             className={clsx(
-              'form-input cursor-pointer bg-white text-left',
+              'form-input cursor-pointer bg-white text-start',
               disabled && 'cursor-not-allowed opacity-50',
               error && 'border-red-500 focus:border-red-500 focus:ring-red-500'
             )}
@@ -47,7 +47,7 @@ export default function FormDropdown({
             <span className={clsx('block truncate', !selectedOption && 'text-gray-500')}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pe-2">
               <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
             </span>
           </Listbox.Button>
@@ -63,7 +63,7 @@ export default function FormDropdown({
                   key={option.id}
                   className={({ active }) =>
                     clsx(
-                      'relative cursor-default select-none py-2 pl-10 pr-4',
+                      'relative cursor-default select-none py-2 pe-4 ps-10',
                       active ? 'bg-primary-100 text-primary-900' : 'text-gray-900'
                     )
                   }
@@ -79,7 +79,7 @@ export default function FormDropdown({
                       {selected ? (
                         <span
                           className={clsx(
-                            'absolute inset-y-0 left-0 flex items-center pl-3',
+                            'absolute inset-y-0 left-0 flex items-center ps-3',
                             active ? 'text-primary-600' : 'text-primary-600'
                           )}
                         >

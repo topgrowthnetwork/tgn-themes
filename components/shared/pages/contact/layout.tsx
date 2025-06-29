@@ -1,6 +1,10 @@
 import Container from '@theme/components/container';
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+interface ContactLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function ContactLayout({ children }: ContactLayoutProps) {
   return (
     <>
       <Container>

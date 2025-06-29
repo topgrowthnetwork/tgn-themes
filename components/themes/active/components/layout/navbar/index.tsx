@@ -1,6 +1,6 @@
 import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import Cart from '../../cart';
 import OpenCart from '../../cart/open-cart';
@@ -10,6 +10,7 @@ import Search from './search';
 
 export default async function Navbar() {
   const locale = await getLocale();
+  const t = await getTranslations('Navigation');
   const api = createApi({ language: locale });
   const settingsResult = await api.getGlobalSettings();
   if (settingsResult.isErr()) {
@@ -47,13 +48,13 @@ export default async function Navbar() {
               href="/products"
               className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
             >
-              Products
+              {t('products')}
             </Link>
             <Link
               href="/contact-us"
               className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
             >
-              Contact Us
+              {t('contactUs')}
             </Link>
           </div>
         </div>

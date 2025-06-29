@@ -27,7 +27,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
           const totalPrice = itemPrice * item.qyt;
 
           return (
-            <div key={index} className="flex items-center space-x-3">
+            <div key={index} className="flex items-center gap-x-3">
               <div className="relative h-12 w-12 overflow-hidden rounded-md border border-gray-200 bg-white">
                 <Image
                   className="h-full w-full object-cover"

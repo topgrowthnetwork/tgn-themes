@@ -150,7 +150,7 @@ export default function MobileMenu({
                       className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
                     >
                       <EnvelopeIcon className="h-5 w-5" />
-                      Contact Us
+                      {t('contactUs')}
                     </Link>
                   </div>
                 </div>

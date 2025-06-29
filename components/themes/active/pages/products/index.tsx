@@ -70,7 +70,7 @@ export default function ProductsPage({
 
           <FilterList list={sortingOptions} title={commonT('sortBy')} />
 
-          <div className="text-left">
+          <div className="text-start">
             <p className="text-gray-600 dark:text-gray-400">
               {products.length} {products.length === 1 ? 'product' : 'products'} found
             </p>

@@ -35,7 +35,10 @@
   "Navigation": {
     "openMobileMenu": "فتح القائمة المحمولة",
     "closeMobileMenu": "إغلاق القائمة المحمولة",
-    "shopAll": "تسوق الكل"
+    "shopAll": "تسوق الكل",
+    "contactUs": "اتصل بنا",
+    "products": "المنتجات",
+    "all": "الكل"
   },
   "Product": {
     "previousProductImage": "الصورة السابقة للمنتج",

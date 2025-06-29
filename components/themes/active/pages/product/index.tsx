@@ -1,5 +1,4 @@
 import { GridTileImage } from '@theme/components/grid/tile';
-import Footer from '@theme/components/layout/footer';
 import { Gallery } from '@theme/components/product/gallery';
 import { ProductDescription } from '@theme/components/product/product-description';
 import { createApi } from 'lib/api';
@@ -74,9 +73,6 @@ export default function ProductPage({
           <RelatedProducts product={product} currency={settings.site_global_currency} />
         </Suspense>
       </div>
-      <Suspense>
-        <Footer />
-      </Suspense>
     </>
   );
 }
