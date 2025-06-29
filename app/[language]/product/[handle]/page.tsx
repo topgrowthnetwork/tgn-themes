@@ -21,7 +21,13 @@ export async function generateMetadata({
   }
 
   const { product } = productResult.value.data;
+
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'http://localhost:3000';
+
   return {
+    metadataBase: new URL(baseUrl),
     title: product.title,
     description: product.description,
     robots: {

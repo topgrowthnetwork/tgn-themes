@@ -4,7 +4,12 @@ import type { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export function generateMetadata(): Metadata {
+  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'http://localhost:3000';
+
   return {
+    metadataBase: new URL(baseUrl),
     other: {
       ...Sentry.getTraceData()
     }
