@@ -3,8 +3,10 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from '@theme/components/grid/tile';
 import { ProductVariant } from 'lib/api/types';
+import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import Link from 'next/link';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 export function Gallery({
@@ -40,7 +42,7 @@ export function Gallery({
             fill
             sizes="(min-width: 1024px) 66vw, 100vw"
             alt={displayImages[imageIndex]?.altText as string}
-            src={displayImages[imageIndex]?.src as string}
+            src={getFullPath(displayImages[imageIndex]?.src) as string}
             priority={true}
           />
         )}
@@ -75,19 +77,19 @@ export function Gallery({
 
             return (
               <li key={image.src} className="h-20 w-20">
-                <button
+                <Link
+                  href={`?image=${index}`}
                   aria-label={t('enlargeProductImage')}
-                  onClick={() => setImageIndex(index)}
-                  className="h-full w-full"
+                  className="block h-full w-full"
                 >
                   <GridTileImage
                     alt={image.altText}
-                    src={image.src}
+                    src={getFullPath(image.src)}
                     width={80}
                     height={80}
                     active={isActive}
                   />
-                </button>
+                </Link>
               </li>
             );
           })}

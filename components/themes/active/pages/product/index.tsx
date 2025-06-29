@@ -97,7 +97,7 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
   return (
     <div className="py-8">
       <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
-      <ul className="flex w-full gap-4 overflow-x-auto pt-1">
+      <ul className="scrollbar-hide flex w-full gap-4 overflow-x-auto pt-1">
         {relatedProducts.map((relatedProduct: Product) => (
           <li
             key={relatedProduct.slug}
