@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Product } from 'lib/api/types';
+import { Link } from 'lib/i18n/navigation';
 import { buildProductUrlWithCheapestVariant, getFullPath } from 'lib/utils';
-import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
 
 interface ProductCardProps {

@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ language: str
   const [slidersResult, categoriesResult, productsResult, settingsResult] = await Promise.all([
     api.getSliders(),
     api.getCategories(),
-    api.getProducts({ order_by: 'selling_count' }),
+    api.getProducts({ order_by: 'selling_count', per_page: '3', recomended: '1' }),
     api.getGlobalSettings()
   ]);
 

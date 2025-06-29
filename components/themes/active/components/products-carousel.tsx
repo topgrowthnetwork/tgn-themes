@@ -1,7 +1,7 @@
 import { GlobalSettings, Product } from 'lib/api/types';
+import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import ActiveContainer from './container';
 import { GridTileImage } from './grid/tile';
 import { SectionTitle } from './section-title';

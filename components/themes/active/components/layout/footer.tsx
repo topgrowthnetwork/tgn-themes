@@ -1,6 +1,6 @@
 import { createApi } from 'lib/api';
+import { Link } from 'lib/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
-import Link from 'next/link';
 import { Suspense } from 'react';
 import GitHubIcon from '../icons/github';
 import LogoSquare from '../logo-square';

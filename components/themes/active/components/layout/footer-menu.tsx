@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import { Category } from 'lib/api/types';
-import Link from 'next/link';
+import { Link } from 'lib/i18n/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -19,7 +19,7 @@ const FooterMenuItem = ({ item }: { item: Category }) => {
       <Link
         href={`/category/${item.id}`}
         className={clsx(
-          'block p-2 text-lg underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm',
+          'block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300',
           {
             'text-black dark:text-neutral-300': active
           }

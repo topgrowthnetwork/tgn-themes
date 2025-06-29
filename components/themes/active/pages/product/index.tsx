@@ -4,8 +4,8 @@ import { Gallery } from '@theme/components/product/gallery';
 import { ProductDescription } from '@theme/components/product/product-description';
 import { createApi } from 'lib/api';
 import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
+import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
-import Link from 'next/link';
 import { Suspense } from 'react';
 
 interface ProductPageProps {

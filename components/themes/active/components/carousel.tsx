@@ -1,6 +1,6 @@
 import { createApi } from 'lib/api';
+import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
-import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
 
 export async function Carousel() {

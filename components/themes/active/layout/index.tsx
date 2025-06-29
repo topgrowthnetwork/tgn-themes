@@ -20,7 +20,7 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
   return (
     <FontProvider fontClasses={[inter.variable, notoSansArabic.variable]}>
       <Navbar />
-      {children}
+      <div className="pt-20">{children}</div>
     </FontProvider>
   );
 }

@@ -7,83 +7,90 @@ import { routing } from './lib/i18n/routing';
 // Create the next-intl middleware
 const intlMiddleware = createMiddleware(routing);
 
-export async function middleware(request: NextRequest) {
-  // Check if this is a category page without page parameter
-  const url = new URL(request.url);
+// Helper function to add page parameter if missing
+function addPageParameterIfMissing(url: URL): URL | null {
+  if (!url.searchParams.has('page')) {
+    url.searchParams.set('page', '1');
+    return url;
+  }
+  return null;
+}
+
+// Helper function to handle products page routing
+async function handleProductsPage(url: URL): Promise<URL | null> {
   const pathname = url.pathname;
+  const productsMatch = pathname.match(/\/products$/);
 
-  // Check if it's a category page (matches pattern like /category/123 or /en/category/123)
-  const categoryMatch = pathname.match(/\/category\/(\d+)$/);
+  if (!productsMatch) return null;
 
-  if (categoryMatch && !url.searchParams.has('page')) {
-    // Add page=1 parameter and redirect
-    url.searchParams.set('page', '1');
-    return NextResponse.redirect(url);
-  }
-
-  // Check if it's a search page without page parameter
-  const searchMatch = pathname.match(/\/search$/);
-
-  if (searchMatch && !url.searchParams.has('page')) {
-    // Add page=1 parameter and redirect
-    url.searchParams.set('page', '1');
-    return NextResponse.redirect(url);
-  }
-
-  // Check if it's a product page
-  const productMatch = pathname.match(/\/product\/([^\/]+)$/);
-
-  if (productMatch) {
+  // If no category parameter, fetch categories and set first one
+  if (!url.searchParams.has('category')) {
     try {
-      const productSlug = productMatch[1];
       const api = createApi({ language: 'en' });
-      const productResult = await api.getProduct(productSlug);
+      const categoriesResult = await api.getCategories();
 
-      if (productResult.isOk()) {
-        const product = productResult.value.data.product;
-        const cheapestVariant = getCheapestVariant(product);
-
-        if (cheapestVariant) {
-          // Check if any variant attributes are missing from the URL
-          const missingAttributes = cheapestVariant.attribute_values.filter((attrValue) => {
-            const attributeName = attrValue.attribute.name.toLowerCase();
-            return !url.searchParams.has(attributeName);
-          });
-
-          // If any attributes are missing, add them
-          if (missingAttributes.length > 0) {
-            const newUrl = new URL(request.url);
-
-            // Add missing attributes
-            missingAttributes.forEach((attrValue) => {
-              const attributeName = attrValue.attribute.name.toLowerCase();
-              newUrl.searchParams.set(attributeName, attrValue.value);
-            });
-
-            return NextResponse.redirect(newUrl);
-          }
-        }
+      if (categoriesResult.isOk() && categoriesResult.value.data.categories.length > 0) {
+        const firstCategoryId = categoriesResult.value.data.categories[0].id;
+        url.searchParams.set('category', firstCategoryId.toString());
       }
     } catch (error) {
-      console.error('Failed to fetch product for variant redirect:', error);
+      console.error('Failed to fetch categories for products redirect:', error);
     }
   }
 
-  // First, handle locale routing with next-intl
-  const response = intlMiddleware(request);
+  // Add page parameter if missing
+  return addPageParameterIfMissing(url);
+}
 
-  // Check if guest token exists
+// Helper function to handle product variant routing
+async function handleProductPage(url: URL): Promise<URL | null> {
+  const pathname = url.pathname;
+  const productMatch = pathname.match(/\/product\/([^\/]+)$/);
+
+  if (!productMatch) return null;
+
+  try {
+    const productSlug = productMatch[1];
+    const api = createApi({ language: 'en' });
+    const productResult = await api.getProduct(productSlug);
+
+    if (productResult.isOk()) {
+      const product = productResult.value.data.product;
+      const cheapestVariant = getCheapestVariant(product);
+
+      if (cheapestVariant) {
+        const missingAttributes = cheapestVariant.attribute_values.filter((attrValue) => {
+          const attributeName = attrValue.attribute.name.toLowerCase();
+          return !url.searchParams.has(attributeName);
+        });
+
+        if (missingAttributes.length > 0) {
+          const newUrl = new URL(url.toString());
+          missingAttributes.forEach((attrValue) => {
+            const attributeName = attrValue.attribute.name.toLowerCase();
+            newUrl.searchParams.set(attributeName, attrValue.value);
+          });
+          return newUrl;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch product for variant redirect:', error);
+  }
+
+  return null;
+}
+
+// Helper function to handle guest token
+async function handleGuestToken(request: NextRequest, response: NextResponse): Promise<void> {
   const guestToken = request.cookies.get('guest_token');
 
-  // If guest token doesn't exist, generate one and set it in cookies
   if (!guestToken) {
     try {
-      // Use the createApi function to generate guest token
       const api = createApi({ language: 'en' });
       const apiResult = await api.generateGuestToken();
 
       if (apiResult.isOk() && apiResult.value.data.guest_token) {
-        // Set the guest token cookie on the response
         response.cookies.set('guest_token', apiResult.value.data.guest_token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
@@ -96,6 +103,38 @@ export async function middleware(request: NextRequest) {
       console.error('Failed to generate guest token:', error);
     }
   }
+}
+
+export async function middleware(request: NextRequest) {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
+
+  // Handle page parameter for category and search pages
+  const categoryMatch = pathname.match(/\/category\/(\d+)$/);
+  const searchMatch = pathname.match(/\/search$/);
+
+  if ((categoryMatch || searchMatch) && !url.searchParams.has('page')) {
+    url.searchParams.set('page', '1');
+    return NextResponse.redirect(url);
+  }
+
+  // Handle products page routing
+  const productsRedirect = await handleProductsPage(url);
+  if (productsRedirect) {
+    return NextResponse.redirect(productsRedirect);
+  }
+
+  // Handle product page routing
+  const productRedirect = await handleProductPage(url);
+  if (productRedirect) {
+    return NextResponse.redirect(productRedirect);
+  }
+
+  // Handle locale routing with next-intl
+  const response = intlMiddleware(request);
+
+  // Handle guest token
+  await handleGuestToken(request, response);
 
   return response;
 }

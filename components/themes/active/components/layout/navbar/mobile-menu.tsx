@@ -145,7 +145,7 @@ export default function MobileMenu({
                 {/* Footer with Shop All link */}
                 <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
                   <Link
-                    href="/search"
+                    href="/products"
                     onClick={closeMobileMenu}
                     className="block w-full rounded-md bg-primary-600 px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-primary-700"
                   >

@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import Link from 'next/link';
+import { Link } from 'lib/i18n/navigation';
 import { useParams } from 'next/navigation';
 
 interface CategoryLinkProps {

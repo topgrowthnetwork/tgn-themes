@@ -1,6 +1,6 @@
 import { createApi } from 'lib/api';
+import { Link } from 'lib/i18n/navigation';
 import { getLocale } from 'next-intl/server';
-import Link from 'next/link';
 import { Suspense } from 'react';
 import Cart from '../../cart';
 import OpenCart from '../../cart/open-cart';
@@ -32,7 +32,7 @@ export default async function Navbar() {
   const products = productsResult.isOk() ? productsResult.value.data.products.data : [];
 
   return (
-    <nav className="relative flex items-center justify-between p-4 lg:px-6">
+    <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6 dark:border-neutral-700 dark:bg-black/80">
       <div className="me-2 block flex-none">
         <MobileMenu menu={categories} products={products} settings={settings} />
       </div>
