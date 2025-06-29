@@ -1,7 +1,5 @@
 import { GlobalSettings, Product } from 'lib/api/types';
-import { getFullPath } from 'lib/utils';
-import Link from 'next/link';
-import { GridTileImage } from './grid/tile';
+import { ProductCard } from './product-card';
 
 interface ProductsListProps {
   products: Product[];
@@ -23,30 +21,14 @@ export function ProductsList({ products, settings, title }: ProductsListProps) {
       {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h3>}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} settings={settings} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            settings={settings}
+            imageContainerClassName="aspect-square h-48 w-full md:h-64"
+          />
         ))}
       </div>
     </div>
-  );
-}
-
-// Product Card Component (same style as products-carousel)
-function ProductCard({ product, settings }: { product: Product; settings: GlobalSettings }) {
-  return (
-    <Link href={`/${product.slug}?page=1`} className="group block">
-      <div className="relative aspect-square h-40 w-full md:h-48">
-        <GridTileImage
-          alt={product.title}
-          label={{
-            title: product.title,
-            amount: product.final_price.toString(),
-            currencyCode: settings.site_global_currency
-          }}
-          src={getFullPath(product.thumbnail?.path)}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-        />
-      </div>
-    </Link>
   );
 }

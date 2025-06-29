@@ -43,9 +43,10 @@ function SlideContent({ slider }: SlideContentProps) {
             {slider.title}
           </h2>
           {slider.description && (
-            <p className="mb-4 max-w-2xl text-sm leading-relaxed text-gray-100 drop-shadow-md md:text-base lg:text-lg">
-              {slider.description}
-            </p>
+            <div
+              className="mb-4 max-w-2xl text-sm leading-relaxed text-gray-100 drop-shadow-md md:text-base lg:text-lg"
+              dangerouslySetInnerHTML={{ __html: slider.description }}
+            />
           )}
           {slider.link && (
             <a

@@ -1,4 +1,5 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
+import { Product, ProductVariant } from './api/types';
 
 export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyURLSearchParams) => {
   const paramsString = params.toString();
@@ -113,4 +114,69 @@ export function getProductParams(
   }
 
   return params;
+}
+
+/**
+ * Finds the cheapest available variant of a product (with stock > 0)
+ * @param product - The product object containing variants
+ * @returns The cheapest available variant or null if no available variants exist
+ */
+export function getCheapestVariant(product: Product): ProductVariant | null {
+  if (!product.variants || product.variants.length === 0) {
+    return null;
+  }
+
+  // Filter variants with stock > 0
+  const availableVariants = product.variants.filter((variant) => variant.stock > 0);
+
+  if (availableVariants.length === 0) {
+    return null;
+  }
+
+  return availableVariants.reduce((cheapest, current) => {
+    return current.price < cheapest.price ? current : cheapest;
+  });
+}
+
+/**
+ * Gets the cheapest variant price of a product (with stock > 0)
+ * @param product - The product object containing variants
+ * @returns The price of the cheapest available variant, or the product's final_price if no available variants exist
+ */
+export function getCheapestVariantPrice(product: Product): number {
+  const cheapestVariant = getCheapestVariant(product);
+  return cheapestVariant ? cheapestVariant.price : product.final_price;
+}
+
+/**
+ * Builds query parameters from a product variant's attributes
+ * @param variant - The product variant object
+ * @returns URLSearchParams string with variant ID and attribute values
+ */
+export function buildVariantQueryParams(variant: ProductVariant | null): string {
+  if (!variant) return '';
+
+  const params = new URLSearchParams();
+
+  // Add variant ID
+  params.set('variant', variant.id.toString());
+
+  // Add attribute values as query params
+  variant.attribute_values.forEach((attrValue) => {
+    params.set(attrValue.attribute.name.toLowerCase(), attrValue.value);
+  });
+
+  return params.toString();
+}
+
+/**
+ * Builds a product URL with the cheapest available variant as query parameters
+ * @param product - The product object
+ * @returns The product URL with variant query parameters
+ */
+export function buildProductUrlWithCheapestVariant(product: Product): string {
+  const cheapestVariant = getCheapestVariant(product);
+  const queryParams = buildVariantQueryParams(cheapestVariant);
+
+  return queryParams ? `/product/${product.slug}?${queryParams}` : `/product/${product.slug}`;
 }
