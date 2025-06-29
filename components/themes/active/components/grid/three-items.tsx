@@ -1,7 +1,5 @@
 import { GlobalSettings, Product } from 'lib/api/types';
-import { getFullPath } from 'lib/utils';
-import Link from 'next/link';
-import { GridTileImage } from './tile';
+import { ProductCard } from '../product-card';
 
 function ThreeItemGridItem({
   item,
@@ -14,27 +12,20 @@ function ThreeItemGridItem({
   priority?: boolean;
   currency: string;
 }) {
+  const sizes =
+    size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw';
+
   return (
     <div
       className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
     >
-      <Link className="relative block aspect-square h-full w-full" href={`/product/${item.slug}`}>
-        <GridTileImage
-          src={getFullPath(item.thumbnail?.path)}
-          fill
-          sizes={
-            size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'
-          }
-          priority={priority}
-          alt={item.title}
-          label={{
-            position: size === 'full' ? 'center' : 'bottom',
-            title: item.title as string,
-            amount: item.final_price.toString(),
-            currencyCode: currency
-          }}
-        />
-      </Link>
+      <ProductCard
+        product={item}
+        currency={currency}
+        sizes={sizes}
+        priority={priority}
+        className="aspect-square h-full w-full"
+      />
     </div>
   );
 }

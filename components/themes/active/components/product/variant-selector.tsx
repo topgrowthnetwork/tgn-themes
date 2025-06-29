@@ -2,8 +2,7 @@
 
 import clsx from 'clsx';
 import { ProductAttributes, ProductVariant } from 'lib/api/types';
-import { createUrl } from 'lib/utils';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 
 type Combination = {
   id: string;
@@ -18,9 +17,6 @@ export function VariantSelector({
   options: ProductAttributes;
   variants: ProductVariant[];
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const hasNoOptionsOrJustOneOption =
     !Object.keys(options).length ||
     (Object.keys(options).length === 1 && Object.values(options)[0]?.length === 1);
@@ -48,20 +44,15 @@ export function VariantSelector({
         {options[option]?.map((value) => {
           const optionNameLowerCase = option.toLowerCase();
 
-          const optionSearchParams = new URLSearchParams(searchParams.toString());
-          optionSearchParams.set(optionNameLowerCase, value.value);
-          const optionUrl = createUrl(pathname, optionSearchParams);
+          // Use nuqs for each attribute
+          const [attributeValue, setAttributeValue] = useQueryState(optionNameLowerCase);
 
-          const filtered = Array.from(optionSearchParams.entries()).filter(
-            ([key, value]) => options[key]?.some((attrValue) => attrValue.value === value)
-          );
-          const isAvailableForSale = combinations.find((combination) =>
-            filtered.every(
-              ([key, value]) => combination[key] === value && combination.availableForSale
-            )
-          );
+          const isAvailableForSale = combinations.find((combination) => {
+            // Check if this specific option value is available
+            return combination[optionNameLowerCase] === value.value && combination.availableForSale;
+          });
 
-          const isActive = searchParams.get(optionNameLowerCase) === value.value;
+          const isActive = attributeValue === value.value;
 
           return (
             <button
@@ -69,7 +60,7 @@ export function VariantSelector({
               aria-disabled={!isAvailableForSale}
               disabled={!isAvailableForSale}
               onClick={() => {
-                router.replace(optionUrl, { scroll: false });
+                setAttributeValue(value.value, { shallow: false });
               }}
               title={`${option} ${value.value}${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
               className={clsx(

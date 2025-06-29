@@ -1,7 +1,7 @@
 'use client';
 
 import FormDropdown from '@shared/components/form-dropdown';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 import type { ListItem } from '.';
 
@@ -12,20 +12,20 @@ export default function FilterItemDropdown({
   list: ListItem[];
   placeholder?: string;
 }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [active, setActive] = useState('');
+  const [sort, setSort] = useQueryState('sort', { shallow: false });
+  const [q, setQ] = useQueryState('q', { shallow: false });
 
   useEffect(() => {
     list.forEach((listItem: ListItem) => {
       if (
-        ('path' in listItem && pathname === listItem.path) ||
-        ('slug' in listItem && searchParams.get('sort') === listItem.slug)
+        ('path' in listItem && window.location.pathname === listItem.path) ||
+        ('slug' in listItem && sort === listItem.slug)
       ) {
         setActive(listItem.title);
       }
     });
-  }, [pathname, list, searchParams]);
+  }, [list, sort]);
 
   const handleChange = (value: string) => {
     const selectedItem = list.find((item) => item.title === value);
@@ -33,20 +33,12 @@ export default function FilterItemDropdown({
 
     if ('path' in selectedItem) {
       // Handle path-based navigation
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.delete('q');
-      window.location.href = createUrl(selectedItem.path, newParams);
+      // Clear search query and navigate to new path
+      setQ(null);
+      window.location.href = selectedItem.path;
     } else if ('slug' in selectedItem) {
       // Handle sort-based navigation
-      const q = searchParams.get('q');
-      const href = createUrl(
-        pathname,
-        new URLSearchParams({
-          ...(q && { q }),
-          ...(selectedItem.slug && selectedItem.slug.length && { sort: selectedItem.slug })
-        })
-      );
-      window.location.href = href;
+      setSort(selectedItem.slug || null);
     }
   };
 
@@ -67,11 +59,4 @@ export default function FilterItemDropdown({
       placeholder={placeholder}
     />
   );
-}
-
-// Helper function to create URLs (copied from lib/utils)
-function createUrl(pathname: string, params: URLSearchParams) {
-  const paramsString = params.toString();
-  const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
-  return `${pathname}${queryString}`;
 }

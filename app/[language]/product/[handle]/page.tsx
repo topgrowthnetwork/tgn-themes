@@ -57,10 +57,9 @@ export default async function Page({
   setRequestLocale(language);
 
   const api = createApi({ language: 'en' });
-  const [productResult, settingsResult, categoriesResult] = await Promise.all([
+  const [productResult, settingsResult] = await Promise.all([
     api.getProduct(handle),
-    api.getGlobalSettings(),
-    api.getCategories()
+    api.getGlobalSettings()
   ]);
 
   if (productResult.isErr() || settingsResult.isErr()) {

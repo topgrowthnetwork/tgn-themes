@@ -24,8 +24,8 @@ export function ProductsList({ products, settings, title }: ProductsListProps) {
           <ProductCard
             key={product.id}
             product={product}
-            settings={settings}
-            imageContainerClassName="aspect-square h-48 w-full md:h-64"
+            currency={settings.site_global_currency}
+            className="aspect-square h-48 w-full md:h-64"
           />
         ))}
       </div>
