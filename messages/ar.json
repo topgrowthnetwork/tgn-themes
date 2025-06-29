@@ -30,7 +30,8 @@
   },
   "Navigation": {
     "openMobileMenu": "فتح القائمة المحمولة",
-    "closeMobileMenu": "إغلاق القائمة المحمولة"
+    "closeMobileMenu": "إغلاق القائمة المحمولة",
+    "shopAll": "تسوق الكل"
   },
   "Product": {
     "previousProductImage": "الصورة السابقة للمنتج",

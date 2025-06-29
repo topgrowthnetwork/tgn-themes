@@ -30,7 +30,8 @@
   },
   "Navigation": {
     "openMobileMenu": "Open mobile menu",
-    "closeMobileMenu": "Close mobile menu"
+    "closeMobileMenu": "Close mobile menu",
+    "shopAll": "Shop All"
   },
   "Product": {
     "previousProductImage": "Previous product image",

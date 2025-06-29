@@ -6,17 +6,28 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Category } from 'lib/api/types';
-import { useTranslations } from 'next-intl';
+import { Category, GlobalSettings, Product } from 'lib/api/types';
+import { useLocale, useTranslations } from 'next-intl';
+import { ProductCard } from '../../product-card';
 import Search from './search';
 
-export default function MobileMenu({ menu }: { menu: Category[] }) {
+export default function MobileMenu({
+  menu,
+  products,
+  settings
+}: {
+  menu: Category[];
+  products: Product[];
+  settings: GlobalSettings;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
   const t = useTranslations('Navigation');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,7 +48,7 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
       <button
         onClick={openMobileMenu}
         aria-label={t('openMobileMenu')}
-        className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white md:hidden"
+        className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
       >
         <Bars3Icon className="h-4" />
       </button>
@@ -57,39 +68,90 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
           <Transition.Child
             as={Fragment}
             enter="transition-all ease-in-out duration-300"
-            enterFrom="translate-x-[-100%]"
+            enterFrom={isRTL ? 'translate-x-full' : 'translate-x-[-100%]'}
             enterTo="translate-x-0"
             leave="transition-all ease-in-out duration-200"
             leaveFrom="translate-x-0"
-            leaveTo="translate-x-[-100%]"
+            leaveTo={isRTL ? 'translate-x-full' : 'translate-x-[-100%]'}
           >
-            <Dialog.Panel className="fixed bottom-0 left-0 right-0 top-0 flex h-full w-full flex-col bg-white pb-6 dark:bg-black">
-              <div className="p-4">
-                <button
-                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
-                  onClick={closeMobileMenu}
-                  aria-label={t('closeMobileMenu')}
-                >
-                  <XMarkIcon className="h-6" />
-                </button>
-
-                <div className="mb-4 w-full">
-                  <Search />
+            <Dialog.Panel
+              className={`fixed bottom-0 top-0 flex h-full w-full flex-col bg-white pb-6 md:w-96 dark:bg-black ${
+                isRTL ? 'right-0' : 'left-0'
+              }`}
+            >
+              <div className="flex h-full flex-col">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-neutral-200 p-4 dark:border-neutral-700">
+                  <h2 className="text-lg font-semibold text-black dark:text-white">Menu</h2>
+                  <button
+                    className="flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                    onClick={closeMobileMenu}
+                    aria-label={t('closeMobileMenu')}
+                  >
+                    <XMarkIcon className="h-5" />
+                  </button>
                 </div>
-                {menu.length ? (
-                  <ul className="flex w-full flex-col">
-                    {menu.map((item) => (
-                      <li
-                        className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
-                        key={item.id}
-                      >
-                        <Link href={`/category/${item.id}`} onClick={closeMobileMenu}>
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto">
+                  {/* Search - Hidden on desktop */}
+                  <div className="block border-b border-neutral-200 p-4 md:hidden dark:border-neutral-700">
+                    <Search />
+                  </div>
+
+                  {/* Recommended Products */}
+                  {products.length > 0 && (
+                    <div className="border-b border-neutral-200 p-4 dark:border-neutral-700">
+                      <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        Recommended Products
+                      </h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        {products.map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            currency={settings.site_global_currency}
+                            className="aspect-square"
+                            sizes="(min-width: 768px) 50vw, 50vw"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Categories */}
+                  {menu.length > 0 && (
+                    <div className="p-4">
+                      <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        Categories
+                      </h3>
+                      <ul className="space-y-1">
+                        {menu.map((item) => (
+                          <li key={item.id}>
+                            <Link
+                              href={`/category/${item.id}`}
+                              onClick={closeMobileMenu}
+                              className="block rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer with Shop All link */}
+                <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
+                  <Link
+                    href="/search"
+                    onClick={closeMobileMenu}
+                    className="block w-full rounded-md bg-primary-600 px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-primary-700"
+                  >
+                    {t('shopAll')}
+                  </Link>
+                </div>
               </div>
             </Dialog.Panel>
           </Transition.Child>

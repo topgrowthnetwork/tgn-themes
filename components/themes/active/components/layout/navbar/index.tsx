@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import Cart from '../../cart';
 import OpenCart from '../../cart/open-cart';
 import LogoSquare from '../../logo-square';
-import CategoryLink from './category-link';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 
@@ -24,10 +23,18 @@ export default async function Navbar() {
   }
   const categories = categoriesResult.value.data.categories;
 
+  // Fetch recommended products for the menu
+  const productsResult = await api.getProducts({
+    recomended: '1',
+    per_page: '3',
+    order_by: 'selling_count'
+  });
+  const products = productsResult.isOk() ? productsResult.value.data.products.data : [];
+
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
-      <div className="block flex-none md:hidden">
-        <MobileMenu menu={categories} />
+      <div className="me-2 block flex-none">
+        <MobileMenu menu={categories} products={products} settings={settings} />
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-1/3">
@@ -37,15 +44,6 @@ export default async function Navbar() {
               {settings.site_title}
             </div>
           </Link>
-          {categories.length ? (
-            <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {categories.map((item) => (
-                <li key={item.id}>
-                  <CategoryLink category={item} />
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </div>
         <div className="hidden justify-center md:flex md:w-1/3">
           <Search />
