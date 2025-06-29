@@ -5,7 +5,6 @@ import { addItemV2 } from '@shared/components/cart-actions';
 import clsx from 'clsx';
 import { ProductVariant } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
-import { useSearchParams } from 'next/navigation';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 import { NotificationMessage } from '../notification-message';
@@ -67,23 +66,15 @@ function SubmitButton({
 }
 
 export function AddToCart({
-  variants,
+  selectedVariant,
   availableForSale
 }: {
-  variants: ProductVariant[];
+  selectedVariant: ProductVariant | null;
   availableForSale: boolean;
 }) {
   const [message, formAction] = useFormState(addItemV2, null);
-  const searchParams = useSearchParams();
-  const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-  const defaultProductId = variants.length === 1 ? variants[0]?.product_id : undefined;
-  const variant = variants.find((variant: ProductVariant) =>
-    variant.attribute_values.every(
-      (option) => option.value === searchParams.get(option.attribute.name.toLowerCase())
-    )
-  );
-  const selectedVariantId = variant?.id || defaultVariantId;
-  const selectedProductId = variant?.product_id || defaultProductId;
+  const selectedVariantId = selectedVariant?.id;
+  const selectedProductId = selectedVariant?.product_id;
   const actionWithVariant = formAction.bind(null, {
     selectedProductId: selectedProductId || NaN,
     selectedVariantId: selectedVariantId || NaN

@@ -1,3 +1,6 @@
+'use client';
+
+import { ExpandableContent } from '@shared/components/expandable-content';
 import { Product, ProductAttributes, ProductVariant } from 'lib/api/types';
 import { AddToCart } from '../cart/add-to-cart';
 import Price from '../price';
@@ -13,7 +16,7 @@ export function ProductDescription({
   product: Product;
   attributes: ProductAttributes;
   currency: string;
-  selectedVariant?: ProductVariant | null;
+  selectedVariant: ProductVariant | null;
 }) {
   // Use selected variant price if available, otherwise fall back to product price
   const displayPrice = selectedVariant ? selectedVariant.price : product.final_price;
@@ -29,13 +32,15 @@ export function ProductDescription({
       <VariantSelector options={attributes} variants={product.variants} />
 
       {product.description ? (
-        <Prose
-          className="mb-6 text-sm leading-tight dark:text-white/[60%]"
-          html={product.description}
-        />
+        <ExpandableContent className="mb-6">
+          <Prose
+            className="text-sm leading-tight dark:text-white/[60%]"
+            html={product.description}
+          />
+        </ExpandableContent>
       ) : null}
 
-      <AddToCart variants={product.variants} availableForSale={product.stock > 0} />
+      <AddToCart selectedVariant={selectedVariant} availableForSale={product.stock > 0} />
     </>
   );
 }
