@@ -2,6 +2,7 @@ import { CategoriesGrid } from '@theme/components/categories-grid';
 import Container from '@theme/components/container';
 import { ThreeItemGrid } from '@theme/components/grid/three-items';
 import Footer from '@theme/components/layout/footer';
+import { ProductsCarousel } from '@theme/components/products-carousel';
 import { SliderCarousel } from '@theme/components/slider-carousel';
 import { Category, GlobalSettings, Product, Slider } from 'lib/api/types';
 import { Suspense } from 'react';
@@ -22,9 +23,9 @@ export default function HomePage({ sliders, products, categories, settings }: Ho
       <Container>
         <ThreeItemGrid products={products} settings={settings} />
       </Container>
-      {/* <Container className="!max-w-max !px-0">
+      <Container className="!max-w-max !px-0">
         <ProductsCarousel products={products} settings={settings} />
-      </Container> */}
+      </Container>
       <Container>
         <CategoriesGrid categories={categories} settings={settings} />
       </Container>

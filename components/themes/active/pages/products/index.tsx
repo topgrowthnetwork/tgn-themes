@@ -29,6 +29,7 @@ export default function ProductsPage({
   const currentPage = productsResult.products.current_page;
   const t = useTranslations('Products');
   const commonT = useTranslations('Common');
+  const sortingT = useTranslations('Sorting');
 
   const [category, setCategory] = useQueryState('category', { shallow: false });
 
@@ -40,7 +41,7 @@ export default function ProductsPage({
     setCategory(categoryId.toString());
   };
 
-  const sortingOptions = getSortingOptions(commonT);
+  const sortingOptions = getSortingOptions(sortingT);
 
   return (
     <div className="space-y-6">
