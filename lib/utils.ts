@@ -180,3 +180,35 @@ export function buildProductUrlWithCheapestVariant(product: Product): string {
 
   return queryParams ? `/product/${product.slug}?${queryParams}` : `/product/${product.slug}`;
 }
+
+/**
+ * Finds the selected variant based on URL parameters with fallback to first variant
+ * @param product - The product object containing variants
+ * @param searchParams - URL search parameters
+ * @returns The selected variant or the first variant if no match found
+ */
+export function getSelectedVariant(
+  product: Product,
+  searchParams?: { [key: string]: string | string[] | undefined }
+): ProductVariant | null {
+  if (!product.variants || product.variants.length === 0) {
+    return null;
+  }
+
+  // If no search params, return the first variant
+  if (!searchParams) {
+    return product.variants[0];
+  }
+
+  // Try to find variant that matches all URL parameters
+  const selectedVariant = product.variants.find((variant) => {
+    return variant.attribute_values.every((attrValue) => {
+      const attributeName = attrValue.attribute.name.toLowerCase();
+      const urlValue = searchParams[attributeName];
+      return urlValue === attrValue.value;
+    });
+  });
+
+  // Return selected variant or fallback to first variant
+  return selectedVariant || product.variants[0];
+}

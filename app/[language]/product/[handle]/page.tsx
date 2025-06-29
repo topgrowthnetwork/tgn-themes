@@ -1,6 +1,6 @@
 import ProductPage from '@theme/pages/product';
 import { createApi } from 'lib/api';
-import { getFullPath } from 'lib/utils';
+import { getFullPath, getSelectedVariant } from 'lib/utils';
 import { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 
@@ -48,9 +48,11 @@ export async function generateMetadata({
 }
 
 export default async function Page({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ language: string; handle: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { language, handle } = await params;
 
@@ -68,6 +70,9 @@ export default async function Page({
   const { product, images, attributes, combinations } = productResult.value.data;
   const settings = settingsResult.value.data;
 
+  // Get selected variant using utility function
+  const selectedVariant = getSelectedVariant(product, searchParams);
+
   return (
     <ProductPage
       product={product}
@@ -75,6 +80,7 @@ export default async function Page({
       attributes={attributes}
       combinations={combinations}
       settings={settings}
+      selectedVariant={selectedVariant}
     />
   );
 }

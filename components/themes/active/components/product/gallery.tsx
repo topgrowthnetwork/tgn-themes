@@ -1,29 +1,32 @@
 'use client';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { createUrl } from 'lib/utils';
+import { GridTileImage } from '@theme/components/grid/tile';
+import { ProductVariant } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { GridTileImage } from '../grid/tile';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
-export function Gallery({ images }: { images: { src: string; altText: string }[] }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const imageSearchParam = searchParams.get('image');
-  const imageIndex = imageSearchParam ? parseInt(imageSearchParam) : 0;
+export function Gallery({
+  images,
+  selectedVariant
+}: {
+  images: { src: string; altText: string }[];
+  selectedVariant?: ProductVariant | null;
+}) {
+  const [imageIndex, setImageIndex] = useQueryState('image', parseAsInteger.withDefault(0));
   const t = useTranslations('Product');
 
-  const nextSearchParams = new URLSearchParams(searchParams.toString());
-  const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
-  nextSearchParams.set('image', nextImageIndex.toString());
-  const nextUrl = createUrl(pathname, nextSearchParams);
+  // Use variant images if available, otherwise fall back to product images
+  const displayImages = selectedVariant?.images_url?.length
+    ? selectedVariant.images_url.map((url, index) => ({
+        src: url,
+        altText: `Product image ${index + 1}`
+      }))
+    : images;
 
-  const previousSearchParams = new URLSearchParams(searchParams.toString());
-  const previousImageIndex = imageIndex === 0 ? images.length - 1 : imageIndex - 1;
-  previousSearchParams.set('image', previousImageIndex.toString());
-  const previousUrl = createUrl(pathname, previousSearchParams);
+  const nextImageIndex = imageIndex + 1 < displayImages.length ? imageIndex + 1 : 0;
+  const previousImageIndex = imageIndex === 0 ? displayImages.length - 1 : imageIndex - 1;
 
   const buttonClassName =
     'h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
@@ -31,56 +34,50 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
   return (
     <>
       <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden">
-        {images[imageIndex] && (
+        {displayImages[imageIndex] && (
           <Image
             className="h-full w-full object-contain"
             fill
             sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={images[imageIndex]?.altText as string}
-            src={images[imageIndex]?.src as string}
+            alt={displayImages[imageIndex]?.altText as string}
+            src={displayImages[imageIndex]?.src as string}
             priority={true}
           />
         )}
 
-        {images.length > 1 ? (
+        {displayImages.length > 1 ? (
           <div className="absolute bottom-[15%] flex w-full justify-center">
             <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur dark:border-black dark:bg-neutral-900/80">
-              <Link
+              <button
                 aria-label={t('previousProductImage')}
-                href={previousUrl}
+                onClick={() => setImageIndex(previousImageIndex)}
                 className={buttonClassName}
-                scroll={false}
               >
                 <ArrowLeftIcon className="h-5" />
-              </Link>
+              </button>
               <div className="mx-1 h-6 w-px bg-neutral-500"></div>
-              <Link
+              <button
                 aria-label={t('nextProductImage')}
-                href={nextUrl}
+                onClick={() => setImageIndex(nextImageIndex)}
                 className={buttonClassName}
-                scroll={false}
               >
                 <ArrowRightIcon className="h-5" />
-              </Link>
+              </button>
             </div>
           </div>
         ) : null}
       </div>
 
-      {images.length > 1 ? (
+      {displayImages.length > 1 ? (
         <ul className="my-12 flex items-center justify-center gap-2 overflow-auto py-1 lg:mb-0">
-          {images.map((image, index) => {
+          {displayImages.map((image, index) => {
             const isActive = index === imageIndex;
-            const imageSearchParams = new URLSearchParams(searchParams.toString());
-
-            imageSearchParams.set('image', index.toString());
 
             return (
               <li key={image.src} className="h-20 w-20">
-                <Link
+                <button
                   aria-label={t('enlargeProductImage')}
-                  href={createUrl(pathname, imageSearchParams)}
-                  scroll={false}
+                  onClick={() => setImageIndex(index)}
                   className="h-full w-full"
                 >
                   <GridTileImage
@@ -90,7 +87,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
                     height={80}
                     active={isActive}
                   />
-                </Link>
+                </button>
               </li>
             );
           })}

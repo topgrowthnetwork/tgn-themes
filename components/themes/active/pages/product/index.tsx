@@ -3,7 +3,7 @@ import Footer from '@theme/components/layout/footer';
 import { Gallery } from '@theme/components/product/gallery';
 import { ProductDescription } from '@theme/components/product/product-description';
 import { createApi } from 'lib/api';
-import { GlobalSettings, Product } from 'lib/api/types';
+import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -14,6 +14,7 @@ interface ProductPageProps {
   attributes: any;
   combinations: any[];
   settings: GlobalSettings;
+  selectedVariant?: ProductVariant | null;
 }
 
 export default function ProductPage({
@@ -21,7 +22,8 @@ export default function ProductPage({
   images,
   attributes,
   combinations,
-  settings
+  settings,
+  selectedVariant
 }: ProductPageProps) {
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -55,6 +57,7 @@ export default function ProductPage({
                 src: getFullPath(image.path),
                 altText: image.title
               }))}
+              selectedVariant={selectedVariant}
             />
           </div>
 
@@ -63,6 +66,7 @@ export default function ProductPage({
               product={product}
               attributes={attributes}
               currency={settings.site_global_currency}
+              selectedVariant={selectedVariant}
             />
           </div>
         </div>
@@ -80,7 +84,8 @@ export default function ProductPage({
 async function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
   const api = createApi({ language: 'en' });
   const relatedProductsResult = await api.getProducts({
-    category_id: product.category_id.toString()
+    category_id: product.category_id.toString(),
+    order_by: 'selling_count'
   });
   if (relatedProductsResult.isErr()) {
     return null;

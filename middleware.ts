@@ -1,4 +1,5 @@
 import { createApi } from 'lib/api';
+import { getCheapestVariant } from 'lib/utils';
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './lib/i18n/routing';
@@ -27,6 +28,45 @@ export async function middleware(request: NextRequest) {
     // Add page=1 parameter and redirect
     url.searchParams.set('page', '1');
     return NextResponse.redirect(url);
+  }
+
+  // Check if it's a product page
+  const productMatch = pathname.match(/\/product\/([^\/]+)$/);
+
+  if (productMatch) {
+    try {
+      const productSlug = productMatch[1];
+      const api = createApi({ language: 'en' });
+      const productResult = await api.getProduct(productSlug);
+
+      if (productResult.isOk()) {
+        const product = productResult.value.data.product;
+        const cheapestVariant = getCheapestVariant(product);
+
+        if (cheapestVariant) {
+          // Check if any variant attributes are missing from the URL
+          const missingAttributes = cheapestVariant.attribute_values.filter((attrValue) => {
+            const attributeName = attrValue.attribute.name.toLowerCase();
+            return !url.searchParams.has(attributeName);
+          });
+
+          // If any attributes are missing, add them
+          if (missingAttributes.length > 0) {
+            const newUrl = new URL(request.url);
+
+            // Add missing attributes
+            missingAttributes.forEach((attrValue) => {
+              const attributeName = attrValue.attribute.name.toLowerCase();
+              newUrl.searchParams.set(attributeName, attrValue.value);
+            });
+
+            return NextResponse.redirect(newUrl);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch product for variant redirect:', error);
+    }
   }
 
   // First, handle locale routing with next-intl
