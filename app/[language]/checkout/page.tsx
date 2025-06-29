@@ -16,7 +16,7 @@ export default async function Page({ params }: { params: Promise<{ language: str
   // Enable static rendering
   setRequestLocale(language);
 
-  // Fetch payment settings and cart data
+  // Fetch payment settings and other data (cart is now handled in layout)
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language, guestToken });
   const [

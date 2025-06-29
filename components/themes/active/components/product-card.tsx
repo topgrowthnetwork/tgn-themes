@@ -10,6 +10,7 @@ interface ProductCardProps {
   sizes?: string;
   priority?: boolean;
   currency?: string;
+  isInteractive?: boolean;
 }
 
 export function ProductCard({
@@ -17,7 +18,8 @@ export function ProductCard({
   className = '',
   sizes = '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw',
   priority = false,
-  currency
+  currency,
+  isInteractive = true
 }: ProductCardProps) {
   const currencyCode = currency || 'EGP';
 
@@ -28,6 +30,7 @@ export function ProductCard({
     >
       <GridTileImage
         alt={product.title}
+        isInteractive={isInteractive}
         label={{
           title: product.title,
           amount: product.final_price.toString(),

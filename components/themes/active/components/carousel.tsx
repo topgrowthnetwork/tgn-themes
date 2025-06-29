@@ -1,6 +1,7 @@
 import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
+import { JsonViewer } from '.';
 import { GridTileImage } from './grid/tile';
 
 export async function Carousel() {
@@ -24,6 +25,7 @@ export async function Carousel() {
 
   return (
     <div className=" w-full overflow-x-auto pb-6 pt-1">
+      <JsonViewer data={settingsResult.value.data} />
       <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product, i) => (
           <li

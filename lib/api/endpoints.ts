@@ -11,6 +11,8 @@ import {
   CheckoutRequest,
   CheckoutResponse,
   City,
+  ContactRequest,
+  ContactResponse,
   Country,
   ForgotPasswordRequest,
   GlobalSettings,
@@ -138,5 +140,10 @@ export class ApiEndpoints {
 
   async getSliders() {
     return this.client.get<SlidersResponse>('/api/sliders');
+  }
+
+  // Contact
+  async submitContact(data: ContactRequest) {
+    return this.client.post<ContactResponse>('/api/contacts', data);
   }
 }

@@ -59,6 +59,10 @@
 
 /* Theme-specific CSS variables will be injected by the theme loader */
 @layer base {
+  * {
+    @apply box-border;
+  }
+
   html {
     font-family: var(--theme-font-en);
   }

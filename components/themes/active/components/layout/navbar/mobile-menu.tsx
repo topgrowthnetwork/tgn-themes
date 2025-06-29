@@ -1,12 +1,12 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
-import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Category, GlobalSettings, Product } from 'lib/api/types';
+import { Link } from 'lib/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from '../../product-card';
 import Search from './search';
@@ -113,6 +113,7 @@ export default function MobileMenu({
                             currency={settings.site_global_currency}
                             className="aspect-square"
                             sizes="(min-width: 768px) 50vw, 50vw"
+                            isInteractive={false}
                           />
                         ))}
                       </div>
@@ -140,6 +141,18 @@ export default function MobileMenu({
                       </ul>
                     </div>
                   )}
+
+                  {/* Contact Us */}
+                  <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
+                    <Link
+                      href="/contact-us"
+                      onClick={closeMobileMenu}
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                    >
+                      <EnvelopeIcon className="h-5 w-5" />
+                      Contact Us
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Footer with Shop All link */}

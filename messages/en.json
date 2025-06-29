@@ -2,6 +2,10 @@
   "Cart": {
     "myCart": "My Cart",
     "emptyCart": "Your cart is empty.",
+    "emptyCartTitle": "Your cart is empty",
+    "emptyCartDescription": "Looks like your shopping cart is empty. Start exploring our amazing products and find something you love!",
+    "startShopping": "Start Shopping",
+    "emptyCartHelp": "Need help? Check out our featured products or browse by category.",
     "subtotal": "Subtotal",
     "taxes": "Taxes",
     "shipping": "Shipping",
@@ -77,5 +81,24 @@
     "selectCountry": "Select a country",
     "selectState": "Select a state",
     "selectCity": "Select a city"
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "description": "Get in touch with us. We'd love to hear from you.",
+    "sendMessage": "Send Message",
+    "contactInfo": "Contact Information",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "address": "Address",
+    "message": "Message",
+    "followUs": "Follow Us",
+    "namePlaceholder": "Enter your full name",
+    "emailPlaceholder": "Enter your email address",
+    "phonePlaceholder": "Enter your phone number",
+    "messagePlaceholder": "Tell us how we can help you...",
+    "sending": "Sending...",
+    "successMessage": "Thank you! Your message has been sent successfully. We'll get back to you soon.",
+    "errorMessage": "Sorry, there was an error sending your message. Please try again."
   }
 }

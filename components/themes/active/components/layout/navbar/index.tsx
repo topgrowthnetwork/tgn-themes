@@ -32,7 +32,8 @@ export default async function Navbar() {
   const products = productsResult.isOk() ? productsResult.value.data.products.data : [];
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6 dark:border-neutral-700 dark:bg-black/80">
+    // <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6 dark:border-neutral-700 dark:bg-black/80">
+    <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="me-2 block flex-none">
         <MobileMenu menu={categories} products={products} settings={settings} />
       </div>
@@ -40,10 +41,21 @@ export default async function Navbar() {
         <div className="flex w-full md:w-1/3">
           <Link href="/" className="me-2 flex w-full items-center justify-center md:w-auto lg:me-6">
             <LogoSquare />
-            <div className="ms-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {settings.site_title}
-            </div>
           </Link>
+          <div className="ms-6 hidden items-center gap-6 lg:flex">
+            <Link
+              href="/products"
+              className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+            >
+              Products
+            </Link>
+            <Link
+              href="/contact-us"
+              className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
         <div className="hidden justify-center md:flex md:w-1/3">
           <Search />

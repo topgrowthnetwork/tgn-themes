@@ -554,3 +554,18 @@ export interface CheckoutResponse {
   order: Order;
   response: any | null;
 }
+
+// Contact types
+export interface ContactRequest {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}
+
+export interface ContactResponse {
+  success: boolean;
+  status_code: number;
+  data: null;
+  message: string;
+}

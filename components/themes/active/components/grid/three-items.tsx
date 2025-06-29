@@ -24,7 +24,7 @@ function ThreeItemGridItem({
         currency={currency}
         sizes={sizes}
         priority={priority}
-        className="aspect-square h-full w-full"
+        className="aspect-[6/5] h-full w-full"
       />
     </div>
   );

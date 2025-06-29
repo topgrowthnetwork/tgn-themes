@@ -37,6 +37,14 @@ export default function FooterMenu({ menu }: { menu: Category[] }) {
   return (
     <nav>
       <ul>
+        <li>
+          <Link
+            href="/products"
+            className="block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
+          >
+            All
+          </Link>
+        </li>
         {menu.map((item) => {
           return <FooterMenuItem key={item.id} item={item} />;
         })}

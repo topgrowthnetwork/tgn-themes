@@ -11,10 +11,12 @@ import { NotificationMessage } from '../notification-message';
 
 function SubmitButton({
   availableForSale,
-  selectedVariantId
+  selectedVariantId,
+  selectedVariant
 }: {
   availableForSale: boolean;
   selectedVariantId: number | undefined;
+  selectedVariant: ProductVariant | null;
 }) {
   const { pending } = useFormStatus();
   const t = useTranslations('Cart');
@@ -22,7 +24,10 @@ function SubmitButton({
     'relative flex w-full items-center justify-center rounded-full bg-primary-600 p-4 tracking-wide text-white';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
 
-  if (!availableForSale) {
+  // Check if the selected variant is out of stock
+  const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
+
+  if (!availableForSale || isOutOfStock) {
     return (
       <button aria-disabled className={clsx(buttonClasses, disabledClasses)}>
         {t('outOfStock')}
@@ -75,6 +80,10 @@ export function AddToCart({
   const [message, formAction] = useFormState(addItemV2, null);
   const selectedVariantId = selectedVariant?.id;
   const selectedProductId = selectedVariant?.product_id;
+
+  // Check if the selected variant is out of stock
+  const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
+
   const actionWithVariant = formAction.bind(null, {
     selectedProductId: selectedProductId || NaN,
     selectedVariantId: selectedVariantId || NaN
@@ -89,7 +98,11 @@ export function AddToCart({
   return (
     <div className="space-y-3">
       <form action={actionWithVariant}>
-        <SubmitButton availableForSale={availableForSale} selectedVariantId={selectedVariantId} />
+        <SubmitButton
+          availableForSale={availableForSale}
+          selectedVariantId={selectedVariantId}
+          selectedVariant={selectedVariant}
+        />
       </form>
 
       <NotificationMessage message={message} type={getNotificationType()} />

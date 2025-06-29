@@ -1,8 +1,8 @@
+import SocialMediaLinks from '@shared/components/social-media-links';
 import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
-import GitHubIcon from '../icons/github';
 import LogoSquare from '../logo-square';
 import FooterMenu from './footer-menu';
 import LanguageSwitcher from './language-switcher';
@@ -49,12 +49,9 @@ export default async function Footer() {
           <FooterMenu menu={categories} />
         </Suspense>
         <div className="md:ms-auto">
-          <a
-            aria-label={t('githubRepository')}
-            href="https://github.com/bigcommerce/nextjs-commerce"
-          >
-            <GitHubIcon className="h-6" />
-          </a>
+          <div className="flex flex-col items-end gap-3">
+            <SocialMediaLinks settings={settings} />
+          </div>
         </div>
       </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">

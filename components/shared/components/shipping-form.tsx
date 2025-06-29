@@ -111,7 +111,9 @@ export default function ShippingForm({
     <div
       className={clsx(
         'mb-8 rounded-lg border p-6',
-        isActive ? 'border-primary-500 bg-primary-50' : 'border-gray-200'
+        isActive
+          ? 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+          : 'border-gray-200'
       )}
     >
       <div className="mb-4 flex items-center justify-between">
