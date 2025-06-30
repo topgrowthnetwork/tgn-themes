@@ -11,7 +11,7 @@ export default async function ThankYouPage() {
     >
       <div className="max-w-md space-y-6">
         {/* Success Icon */}
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-theme bg-green-100 dark:bg-green-900">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
           <svg
             className="h-8 w-8 text-green-600 dark:text-green-400"
             fill="none"

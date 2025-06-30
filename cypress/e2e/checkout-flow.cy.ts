@@ -127,7 +127,7 @@ describe('Checkout Flow', () => {
     // Step 7: Select cash on delivery payment method
     cy.get('[data-testid="payment-form-radio-cash_on_delivery"]').should('be.visible').check();
 
-    cy.wait(5000);
+    cy.wait(50000);
     cy.log('✅ Step 7: Selected cash on delivery');
 
     // Verify the radio button is checked

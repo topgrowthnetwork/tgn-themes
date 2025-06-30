@@ -289,7 +289,7 @@ export default function ShippingForm({
             type="button"
             onClick={handleFormSubmit}
             className="button"
-            data-testid="shipping-form-next"
+            data-testid="shipping-form-submit"
           >
             {t('next')}
           </button>
