@@ -65,7 +65,10 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+      <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
+        {t('sendMessage')}
+      </h2>
       <NotificationMessage
         message={state.message}
         type={state.success ? 'success' : 'error'}
@@ -123,7 +126,7 @@ export default function ContactForm() {
             {...register('message')}
             rows={5}
             placeholder={t('messagePlaceholder')}
-            className="form-textarea"
+            className="textarea"
           />
           {errors.message && <FieldError message={errors.message.message} />}
         </div>
