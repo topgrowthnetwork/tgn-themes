@@ -23,7 +23,9 @@
     "orderSummary": "Order Summary",
     "quantity": "Qty",
     "moreItems": "more items",
-    "discount": "Discount"
+    "discount": "Discount",
+    "couponCode": "Coupon code",
+    "apply": "Apply"
   },
   "Footer": {
     "allRightsReserved": "All rights reserved.",

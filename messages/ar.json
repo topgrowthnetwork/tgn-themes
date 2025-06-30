@@ -23,7 +23,9 @@
     "orderSummary": "ملخص الطلب",
     "quantity": "الكمية",
     "moreItems": "عناصر إضافية",
-    "discount": "الخصم"
+    "discount": "الخصم",
+    "couponCode": "رمز القسيمة",
+    "apply": "تطبيق"
   },
   "Footer": {
     "allRightsReserved": "جميع الحقوق محفوظة.",

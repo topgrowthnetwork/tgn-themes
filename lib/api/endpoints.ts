@@ -111,6 +111,12 @@ export class ApiEndpoints {
     return this.client.delete<{ message: string }>(`/api/carts/${cartItemId}`);
   }
 
+  async applyCoupon(couponCode: string) {
+    return this.client.post<{ message: string; coupon: any }>('/api/aplly-coupon', {
+      coupon_code: couponCode
+    });
+  }
+
   // Checkout
   async checkout(data: CheckoutRequest) {
     return this.client.post<CheckoutResponse>('/api/orders', data);

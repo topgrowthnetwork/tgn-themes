@@ -82,3 +82,19 @@ export async function updateItemQuantityV2(
     return 'Error updating item quantity.';
   }
 }
+
+export async function applyCouponV2(prevState: any, couponCode: string) {
+  const guestToken = cookies().get('guest_token')?.value;
+  const api = createApi({ language: 'en', guestToken });
+
+  try {
+    const result = await api.applyCoupon(couponCode);
+    if (result.isErr()) {
+      throw new Error('Failed to apply coupon');
+    }
+    revalidateTag(TAGS.cart);
+    return result.value.data.message || 'Coupon applied successfully';
+  } catch (error: any) {
+    return 'Error applying coupon';
+  }
+}

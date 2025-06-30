@@ -126,8 +126,8 @@ export function getCheapestVariant(product: Product): ProductVariant | null {
     return null;
   }
 
-  // Filter variants with stock > 0
-  const availableVariants = product.variants.filter((variant) => variant.stock > 0);
+  // Filter variants with stock > min_stock
+  const availableVariants = product.variants.filter((variant) => variant.stock > product.min_stock);
 
   if (availableVariants.length === 0) {
     return null;
@@ -211,4 +211,79 @@ export function getSelectedVariant(
 
   // Return selected variant or fallback to first variant
   return selectedVariant || product.variants[0];
+}
+
+// Variant selection utilities
+export type VariantCombination = {
+  id: string;
+  availableForSale: boolean;
+  [key: string]: string | boolean;
+};
+
+export function createVariantCombinations(
+  variants: ProductVariant[],
+  minStock = 0
+): VariantCombination[] {
+  return variants.map((variant) => ({
+    id: variant.id.toString(),
+    availableForSale: variant.stock > minStock,
+    ...variant.attribute_values.reduce(
+      (accumulator, option) => ({
+        ...accumulator,
+        [option.attribute.name.toLowerCase()]: option.value
+      }),
+      {}
+    )
+  }));
+}
+
+export function isOptionValueAvailable(
+  optionName: string,
+  optionValue: string,
+  selectedAttributes: Record<string, string>,
+  combinations: VariantCombination[]
+): boolean {
+  return combinations.some((combination) => {
+    // Check if this combination matches the current option value
+    if (combination[optionName.toLowerCase()] !== optionValue) {
+      return false;
+    }
+
+    // Check if this combination matches all other selected attributes
+    for (const [attr, selectedValue] of Object.entries(selectedAttributes)) {
+      if (combination[attr] !== selectedValue) {
+        return false;
+      }
+    }
+
+    // If we get here, this combination matches all selected attributes
+    return combination.availableForSale;
+  });
+}
+
+export function getAvailableOptionsForAttribute(
+  attributeName: string,
+  selectedAttributes: Record<string, string>,
+  combinations: VariantCombination[]
+): string[] {
+  const attributeNameLower = attributeName.toLowerCase();
+  const availableValues = new Set<string>();
+
+  combinations.forEach((combination) => {
+    // Check if this combination matches all other selected attributes
+    let matchesOtherAttributes = true;
+    for (const [attr, selectedValue] of Object.entries(selectedAttributes)) {
+      if (attr !== attributeNameLower && combination[attr] !== selectedValue) {
+        matchesOtherAttributes = false;
+        break;
+      }
+    }
+
+    // If it matches other attributes and is available, add this option value
+    if (matchesOtherAttributes && combination.availableForSale) {
+      availableValues.add(combination[attributeNameLower] as string);
+    }
+  });
+
+  return Array.from(availableValues);
 }

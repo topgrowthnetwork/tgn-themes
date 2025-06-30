@@ -37,7 +37,11 @@ export function ProductDescription({
           <Price amount={displayPrice.toString()} currencyCode={currency} />
         </div>
       </div>
-      <VariantSelector options={attributes} variants={product.variants} />
+      <VariantSelector
+        options={attributes}
+        variants={product.variants}
+        minStock={product.min_stock}
+      />
 
       {product.description ? (
         <ExpandableContent className="mb-6">
