@@ -2,8 +2,6 @@ import CheckoutLayout from '@shared/pages/checkout/layout';
 import { setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
-export const runtime = 'edge';
-
 interface CheckoutLayoutProps {
   children: React.ReactNode;
   params: Promise<{ language: string }>;

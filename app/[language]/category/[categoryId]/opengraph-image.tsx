@@ -1,8 +1,6 @@
 import OpengraphImage from '@theme/components/opengraph-image';
 import { createApi } from 'lib/api';
 
-export const runtime = 'edge';
-
 export default async function Image({ params }: { params: { categoryId: string } }) {
   const api = createApi({ language: 'en' });
   const categoryResult = await api.getCategories({ categoryId: params.categoryId });

@@ -3,8 +3,6 @@ import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
 import { setRequestLocale } from 'next-intl/server';
 
-export const runtime = 'edge';
-
 export const metadata = {
   title: 'Search',
   description: 'Search for products in the store.'

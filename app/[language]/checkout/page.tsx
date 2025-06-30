@@ -3,8 +3,6 @@ import { createApi } from 'lib/api';
 import { setRequestLocale } from 'next-intl/server';
 import { cookies } from 'next/headers';
 
-export const runtime = 'edge';
-
 export const metadata = {
   title: 'Checkout',
   description: 'Complete your purchase and place your order.'

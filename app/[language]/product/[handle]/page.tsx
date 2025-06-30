@@ -4,8 +4,6 @@ import { getFullPath, getSelectedVariant } from 'lib/utils';
 import { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 
-export const runtime = 'edge';
-
 export async function generateMetadata({
   params
 }: {

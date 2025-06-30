@@ -6,8 +6,6 @@ import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
 import { setRequestLocale } from 'next-intl/server';
 
-export const runtime = 'edge';
-
 export async function generateMetadata({
   params
 }: {

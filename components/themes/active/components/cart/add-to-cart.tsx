@@ -6,7 +6,7 @@ import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { ProductVariant } from 'lib/api/types';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 
@@ -23,6 +23,8 @@ function SubmitButton({
   const t = useTranslations('Cart');
   const buttonClasses = 'button w-full relative';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   if (!availableForSale) {
     return (
@@ -60,7 +62,7 @@ function SubmitButton({
       })}
       data-testid="add-to-cart-button"
     >
-      <div className="absolute left-0 ms-4 rtl:right-0">
+      <div className={clsx('absolute me-4', isRTL ? 'left-0' : 'right-0')}>
         {pending ? <LoadingDots className="mb-3 bg-white" /> : <PlusIcon className="h-5" />}
       </div>
       {t('addToCart')}

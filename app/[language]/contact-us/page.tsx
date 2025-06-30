@@ -2,8 +2,6 @@ import ContactPage from '@shared/pages/contact';
 import { createApi } from 'lib/api';
 import { setRequestLocale } from 'next-intl/server';
 
-export const runtime = 'edge';
-
 export const metadata = {
   title: 'Contact Us',
   description: "Get in touch with us. We'd love to hear from you."
