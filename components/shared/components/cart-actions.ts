@@ -62,10 +62,16 @@ export async function updateItemQuantityV2(
     quantity: number;
   }
 ) {
+  // If quantity is 0 or less, remove the item instead
+  if (quantity <= 0) {
+    return removeItemV2(prevState, lineId);
+  }
+
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
   try {
+    // Otherwise update the quantity normally
     const result = await api.updateCartItem(lineId, { qyt: quantity });
     if (result.isErr()) {
       throw new Error('Failed to update item quantity');

@@ -234,7 +234,7 @@ export interface CartResponse {
       };
     }>;
     coupon: any | null;
-  } | null;
+  };
   sub_total: number;
   total_price: number;
   discount: number;
@@ -349,7 +349,7 @@ export interface Product {
   images: string[];
   thumbnail_img: string;
   stock: number;
-  min_stock: string;
+  min_stock: number;
   meta_keywords: string;
   meta_description: string;
   sku: string;

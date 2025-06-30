@@ -103,5 +103,12 @@
     "sending": "Sending...",
     "successMessage": "Thank you! Your message has been sent successfully. We'll get back to you soon.",
     "errorMessage": "Sorry, there was an error sending your message. Please try again."
+  },
+  "ThankYou": {
+    "title": "Thank You!",
+    "message": "Your order has been placed successfully. We'll send you a confirmation email with your order details shortly.",
+    "continueShopping": "Continue Shopping",
+    "backToHome": "Back to Home",
+    "additionalInfo": "You'll receive an email confirmation with your order details and tracking information."
   }
 }

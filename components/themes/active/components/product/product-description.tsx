@@ -23,7 +23,7 @@ export function ProductDescription({
 
   const availableForSale = (function isAvailableForSale() {
     if (selectedVariant) {
-      return selectedVariant.stock > 0;
+      return selectedVariant.stock > product.min_stock;
     }
 
     return product.stock > 0;

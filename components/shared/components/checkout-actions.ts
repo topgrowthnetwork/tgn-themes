@@ -3,6 +3,7 @@
 import { createApi } from 'lib/api';
 import { CheckoutRequest } from 'lib/api/types';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function processCheckout(prevState: any, formData: FormData) {
   const guestToken = cookies().get('guest_token')?.value;
@@ -37,6 +38,20 @@ export async function processCheckout(prevState: any, formData: FormData) {
     }
 
     const order = result.value.data.order;
+
+    if (order.payment_gateway == 'cash_on_site' || order.payment_gateway == 'cash_on_delivery') {
+      redirect('/thank-you');
+    }
+
+    switch (order.payment_gateway) {
+      case 'cash_on_site':
+      case 'cash_on_delivery':
+        return redirect('/thank-you');
+      case 'fawaterk_gateway':
+      case 'paymob_card_gateway':
+      case 'paymob_wallet_gateway':
+        return;
+    }
   } catch (error: any) {
     return {
       success: false,
