@@ -56,6 +56,9 @@
     "bestSelling": "Best Selling Products",
     "categories": "Shop by Category"
   },
+  "Category": {
+    "noProducts": "No products found in this category."
+  },
   "Common": {
     "categories": "Categories",
     "sortBy": "Sort by",
