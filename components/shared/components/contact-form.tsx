@@ -1,17 +1,18 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import FieldError from '@shared/components/field-error';
-import { createApi } from 'lib/api';
+import { submitContact } from '@shared/components/contact-actions';
+import { NotificationMessage } from '@shared/components/notification-message';
+import FieldError from '@theme/components/field-error';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  phone: z.string().min(6, 'Phone number must be at least 6 characters'),
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(6, 'Phone number is required'),
   message: z.string().min(10, 'Message must be at least 10 characters')
 });
 
@@ -19,75 +20,41 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactForm() {
   const t = useTranslations('Contact');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
+  const [state, formAction] = useFormState(submitContact, {
+    success: false,
+    message: ''
+  });
 
   const {
     register,
     handleSubmit,
-    reset,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema)
   });
 
-  const onSubmit = async (data: ContactFormData) => {
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    try {
-      const api = createApi({ language: 'en' });
-      const result = await api.submitContact(data);
-
-      if (result.isOk()) {
-        setSubmitStatus({
-          success: true,
-          message: t('successMessage')
-        });
-        reset();
-      } else {
-        setSubmitStatus({
-          success: false,
-          message: result.error.message || t('errorMessage')
-        });
-      }
-    } catch (error) {
-      setSubmitStatus({
-        success: false,
-        message: t('errorMessage')
-      });
-    } finally {
-      setIsSubmitting(false);
+  const onSubmit = (data: ContactFormData) => {
+    formAction(data);
+    if (state.success) {
+      reset();
     }
   };
 
   return (
-    <div className="rounded-theme border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-      <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
-        {t('sendMessage')}
-      </h2>
-
-      {/* Status Message */}
-      {submitStatus && (
-        <div
-          className={`mb-6 rounded-theme p-4 ${
-            submitStatus.success
-              ? 'border border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400'
-              : 'border border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400'
-          }`}
-        >
-          {submitStatus.message}
-        </div>
-      )}
+    <div className="space-y-6">
+      <NotificationMessage
+        message={state.message}
+        type={state.success ? 'success' : 'error'}
+        autoDismiss={state.success}
+        dismissDelay={5000}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="name" className="label">
-              {t('name')} *
+            <label htmlFor="name" className="form-label">
+              {t('name')}
             </label>
             <input
               type="text"
@@ -99,8 +66,8 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label htmlFor="email" className="label">
-              {t('email')} *
+            <label htmlFor="email" className="form-label">
+              {t('email')}
             </label>
             <input
               type="email"
@@ -113,8 +80,8 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="label">
-            {t('phone')} *
+          <label htmlFor="phone" className="form-label">
+            {t('phone')}
           </label>
           <input
             type="tel"
@@ -126,21 +93,20 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label htmlFor="message" className="label">
-            {t('message')} *
+          <label htmlFor="message" className="form-label">
+            {t('message')}
           </label>
           <textarea
-            id="message"
             {...register('message')}
             rows={5}
-            className="textarea"
             placeholder={t('messagePlaceholder')}
+            className="form-textarea"
           />
-          <FieldError message={errors.message?.message} />
+          {errors.message && <FieldError message={errors.message.message} />}
         </div>
 
-        <button type="submit" disabled={isSubmitting} className="button">
-          {isSubmitting ? t('sending') : t('sendMessage')}
+        <button type="submit" disabled={state.success} className="button">
+          {state.success ? t('sending') : t('sendMessage')}
         </button>
       </form>
     </div>

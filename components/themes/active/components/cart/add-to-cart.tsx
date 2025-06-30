@@ -2,12 +2,12 @@
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { addItemV2 } from '@shared/components/cart-actions';
+import { NotificationMessage } from '@shared/components/notification-message';
 import clsx from 'clsx';
 import { ProductVariant } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
-import { NotificationMessage } from '../notification-message';
 
 function SubmitButton({
   availableForSale,
@@ -101,7 +101,12 @@ export function AddToCart({
         />
       </form>
 
-      <NotificationMessage message={message} type={getNotificationType()} />
+      <NotificationMessage
+        message={message}
+        type={getNotificationType()}
+        autoDismiss={true}
+        dismissDelay={3000}
+      />
     </div>
   );
 }

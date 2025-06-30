@@ -1,4 +1,5 @@
 import { applyCouponV2 } from '@shared/components/cart-actions';
+import { NotificationMessage } from '@shared/components/notification-message';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
 import { getFullPath, getItemPrice } from 'lib/utils';
@@ -85,13 +86,12 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
               {t('apply')}
             </button>
           </div>
-          {message && (
-            <p
-              className={`text-xs ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}
-            >
-              {message}
-            </p>
-          )}
+          <NotificationMessage
+            message={message}
+            type={message?.includes('Error') ? 'error' : 'success'}
+            autoDismiss={true}
+            dismissDelay={3000}
+          />
         </form>
       </div>
 

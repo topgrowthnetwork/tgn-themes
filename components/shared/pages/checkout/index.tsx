@@ -2,10 +2,10 @@
 
 import CartSummary from '@shared/components/cart-summary';
 import { processCheckout } from '@shared/components/checkout-actions';
+import { NotificationMessage } from '@shared/components/notification-message';
 import PaymentForm from '@shared/components/payment-form';
 import ShippingForm from '@shared/components/shipping-form';
 import Container from '@theme/components/container';
-import clsx from 'clsx';
 import {
   CartResponse,
   CheckoutRequest,
@@ -83,18 +83,12 @@ export default function CheckoutPage({
         <h1 className="mb-8 text-3xl font-bold">{t('title')}</h1>
 
         {/* Error/Success Message */}
-        {state?.message && (
-          <div
-            className={clsx(
-              'mb-4 rounded-theme p-4',
-              state?.success
-                ? 'border border-green-200 bg-green-50 text-green-800'
-                : 'border border-red-200 bg-red-50 text-red-800'
-            )}
-          >
-            {state.message}
-          </div>
-        )}
+        <NotificationMessage
+          message={state?.message || null}
+          type={state?.success ? 'success' : 'error'}
+          autoDismiss={state?.success}
+          dismissDelay={5000}
+        />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Main Checkout Forms */}
