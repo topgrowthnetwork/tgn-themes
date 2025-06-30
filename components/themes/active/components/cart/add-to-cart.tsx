@@ -58,6 +58,7 @@ function SubmitButton({
         'hover:opacity-90': true,
         disabledClasses: pending
       })}
+      data-testid="add-to-cart-button"
     >
       <div className="absolute left-0 ms-4">
         {pending ? <LoadingDots className="mb-3 bg-white" /> : <PlusIcon className="h-5" />}

@@ -51,7 +51,7 @@ export default function CartModal({
         <OpenCart quantity={cartResponse?.total_items} />
       </button>
       <Transition show={isOpen}>
-        <Dialog onClose={closeCart} className="relative z-50">
+        <Dialog onClose={closeCart} data-testid="cart-modal" className="relative z-50">
           <Transition.Child
             as={Fragment}
             enter="transition-all ease-in-out duration-300"
@@ -193,7 +193,7 @@ export default function CartModal({
                       />
                     </div>
                   </div>
-                  <a href="/checkout" className="button">
+                  <a href="/checkout" className="button" data-testid="proceed-to-checkout">
                     {t('proceedToCheckout')}
                   </a>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
+import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
@@ -93,7 +94,7 @@ export default function PaymentForm({
   };
 
   return (
-    <div className="rounded-theme border border-gray-200 p-6">
+    <div className="rounded-theme border border-gray-200 p-6" data-testid="payment-form">
       <h2 className="mb-4 text-xl font-semibold">{t('paymentMethod')}</h2>
 
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
@@ -107,7 +108,11 @@ export default function PaymentForm({
                 type="radio"
                 value={gateway.key}
                 {...register('payment_gateway')}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                className={clsx(
+                  `paymentForm__radio ${gateway.key}`,
+                  'h-4 w-4 text-primary-600 focus:ring-primary-500'
+                )}
+                data-testid={`payment-form-radio-${gateway.key}`}
               />
               <span className="text-sm font-medium">{gateway.label}</span>
             </label>
@@ -151,6 +156,7 @@ export default function PaymentForm({
             type="submit"
             disabled={isSubmitting}
             className="button flex flex-1 items-center justify-center gap-2"
+            data-testid="payment-form-submit"
           >
             {isSubmitting && <ButtonLoadingSpinner />}
             {isSubmitting ? t('processing') : t('placeOrder')}

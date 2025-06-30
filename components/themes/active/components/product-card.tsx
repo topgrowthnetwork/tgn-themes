@@ -27,6 +27,7 @@ export function ProductCard({
     <Link
       href={buildProductUrlWithCheapestVariant(product)}
       className={clsx('group block', className)}
+      data-testid="product-card-link"
     >
       <GridTileImage
         alt={product.title}

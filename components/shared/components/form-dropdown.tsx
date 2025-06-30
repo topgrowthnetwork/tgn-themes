@@ -19,6 +19,7 @@ interface FormDropdownProps {
   error?: string;
   placeholder?: string;
   disabled?: boolean;
+  dataTestId?: string;
 }
 
 export default function FormDropdown({
@@ -28,7 +29,8 @@ export default function FormDropdown({
   onChange,
   error,
   placeholder = 'Select an option',
-  disabled = false
+  disabled = false,
+  dataTestId
 }: FormDropdownProps) {
   const selectedOption = options.find((option) => option.name === value);
 
@@ -41,6 +43,7 @@ export default function FormDropdown({
             className={clsx('input cursor-pointer bg-white text-start', {
               'border-red-500 focus:border-red-500 focus:ring-red-500': error
             })}
+            data-testid={dataTestId}
           >
             <span className={clsx('block truncate', !selectedOption && 'text-gray-500')}>
               {selectedOption ? selectedOption.name : placeholder}
@@ -56,7 +59,7 @@ export default function FormDropdown({
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {options.map((option) => (
+              {options.map((option, index) => (
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
@@ -66,6 +69,7 @@ export default function FormDropdown({
                     )
                   }
                   value={option.name}
+                  data-testid={`${dataTestId}-option-${index}`}
                 >
                   {({ selected, active }) => (
                     <>

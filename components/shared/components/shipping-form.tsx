@@ -146,19 +146,34 @@ export default function ShippingForm({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label className="label">{t('name')} *</label>
-              <input type="text" {...register('name')} className="input" />
+              <input
+                type="text"
+                {...register('name')}
+                className="input"
+                data-testid="shipping-form-name"
+              />
               {errors.name && <FieldError message={errors.name.message} />}
             </div>
             <div>
               <label className="label">{t('email')} *</label>
-              <input type="email" {...register('email')} className="input" />
+              <input
+                type="email"
+                {...register('email')}
+                className="input"
+                data-testid="shipping-form-email"
+              />
               {errors.email && <FieldError message={errors.email.message} />}
             </div>
           </div>
 
           <div>
             <label className="label">{t('phone')} *</label>
-            <input type="tel" {...register('phone')} className="input" />
+            <input
+              type="tel"
+              {...register('phone')}
+              className="input"
+              data-testid="shipping-form-phone"
+            />
             {errors.phone && <FieldError message={errors.phone.message} />}
           </div>
 
@@ -174,6 +189,7 @@ export default function ShippingForm({
                   onChange={handleCountryChange}
                   error={errors.shipping_address?.country?.message}
                   placeholder={t('selectCountry')}
+                  dataTestId="shipping-form-country"
                 />
               )}
             />
@@ -190,6 +206,7 @@ export default function ShippingForm({
                   error={errors.shipping_address?.state?.message}
                   placeholder={t('selectState')}
                   disabled={!watchedCountry}
+                  dataTestId="shipping-form-state"
                 />
               )}
             />
@@ -206,6 +223,7 @@ export default function ShippingForm({
                   error={errors.shipping_address?.city?.message}
                   placeholder={t('selectCity')}
                   disabled={!watchedState}
+                  dataTestId="shipping-form-city"
                 />
               )}
             />
@@ -213,11 +231,16 @@ export default function ShippingForm({
 
           <div>
             <label className="label">{t('address')} *</label>
-            <textarea {...register('shipping_address.address')} rows={3} className="textarea" />
+            <textarea
+              {...register('shipping_address.address')}
+              rows={3}
+              className="textarea"
+              data-testid="shipping-form-address"
+            />
             <FieldError message={errors.shipping_address?.address?.message} />
           </div>
 
-          <button type="submit" className="button">
+          <button type="submit" className="button" data-testid="shipping-form-submit">
             {t('next')}
           </button>
         </form>

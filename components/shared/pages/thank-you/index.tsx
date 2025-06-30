@@ -5,7 +5,10 @@ export default async function ThankYouPage() {
   const t = await getTranslations('ThankYou');
 
   return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16 text-center">
+    <div
+      className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16 text-center"
+      data-testid="thank-you-page"
+    >
       <div className="max-w-md space-y-6">
         {/* Success Icon */}
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-theme bg-green-100 dark:bg-green-900">
