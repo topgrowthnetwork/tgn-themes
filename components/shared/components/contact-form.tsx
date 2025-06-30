@@ -2,9 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { submitContact } from '@shared/components/contact-actions';
+import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { NotificationMessage } from '@shared/components/notification-message';
 import FieldError from '@theme/components/field-error';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { useFormState } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -18,8 +20,24 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
+function SubmitButton({ disabled, isLoading }: { disabled: boolean; isLoading: boolean }) {
+  const t = useTranslations('Contact');
+
+  return (
+    <button
+      type="submit"
+      disabled={disabled || isLoading}
+      className="button flex items-center justify-center gap-2"
+    >
+      {isLoading && <ButtonLoadingSpinner />}
+      {isLoading ? t('sending') : t('sendMessage')}
+    </button>
+  );
+}
+
 export default function ContactForm() {
   const t = useTranslations('Contact');
+  const [isLoading, setIsLoading] = useState(false);
   const [state, formAction] = useFormState(submitContact, {
     success: false,
     message: ''
@@ -34,10 +52,15 @@ export default function ContactForm() {
     resolver: zodResolver(contactSchema)
   });
 
-  const onSubmit = (data: ContactFormData) => {
-    formAction(data);
-    if (state.success) {
-      reset();
+  const onSubmit = async (data: ContactFormData) => {
+    setIsLoading(true);
+    try {
+      await formAction(data);
+      if (state.success) {
+        reset();
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,9 +128,7 @@ export default function ContactForm() {
           {errors.message && <FieldError message={errors.message.message} />}
         </div>
 
-        <button type="submit" disabled={state.success} className="button">
-          {state.success ? t('sending') : t('sendMessage')}
-        </button>
+        <SubmitButton disabled={state.success} isLoading={isLoading} />
       </form>
     </div>
   );

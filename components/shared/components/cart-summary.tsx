@@ -1,4 +1,5 @@
 import { applyCouponV2 } from '@shared/components/cart-actions';
+import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { NotificationMessage } from '@shared/components/notification-message';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
@@ -6,11 +7,27 @@ import { getFullPath, getItemPrice } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 
 interface CartSummaryProps {
   cartResponse: CartResponse;
   currency: string;
+}
+
+function CouponSubmitButton({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus();
+  const t = useTranslations('Cart');
+
+  return (
+    <button
+      type="submit"
+      disabled={disabled || pending}
+      className="button flex items-center justify-center gap-2"
+    >
+      {pending && <ButtonLoadingSpinner />}
+      {t('apply')}
+    </button>
+  );
 }
 
 export default function CartSummary({ cartResponse, currency }: CartSummaryProps) {
@@ -22,12 +39,13 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
     return null;
   }
 
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (couponCode.trim()) {
-      formAction(couponCode.trim());
+  const handleCouponSubmit = (formData: FormData) => {
+    const code = formData.get('couponCode') as string;
+    if (code?.trim()) {
       setCouponCode('');
+      return formAction(code.trim());
     }
+    return null;
   };
 
   return (
@@ -73,18 +91,17 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
 
       {/* Coupon Section */}
       <div className="mb-4 border-t border-gray-200 pt-4">
-        <form onSubmit={handleCouponSubmit} className="space-y-2">
+        <form action={handleCouponSubmit} className="space-y-2">
           <div className="flex gap-2">
             <input
               type="text"
+              name="couponCode"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder={t('couponCode')}
               className="input flex-1"
             />
-            <button type="submit" disabled={!couponCode.trim()} className="button">
-              {t('apply')}
-            </button>
+            <CouponSubmitButton disabled={!couponCode.trim()} />
           </div>
           <NotificationMessage
             message={message}

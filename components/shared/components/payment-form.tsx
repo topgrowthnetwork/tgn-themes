@@ -1,6 +1,6 @@
 'use client';
 
-import clsx from 'clsx';
+import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
@@ -147,19 +147,16 @@ export default function PaymentForm({
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            className="button flex-1 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
           >
             {t('back')}
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className={clsx(
-              'flex-1 rounded-theme px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              'bg-primary-600 hover:bg-primary-700',
-              isSubmitting && 'opacity-50'
-            )}
+            className="button flex flex-1 items-center justify-center gap-2"
           >
+            {isSubmitting && <ButtonLoadingSpinner />}
             {isSubmitting ? t('processing') : t('placeOrder')}
           </button>
         </div>
