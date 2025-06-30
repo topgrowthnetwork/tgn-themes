@@ -76,9 +76,7 @@ export default function MobileMenu({
             leaveTo={isRTL ? 'translate-x-full' : 'translate-x-[-100%]'}
           >
             <Dialog.Panel
-              className={`fixed bottom-0 top-0 flex h-full w-full flex-col bg-white pb-6 md:w-96 dark:bg-black ${
-                isRTL ? 'right-0' : 'left-0'
-              }`}
+              className={`fixed bottom-0 left-0 top-0 flex h-full w-full flex-col bg-white pb-6 md:w-96 rtl:right-0 dark:bg-black`}
             >
               <div className="flex h-full flex-col">
                 {/* Header */}

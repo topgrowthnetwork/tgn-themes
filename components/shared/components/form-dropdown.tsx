@@ -81,7 +81,7 @@ export default function FormDropdown({
                       {selected ? (
                         <span
                           className={clsx(
-                            'absolute inset-y-0 left-0 flex items-center ps-3',
+                            'absolute inset-y-0 left-0 flex items-center ps-3 rtl:right-0',
                             active ? 'text-primary-600' : 'text-primary-600'
                           )}
                         >

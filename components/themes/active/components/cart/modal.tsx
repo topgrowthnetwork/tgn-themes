@@ -2,11 +2,12 @@
 
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
 import { DEFAULT_OPTION } from 'lib/constants';
 import { Link } from 'lib/i18n/navigation';
 import { createUrl, getFullPath, getItemPrice } from 'lib/utils';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Price from '../price';
@@ -31,6 +32,8 @@ export default function CartModal({
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
   const t = useTranslations('Cart');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   useEffect(() => {
     // Open cart modal when quantity changes.
@@ -66,13 +69,18 @@ export default function CartModal({
           <Transition.Child
             as={Fragment}
             enter="transition-all ease-in-out duration-300"
-            enterFrom="translate-x-full"
+            enterFrom={isRTL ? 'translate-x-[-100%]' : 'translate-x-full'}
             enterTo="translate-x-0"
             leave="transition-all ease-in-out duration-200"
             leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
+            leaveTo={isRTL ? 'translate-x-[-100%]' : 'translate-x-full'}
           >
-            <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl md:w-[390px] dark:border-neutral-700 dark:bg-black/80 dark:text-white">
+            <Dialog.Panel
+              className={clsx(
+                'fixed bottom-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl md:w-[390px] dark:border-neutral-700 dark:bg-black/80 dark:text-white',
+                isRTL ? 'left-0' : 'right-0'
+              )}
+            >
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold">{t('myCart')}</p>
 
