@@ -2,53 +2,57 @@
 
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import clsx from 'clsx';
-import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
+import { PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch
+} from 'react-hook-form';
 import FieldError from './field-error';
 
-const paymentSchema = z.object({
-  payment_gateway: z.string().min(1, 'Please select a payment method'),
-  wallet_number: z.string().optional(),
-  receipt_image: z.string().optional()
-});
-
-type PaymentFormData = z.infer<typeof paymentSchema>;
+interface PaymentFormData {
+  name: string;
+  email: string;
+  phone: string;
+  shipping_address: {
+    country: string;
+    state: string;
+    city: string;
+    address: string;
+  };
+  payment_gateway: string;
+  wallet_number?: string;
+  receipt_image?: string;
+  coupon_code?: string;
+}
 
 interface PaymentFormProps {
-  formData: Partial<CheckoutRequest>;
-  onFormDataChange: (field: keyof CheckoutRequest, value: any) => void;
+  register: UseFormRegister<PaymentFormData>;
+  control: Control<PaymentFormData>;
+  errors: FieldErrors<PaymentFormData>;
+  watch: UseFormWatch<PaymentFormData>;
+  setValue: UseFormSetValue<PaymentFormData>;
   paymentSettings: PaymentSettings;
-  formAction: (formData: FormData) => void;
   onBack: () => void;
-  finished: boolean;
+  isSubmitting: boolean;
+  hasError: boolean;
 }
 
 export default function PaymentForm({
-  formData,
-  onFormDataChange,
+  register,
+  control,
+  errors,
+  watch,
+  setValue,
   paymentSettings,
-  formAction,
   onBack,
-  finished
+  isSubmitting,
+  hasError
 }: PaymentFormProps) {
   const t = useTranslations('Checkout');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors }
-  } = useForm<PaymentFormData>({
-    defaultValues: {
-      payment_gateway: formData.payment_gateway || 'cash_on_delivery',
-      wallet_number: formData.wallet_number || '',
-      receipt_image: formData.receipt_image || ''
-    }
-  });
 
   const watchedPaymentGateway = watch('payment_gateway');
 
@@ -61,46 +65,11 @@ export default function PaymentForm({
     { key: 'paymob_wallet_gateway', label: t('paymobWalletGateway') }
   ].filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1');
 
-  const handleFormSubmit = (data: PaymentFormData) => {
-    setIsSubmitting(true);
-    // Update form data with payment info
-    onFormDataChange('payment_gateway', data.payment_gateway);
-    if (data.wallet_number) {
-      onFormDataChange('wallet_number', data.wallet_number);
-    }
-    if (data.receipt_image) {
-      onFormDataChange('receipt_image', data.receipt_image);
-    }
-
-    // Create FormData for server action
-    const formDataToSubmit = new FormData();
-    formDataToSubmit.append('name', formData.name || '');
-    formDataToSubmit.append('email', formData.email || '');
-    formDataToSubmit.append('phone', formData.phone || '');
-    formDataToSubmit.append('shipping_address_country', formData.shipping_address?.country || '');
-    formDataToSubmit.append('shipping_address_state', formData.shipping_address?.state || '');
-    formDataToSubmit.append('shipping_address_city', formData.shipping_address?.city || '');
-    formDataToSubmit.append('shipping_address_address', formData.shipping_address?.address || '');
-    formDataToSubmit.append('payment_gateway', data.payment_gateway);
-
-    if (data.wallet_number) {
-      formDataToSubmit.append('wallet_number', data.wallet_number);
-    }
-    if (data.receipt_image) {
-      formDataToSubmit.append('receipt_image', data.receipt_image);
-    }
-    if (formData.coupon_code) {
-      formDataToSubmit.append('coupon_code', formData.coupon_code);
-    }
-
-    formAction(formDataToSubmit);
-  };
-
   return (
     <div className="rounded-theme border border-gray-200 p-6" data-testid="payment-form">
       <h2 className="mb-4 text-xl font-semibold">{t('paymentMethod')}</h2>
 
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+      <div className="space-y-4">
         <div className="space-y-3">
           {paymentGateways.map((gateway) => (
             <label
@@ -142,7 +111,7 @@ export default function PaymentForm({
                 const file = e.target.files?.[0];
                 if (file) {
                   // Handle file upload logic here
-                  onFormDataChange('receipt_image', file.name);
+                  setValue('receipt_image', file.name);
                 }
               }}
               className="input"
@@ -161,11 +130,11 @@ export default function PaymentForm({
             className="button flex flex-1 items-center justify-center gap-2"
             data-testid="payment-form-submit"
           >
-            {isSubmitting && !finished && <ButtonLoadingSpinner />}
-            {isSubmitting && !finished ? t('processing') : t('placeOrder')}
+            {isSubmitting && <ButtonLoadingSpinner />}
+            {isSubmitting ? t('processing') : t('placeOrder')}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

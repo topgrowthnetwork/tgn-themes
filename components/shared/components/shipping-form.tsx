@@ -1,35 +1,43 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
-import { CheckoutRequest, City, Country, State } from 'lib/api/types';
+import { City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
-import { useFormPersistence } from 'lib/hooks/use-form-persistence';
-import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch
+} from 'react-hook-form';
 import FieldError from './field-error';
 import FormDropdown from './form-dropdown';
 
-const shippingSchema = z.object({
-  name: z.string().min(2, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(6, 'Phone is required'),
-  shipping_address: z.object({
-    country: z.string().min(1, 'Country is required'),
-    state: z.string().min(1, 'State is required'),
-    city: z.string().min(1, 'City is required'),
-    address: z.string().min(1, 'Address is required')
-  })
-});
-
-type ShippingFormData = z.infer<typeof shippingSchema>;
+interface ShippingFormData {
+  name: string;
+  email: string;
+  phone: string;
+  shipping_address: {
+    country: string;
+    state: string;
+    city: string;
+    address: string;
+  };
+  payment_gateway: string;
+  wallet_number?: string;
+  receipt_image?: string;
+  coupon_code?: string;
+}
 
 interface ShippingFormProps {
-  formData: Partial<CheckoutRequest>;
-  onFormDataChange: (data: ShippingFormData) => void;
-  onSubmit: () => void;
+  register: UseFormRegister<ShippingFormData>;
+  control: Control<ShippingFormData>;
+  errors: FieldErrors<ShippingFormData>;
+  watch: UseFormWatch<ShippingFormData>;
+  setValue: UseFormSetValue<ShippingFormData>;
+  onNext: () => void;
   isActive: boolean;
   onEdit?: () => void;
   countries: Country[];
@@ -38,9 +46,12 @@ interface ShippingFormProps {
 }
 
 export default function ShippingForm({
-  formData,
-  onFormDataChange,
-  onSubmit,
+  register,
+  control,
+  errors,
+  watch,
+  setValue,
+  onNext,
   isActive,
   onEdit,
   countries,
@@ -48,38 +59,6 @@ export default function ShippingForm({
   cities
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
-  const { isLoaded } = useShippingStorage();
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    reset,
-    formState: { errors }
-  } = useForm<ShippingFormData>({
-    resolver: zodResolver(shippingSchema),
-    defaultValues: {
-      name: formData.name || '',
-      email: formData.email || '',
-      phone: formData.phone || '',
-      shipping_address: {
-        country: formData.shipping_address?.country || '',
-        state: formData.shipping_address?.state || '',
-        city: formData.shipping_address?.city || '',
-        address: formData.shipping_address?.address || ''
-      }
-    }
-  });
-
-  // Use form persistence hook for automatic localStorage handling
-  const { saveStoredData } = useFormPersistence({
-    storageKey: 'checkout_shipping_data',
-    formData,
-    reset,
-    isLoaded
-  });
 
   const watchedCountry = watch('shipping_address.country');
   const watchedState = watch('shipping_address.state');
@@ -95,7 +74,7 @@ export default function ShippingForm({
 
   // Clear dependent fields when parent selection changes
   const handleCountryChange = (country: string) => {
-    if (formData.shipping_address?.country !== country) {
+    if (watchedCountry !== country) {
       setValue('shipping_address.state', '');
       setValue('shipping_address.city', '');
       clearState();
@@ -105,7 +84,7 @@ export default function ShippingForm({
   };
 
   const handleStateChange = (state: string) => {
-    if (formData.shipping_address?.state !== state) {
+    if (watchedState !== state) {
       setValue('shipping_address.city', '');
       clearCity();
     }
@@ -113,15 +92,6 @@ export default function ShippingForm({
   };
 
   const watchedValues = watch();
-
-  const handleFormSubmit = (data: ShippingFormData) => {
-    // Save to localStorage
-    saveStoredData(data);
-
-    // Update parent component
-    onFormDataChange(data);
-    onSubmit();
-  };
 
   return (
     <div
@@ -135,14 +105,14 @@ export default function ShippingForm({
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-semibold">{t('shippingAddress')}</h2>
         {!isActive && onEdit && (
-          <button onClick={onEdit} className="button-secondary">
+          <button type="button" onClick={onEdit} className="button-secondary">
             {t('edit')}
           </button>
         )}
       </div>
 
       {isActive && (
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label className="label">{t('name')} *</label>
@@ -240,10 +210,15 @@ export default function ShippingForm({
             <FieldError message={errors.shipping_address?.address?.message} />
           </div>
 
-          <button type="submit" className="button" data-testid="shipping-form-submit">
+          <button
+            type="button"
+            onClick={onNext}
+            className="button"
+            data-testid="shipping-form-next"
+          >
             {t('next')}
           </button>
-        </form>
+        </div>
       )}
 
       {!isActive && (
