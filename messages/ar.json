@@ -54,7 +54,9 @@
   },
   "Products": {
     "bestSelling": "أفضل المنتجات مبيعاً",
-    "categories": "تسوق حسب الفئة"
+    "categories": "تسوق حسب الفئة",
+    "resultsFound": "تم العثور على {count} نتيجة",
+    "noProducts": "لم يتم العثور على منتجات"
   },
   "Category": {
     "noProducts": "لم يتم العثور على منتجات في هذه الفئة."

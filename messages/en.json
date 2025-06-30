@@ -54,7 +54,9 @@
   },
   "Products": {
     "bestSelling": "Best Selling Products",
-    "categories": "Shop by Category"
+    "categories": "Shop by Category",
+    "resultsFound": "{count} results found",
+    "noProducts": "No products found"
   },
   "Category": {
     "noProducts": "No products found in this category."

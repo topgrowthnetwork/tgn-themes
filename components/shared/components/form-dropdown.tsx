@@ -3,6 +3,7 @@
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
+import { useLocale } from 'next-intl';
 import { Fragment } from 'react';
 
 interface Option {
@@ -33,6 +34,8 @@ export default function FormDropdown({
   dataTestId
 }: FormDropdownProps) {
   const selectedOption = options.find((option) => option.name === value);
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   return (
     <div>
@@ -48,7 +51,12 @@ export default function FormDropdown({
             <span className={clsx('block truncate', !selectedOption && 'text-gray-500')}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pe-2">
+            <span
+              className={clsx(
+                'pointer-events-none absolute inset-y-0 flex items-center pe-2',
+                isRTL ? 'left-0' : 'right-0'
+              )}
+            >
               <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
             </span>
           </Listbox.Button>

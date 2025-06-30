@@ -14,7 +14,7 @@ describe('Checkout Flow', () => {
     cy.get('[data-testid="product-card-link"]')
       .should('be.visible')
       .should('have.length.at.least', 2)
-      .eq(2) // Get the 3nd product card link
+      .eq(0) // Get the 3nd product card link
       .click();
 
     cy.wait(2000); // Wait for navigation to product page

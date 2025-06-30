@@ -39,7 +39,7 @@ function SubmitButton({
         aria-disabled
         className={clsx(buttonClasses, disabledClasses)}
       >
-        <div className="absolute left-0 ms-4">
+        <div className="absolute left-0 ms-4 rtl:right-0">
           <PlusIcon className="h-5" />
         </div>
         {t('addToCart')}
@@ -60,7 +60,7 @@ function SubmitButton({
       })}
       data-testid="add-to-cart-button"
     >
-      <div className="absolute left-0 ms-4">
+      <div className="absolute left-0 ms-4 rtl:right-0">
         {pending ? <LoadingDots className="mb-3 bg-white" /> : <PlusIcon className="h-5" />}
       </div>
       {t('addToCart')}
