@@ -6,35 +6,22 @@ import PaymentForm from '@shared/components/payment-form';
 import ShippingForm from '@shared/components/shipping-form';
 import { ToastNotification } from '@shared/components/toast-notification';
 import Container from '@theme/components/container';
-import { CartResponse, City, Country, GlobalSettings, PaymentSettings, State } from 'lib/api/types';
+import {
+  CartResponse,
+  CheckoutRequest,
+  City,
+  Country,
+  GlobalSettings,
+  PaymentSettings,
+  State
+} from 'lib/api/types';
+import { useFormPersistence } from 'lib/hooks/use-form-persistence';
 import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { useRouter } from 'lib/i18n/navigation';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-// Combined schema for the entire checkout form
-const checkoutSchema = z.object({
-  name: z.string().min(2, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(6, 'Phone is required'),
-  shipping_address: z.object({
-    country: z.string().min(1, 'Country is required'),
-    state: z.string().min(1, 'State is required'),
-    city: z.string().min(1, 'City is required'),
-    address: z.string().min(1, 'Address is required')
-  }),
-  payment_gateway: z.string().min(1, 'Please select a payment method'),
-  wallet_number: z.string().optional(),
-  receipt_image: z.string().optional(),
-  coupon_code: z.string().optional()
-});
-
-type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 interface CheckoutPageProps {
   paymentSettings: PaymentSettings;
@@ -44,29 +31,6 @@ interface CheckoutPageProps {
   states: State[];
   cities: City[];
 }
-
-// Form persistence utilities
-const loadStoredData = (storageKey: string): Partial<CheckoutFormData> => {
-  if (typeof window === 'undefined') return {};
-
-  try {
-    const stored = localStorage.getItem(storageKey);
-    return stored ? JSON.parse(stored) : {};
-  } catch (error) {
-    console.warn(`Failed to load data from localStorage for key "${storageKey}":`, error);
-    return {};
-  }
-};
-
-const saveStoredData = (storageKey: string, data: Partial<CheckoutFormData>) => {
-  if (typeof window === 'undefined') return;
-
-  try {
-    localStorage.setItem(storageKey, JSON.stringify(data));
-  } catch (error) {
-    console.warn(`Failed to save data to localStorage for key "${storageKey}":`, error);
-  }
-};
 
 export default function CheckoutPage({
   paymentSettings,
@@ -79,42 +43,19 @@ export default function CheckoutPage({
   const t = useTranslations('Checkout');
   const router = useRouter();
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { isLoaded } = useShippingStorage();
 
-  // Load stored data for initial form values
-  const getInitialFormData = (): CheckoutFormData => {
-    const storedData = loadStoredData('checkout_shipping_data');
-    return {
-      name: storedData.name || '',
-      email: storedData.email || '',
-      phone: storedData.phone || '',
-      shipping_address: {
-        country: storedData.shipping_address?.country || '',
-        state: storedData.shipping_address?.state || '',
-        city: storedData.shipping_address?.city || '',
-        address: storedData.shipping_address?.address || ''
-      },
-      payment_gateway: storedData.payment_gateway || 'cash_on_delivery',
-      wallet_number: storedData.wallet_number || '',
-      receipt_image: storedData.receipt_image || '',
-      coupon_code: storedData.coupon_code || ''
-    };
-  };
-
-  // Single form instance for the entire checkout
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    reset,
-    formState: { errors, isValid }
-  } = useForm<CheckoutFormData>({
-    resolver: zodResolver(checkoutSchema),
-    defaultValues: getInitialFormData(),
-    mode: 'onChange'
+  const [formData, setFormData] = useState<Partial<CheckoutRequest>>({
+    shipping_address: {
+      country: '',
+      state: '',
+      city: '',
+      address: ''
+    },
+    name: '',
+    email: '',
+    phone: '',
+    payment_gateway: 'cash_on_delivery'
   });
 
   const [state, formAction] = useFormState(processCheckout, {
@@ -122,20 +63,17 @@ export default function CheckoutPage({
     success: false
   });
 
-  // Load stored data when component mounts
-  useEffect(() => {
-    if (isLoaded) {
-      const storedData = loadStoredData('checkout_shipping_data');
-      if (Object.keys(storedData).length > 0) {
-        reset(getInitialFormData());
-      }
-    }
-  }, [isLoaded, reset]);
+  // Use form persistence hook
+  const { saveStoredData } = useFormPersistence({
+    storageKey: 'checkout_shipping_data',
+    formData,
+    reset: setFormData,
+    isLoaded
+  });
 
   // Handle external payment gateway redirect
   useEffect(() => {
     if (state?.success) {
-      setIsSubmitting(false);
       // Redirect to external payment gateway
       if (state.internalRedirect) {
         router.push('/thank-you');
@@ -146,49 +84,29 @@ export default function CheckoutPage({
     }
   }, [state, router]);
 
-  // Handle form submission errors
-  useEffect(() => {
-    if (state?.message && !state?.success) {
-      setIsSubmitting(false);
-    }
-  }, [state]);
+  const updateFormData = (field: keyof CheckoutRequest, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleShippingDataChange = (shippingData: any) => {
+    // Update form data with shipping info
+    setFormData((prev) => ({
+      ...prev,
+      ...shippingData
+    }));
+  };
 
   const handleNextStep = () => {
     // Save current form data to localStorage before moving to next step
-    const currentData = watch();
-    saveStoredData('checkout_shipping_data', currentData);
+    saveStoredData(formData as CheckoutRequest);
     setStep('payment');
   };
 
   const handleBackToShipping = () => {
     setStep('shipping');
-  };
-
-  const onSubmit = async (data: CheckoutFormData) => {
-    setIsSubmitting(true);
-
-    // Create FormData for server action
-    const formDataToSubmit = new FormData();
-    formDataToSubmit.append('name', data.name);
-    formDataToSubmit.append('email', data.email);
-    formDataToSubmit.append('phone', data.phone);
-    formDataToSubmit.append('shipping_address_country', data.shipping_address.country);
-    formDataToSubmit.append('shipping_address_state', data.shipping_address.state);
-    formDataToSubmit.append('shipping_address_city', data.shipping_address.city);
-    formDataToSubmit.append('shipping_address_address', data.shipping_address.address);
-    formDataToSubmit.append('payment_gateway', data.payment_gateway);
-
-    if (data.wallet_number) {
-      formDataToSubmit.append('wallet_number', data.wallet_number);
-    }
-    if (data.receipt_image) {
-      formDataToSubmit.append('receipt_image', data.receipt_image);
-    }
-    if (data.coupon_code) {
-      formDataToSubmit.append('coupon_code', data.coupon_code);
-    }
-
-    formAction(formDataToSubmit);
   };
 
   return (
@@ -205,17 +123,49 @@ export default function CheckoutPage({
           />
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Main Checkout Forms */}
-            <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Main Checkout Forms */}
+          <div className="lg:col-span-2">
+            <form action={formAction}>
+              {/* Hidden form fields to pass data to server action */}
+              <input type="hidden" name="name" value={formData.name || ''} />
+              <input type="hidden" name="email" value={formData.email || ''} />
+              <input type="hidden" name="phone" value={formData.phone || ''} />
+              <input
+                type="hidden"
+                name="shipping_address_country"
+                value={formData.shipping_address?.country || ''}
+              />
+              <input
+                type="hidden"
+                name="shipping_address_state"
+                value={formData.shipping_address?.state || ''}
+              />
+              <input
+                type="hidden"
+                name="shipping_address_city"
+                value={formData.shipping_address?.city || ''}
+              />
+              <input
+                type="hidden"
+                name="shipping_address_address"
+                value={formData.shipping_address?.address || ''}
+              />
+              <input type="hidden" name="payment_gateway" value={formData.payment_gateway || ''} />
+              {formData.wallet_number && (
+                <input type="hidden" name="wallet_number" value={formData.wallet_number} />
+              )}
+              {formData.receipt_image && (
+                <input type="hidden" name="receipt_image" value={formData.receipt_image} />
+              )}
+              {formData.coupon_code && (
+                <input type="hidden" name="coupon_code" value={formData.coupon_code} />
+              )}
+
               {/* Shipping Form */}
               <ShippingForm
-                register={register}
-                control={control}
-                errors={errors}
-                watch={watch}
-                setValue={setValue}
+                formData={formData}
+                onFormDataChange={handleShippingDataChange}
                 onNext={handleNextStep}
                 isActive={step === 'shipping'}
                 onEdit={handleBackToShipping}
@@ -227,25 +177,20 @@ export default function CheckoutPage({
               {/* Payment Form */}
               {step === 'payment' && (
                 <PaymentForm
-                  register={register}
-                  control={control}
-                  errors={errors}
-                  watch={watch}
-                  setValue={setValue}
+                  formData={formData}
+                  onFormDataChange={updateFormData}
                   paymentSettings={paymentSettings}
                   onBack={handleBackToShipping}
-                  isSubmitting={isSubmitting}
-                  hasError={Boolean(state?.message && !state?.success)}
                 />
               )}
-            </div>
-
-            {/* Cart Summary Sidebar */}
-            <div className="lg:col-span-1">
-              <CartSummary cartResponse={cartResponse} currency={settings.site_global_currency} />
-            </div>
+            </form>
           </div>
-        </form>
+
+          {/* Cart Summary Sidebar */}
+          <div className="lg:col-span-1">
+            <CartSummary cartResponse={cartResponse} currency={settings.site_global_currency} />
+          </div>
+        </div>
       </div>
     </Container>
   );

@@ -1,42 +1,16 @@
 'use client';
 
 import clsx from 'clsx';
-import { City, Country, State } from 'lib/api/types';
+import { CheckoutRequest, City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
 import { useTranslations } from 'next-intl';
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch
-} from 'react-hook-form';
+import { useState } from 'react';
 import FieldError from './field-error';
 import FormDropdown from './form-dropdown';
 
-interface ShippingFormData {
-  name: string;
-  email: string;
-  phone: string;
-  shipping_address: {
-    country: string;
-    state: string;
-    city: string;
-    address: string;
-  };
-  payment_gateway: string;
-  wallet_number?: string;
-  receipt_image?: string;
-  coupon_code?: string;
-}
-
 interface ShippingFormProps {
-  register: UseFormRegister<ShippingFormData>;
-  control: Control<ShippingFormData>;
-  errors: FieldErrors<ShippingFormData>;
-  watch: UseFormWatch<ShippingFormData>;
-  setValue: UseFormSetValue<ShippingFormData>;
+  formData: Partial<CheckoutRequest>;
+  onFormDataChange: (data: Partial<CheckoutRequest>) => void;
   onNext: () => void;
   isActive: boolean;
   onEdit?: () => void;
@@ -46,11 +20,8 @@ interface ShippingFormProps {
 }
 
 export default function ShippingForm({
-  register,
-  control,
-  errors,
-  watch,
-  setValue,
+  formData,
+  onFormDataChange,
   onNext,
   isActive,
   onEdit,
@@ -59,39 +30,130 @@ export default function ShippingForm({
   cities
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
-
-  const watchedCountry = watch('shipping_address.country');
-  const watchedState = watch('shipping_address.state');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Use custom hook for address cascade logic
   const { availableStates, availableCities, clearState, clearCity } = useAddressCascade({
     countries,
     states,
     cities,
-    selectedCountry: watchedCountry,
-    selectedState: watchedState
+    selectedCountry: formData.shipping_address?.country || '',
+    selectedState: formData.shipping_address?.state || ''
   });
+
+  // Validation function
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name || formData.name.length < 2) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email address';
+    }
+
+    if (!formData.phone || formData.phone.length < 6) {
+      newErrors.phone = 'Phone is required';
+    }
+
+    if (!formData.shipping_address?.country) {
+      newErrors.country = 'Country is required';
+    }
+
+    if (!formData.shipping_address?.state) {
+      newErrors.state = 'State is required';
+    }
+
+    if (!formData.shipping_address?.city) {
+      newErrors.city = 'City is required';
+    }
+
+    if (!formData.shipping_address?.address) {
+      newErrors.address = 'Address is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   // Clear dependent fields when parent selection changes
   const handleCountryChange = (country: string) => {
-    if (watchedCountry !== country) {
-      setValue('shipping_address.state', '');
-      setValue('shipping_address.city', '');
+    if (formData.shipping_address?.country !== country) {
+      onFormDataChange({
+        ...formData,
+        shipping_address: {
+          country,
+          state: '',
+          city: '',
+          address: formData.shipping_address?.address || ''
+        }
+      });
       clearState();
       clearCity();
+    } else {
+      onFormDataChange({
+        ...formData,
+        shipping_address: {
+          country,
+          state: formData.shipping_address?.state || '',
+          city: formData.shipping_address?.city || '',
+          address: formData.shipping_address?.address || ''
+        }
+      });
     }
-    setValue('shipping_address.country', country);
   };
 
   const handleStateChange = (state: string) => {
-    if (watchedState !== state) {
-      setValue('shipping_address.city', '');
+    if (formData.shipping_address?.state !== state) {
+      onFormDataChange({
+        ...formData,
+        shipping_address: {
+          country: formData.shipping_address?.country || '',
+          state,
+          city: '',
+          address: formData.shipping_address?.address || ''
+        }
+      });
       clearCity();
+    } else {
+      onFormDataChange({
+        ...formData,
+        shipping_address: {
+          country: formData.shipping_address?.country || '',
+          state,
+          city: formData.shipping_address?.city || '',
+          address: formData.shipping_address?.address || ''
+        }
+      });
     }
-    setValue('shipping_address.state', state);
   };
 
-  const watchedValues = watch();
+  const handleInputChange = (field: string, value: string) => {
+    onFormDataChange({
+      ...formData,
+      [field]: value
+    });
+  };
+
+  const handleAddressChange = (field: string, value: string) => {
+    onFormDataChange({
+      ...formData,
+      shipping_address: {
+        country: formData.shipping_address?.country || '',
+        state: formData.shipping_address?.state || '',
+        city: formData.shipping_address?.city || '',
+        address: formData.shipping_address?.address || '',
+        [field]: value
+      }
+    });
+  };
+
+  const handleFormSubmit = () => {
+    if (validateForm()) {
+      onNext();
+    }
+  };
 
   return (
     <div
@@ -118,21 +180,23 @@ export default function ShippingForm({
               <label className="label">{t('name')} *</label>
               <input
                 type="text"
-                {...register('name')}
+                value={formData.name || ''}
+                onChange={(e) => handleInputChange('name', e.target.value)}
                 className="input"
                 data-testid="shipping-form-name"
               />
-              {errors.name && <FieldError message={errors.name.message} />}
+              {errors.name && <FieldError message={errors.name} />}
             </div>
             <div>
               <label className="label">{t('email')} *</label>
               <input
                 type="email"
-                {...register('email')}
+                value={formData.email || ''}
+                onChange={(e) => handleInputChange('email', e.target.value)}
                 className="input"
                 data-testid="shipping-form-email"
               />
-              {errors.email && <FieldError message={errors.email.message} />}
+              {errors.email && <FieldError message={errors.email} />}
             </div>
           </div>
 
@@ -140,79 +204,63 @@ export default function ShippingForm({
             <label className="label">{t('phone')} *</label>
             <input
               type="tel"
-              {...register('phone')}
+              value={formData.phone || ''}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
               className="input"
               data-testid="shipping-form-phone"
             />
-            {errors.phone && <FieldError message={errors.phone.message} />}
+            {errors.phone && <FieldError message={errors.phone} />}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Controller
-              name="shipping_address.country"
-              control={control}
-              render={({ field }) => (
-                <FormDropdown
-                  label={`${t('country')} *`}
-                  options={countries}
-                  value={field.value}
-                  onChange={handleCountryChange}
-                  error={errors.shipping_address?.country?.message}
-                  placeholder={t('selectCountry')}
-                  dataTestId="shipping-form-country"
-                />
-              )}
+            <FormDropdown
+              label={`${t('country')} *`}
+              options={countries}
+              value={formData.shipping_address?.country || ''}
+              onChange={handleCountryChange}
+              error={errors.country}
+              placeholder={t('selectCountry')}
+              dataTestId="shipping-form-country"
             />
 
-            <Controller
-              name="shipping_address.state"
-              control={control}
-              render={({ field }) => (
-                <FormDropdown
-                  label={`${t('state')} *`}
-                  options={availableStates}
-                  value={field.value}
-                  onChange={handleStateChange}
-                  error={errors.shipping_address?.state?.message}
-                  placeholder={t('selectState')}
-                  disabled={!watchedCountry}
-                  dataTestId="shipping-form-state"
-                />
-              )}
+            <FormDropdown
+              label={`${t('state')} *`}
+              options={availableStates}
+              value={formData.shipping_address?.state || ''}
+              onChange={handleStateChange}
+              error={errors.state}
+              placeholder={t('selectState')}
+              disabled={!formData.shipping_address?.country}
+              dataTestId="shipping-form-state"
             />
 
-            <Controller
-              name="shipping_address.city"
-              control={control}
-              render={({ field }) => (
-                <FormDropdown
-                  label={`${t('city')} *`}
-                  options={availableCities}
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={errors.shipping_address?.city?.message}
-                  placeholder={t('selectCity')}
-                  disabled={!watchedState}
-                  dataTestId="shipping-form-city"
-                />
-              )}
+            <FormDropdown
+              label={`${t('city')} *`}
+              options={availableCities}
+              value={formData.shipping_address?.city || ''}
+              onChange={(city) => handleAddressChange('city', city)}
+              error={errors.city}
+              placeholder={t('selectCity')}
+              disabled={!formData.shipping_address?.state}
+              dataTestId="shipping-form-city"
             />
           </div>
 
           <div>
             <label className="label">{t('address')} *</label>
             <textarea
-              {...register('shipping_address.address')}
+              value={formData.shipping_address?.address || ''}
+              onChange={(e) => handleAddressChange('address', e.target.value)}
               rows={3}
               className="textarea"
               data-testid="shipping-form-address"
             />
-            <FieldError message={errors.shipping_address?.address?.message} />
+            {errors.address && <FieldError message={errors.address} />}
           </div>
 
           <button
             type="button"
-            onClick={onNext}
+            onClick={handleFormSubmit}
             className="button"
             data-testid="shipping-form-next"
           >
@@ -224,18 +272,18 @@ export default function ShippingForm({
       {!isActive && (
         <div className="space-y-2">
           <p>
-            <strong>{t('name')}:</strong> {watchedValues.name}
+            <strong>{t('name')}:</strong> {formData.name}
           </p>
           <p>
-            <strong>{t('email')}:</strong> {watchedValues.email}
+            <strong>{t('email')}:</strong> {formData.email}
           </p>
           <p>
-            <strong>{t('phone')}:</strong> {watchedValues.phone}
+            <strong>{t('phone')}:</strong> {formData.phone}
           </p>
           <p>
-            <strong>{t('address')}:</strong> {watchedValues.shipping_address?.address},{' '}
-            {watchedValues.shipping_address?.city}, {watchedValues.shipping_address?.state},{' '}
-            {watchedValues.shipping_address?.country}
+            <strong>{t('address')}:</strong> {formData.shipping_address?.address},{' '}
+            {formData.shipping_address?.city}, {formData.shipping_address?.state},{' '}
+            {formData.shipping_address?.country}
           </p>
         </div>
       )}

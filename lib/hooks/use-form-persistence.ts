@@ -1,20 +1,17 @@
 import { useEffect } from 'react';
-import { FieldValues, UseFormReset } from 'react-hook-form';
 
-interface FormPersistenceOptions<T extends FieldValues> {
+interface FormPersistenceOptions<T> {
   storageKey: string;
   formData: Partial<T>;
-  reset: UseFormReset<T>;
+  reset: (data: T) => void;
   isLoaded: boolean;
-  onDataLoaded?: (data: Partial<T>) => void;
 }
 
-export function useFormPersistence<T extends FieldValues>({
+export function useFormPersistence<T>({
   storageKey,
   formData,
   reset,
-  isLoaded,
-  onDataLoaded
+  isLoaded
 }: FormPersistenceOptions<T>) {
   // Load data from localStorage
   const loadStoredData = (): Partial<T> => {
@@ -61,13 +58,10 @@ export function useFormPersistence<T extends FieldValues>({
     // Merge stored data with existing form data
     const mergedData = { ...formData, ...storedData };
 
+    console.log('mergedData', mergedData);
+
     // Reset form with merged data
     reset(mergedData as T);
-
-    // Notify parent component if callback provided
-    if (onDataLoaded) {
-      onDataLoaded(storedData);
-    }
   };
 
   // Auto-prefill on mount and when dependencies change

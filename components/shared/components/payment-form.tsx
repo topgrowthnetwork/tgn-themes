@@ -2,59 +2,25 @@
 
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import clsx from 'clsx';
-import { PaymentSettings } from 'lib/api/types';
+import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
-import {
-  Control,
-  FieldErrors,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch
-} from 'react-hook-form';
-import FieldError from './field-error';
-
-interface PaymentFormData {
-  name: string;
-  email: string;
-  phone: string;
-  shipping_address: {
-    country: string;
-    state: string;
-    city: string;
-    address: string;
-  };
-  payment_gateway: string;
-  wallet_number?: string;
-  receipt_image?: string;
-  coupon_code?: string;
-}
+import { useFormStatus } from 'react-dom';
 
 interface PaymentFormProps {
-  register: UseFormRegister<PaymentFormData>;
-  control: Control<PaymentFormData>;
-  errors: FieldErrors<PaymentFormData>;
-  watch: UseFormWatch<PaymentFormData>;
-  setValue: UseFormSetValue<PaymentFormData>;
+  formData: Partial<CheckoutRequest>;
+  onFormDataChange: (field: keyof CheckoutRequest, value: any) => void;
   paymentSettings: PaymentSettings;
   onBack: () => void;
-  isSubmitting: boolean;
-  hasError: boolean;
 }
 
 export default function PaymentForm({
-  register,
-  control,
-  errors,
-  watch,
-  setValue,
+  formData,
+  onFormDataChange,
   paymentSettings,
-  onBack,
-  isSubmitting,
-  hasError
+  onBack
 }: PaymentFormProps) {
   const t = useTranslations('Checkout');
-
-  const watchedPaymentGateway = watch('payment_gateway');
+  const { pending } = useFormStatus();
 
   const paymentGateways = [
     { key: 'cash_on_delivery', label: t('cashOnDelivery') },
@@ -64,6 +30,18 @@ export default function PaymentForm({
     { key: 'paymob_card_gateway', label: t('paymobCardGateway') },
     { key: 'paymob_wallet_gateway', label: t('paymobWalletGateway') }
   ].filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1');
+
+  const handlePaymentGatewayChange = (gateway: string) => {
+    onFormDataChange('payment_gateway', gateway);
+  };
+
+  const handleWalletNumberChange = (value: string) => {
+    onFormDataChange('wallet_number', value);
+  };
+
+  const handleReceiptImageChange = (file: File) => {
+    onFormDataChange('receipt_image', file.name);
+  };
 
   return (
     <div className="rounded-theme border border-gray-200 p-6" data-testid="payment-form">
@@ -78,8 +56,10 @@ export default function PaymentForm({
             >
               <input
                 type="radio"
+                name="payment_gateway"
                 value={gateway.key}
-                {...register('payment_gateway')}
+                checked={formData.payment_gateway === gateway.key}
+                onChange={() => handlePaymentGatewayChange(gateway.key)}
                 className={clsx(
                   `paymentForm__radio ${gateway.key}`,
                   'h-4 w-4 text-primary-600 focus:ring-primary-500'
@@ -90,33 +70,36 @@ export default function PaymentForm({
             </label>
           ))}
         </div>
-        <FieldError message={errors.payment_gateway?.message} />
 
         {/* Optional fields based on payment method */}
-        {watchedPaymentGateway === 'paymob_wallet_gateway' && (
+        {formData.payment_gateway === 'paymob_wallet_gateway' && (
           <div>
             <label className="label">{t('walletNumber')}</label>
-            <input type="text" {...register('wallet_number')} className="input" />
-            {errors.wallet_number && <FieldError message={errors.wallet_number.message} />}
+            <input
+              type="text"
+              name="wallet_number"
+              value={formData.wallet_number || ''}
+              onChange={(e) => handleWalletNumberChange(e.target.value)}
+              className="input"
+            />
           </div>
         )}
 
-        {watchedPaymentGateway === 'send_receipt' && (
+        {formData.payment_gateway === 'send_receipt' && (
           <div>
             <label className="label">{t('receiptImage')}</label>
             <input
               type="file"
+              name="receipt_image"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  // Handle file upload logic here
-                  setValue('receipt_image', file.name);
+                  handleReceiptImageChange(file);
                 }
               }}
               className="input"
             />
-            <FieldError message={errors.receipt_image?.message} />
           </div>
         )}
 
@@ -126,12 +109,12 @@ export default function PaymentForm({
           </button>
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={pending}
             className="button flex flex-1 items-center justify-center gap-2"
             data-testid="payment-form-submit"
           >
-            {isSubmitting && <ButtonLoadingSpinner />}
-            {isSubmitting ? t('processing') : t('placeOrder')}
+            {pending && <ButtonLoadingSpinner />}
+            {pending ? t('processing') : t('placeOrder')}
           </button>
         </div>
       </div>
