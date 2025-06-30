@@ -1,15 +1,10 @@
 'use server';
 
 import { createApi } from 'lib/api';
+import { ActionResponse } from 'lib/api/types';
 import { TAGS } from 'lib/constants';
-import { err, ok, Result } from 'neverthrow';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
-
-// Define a simple response type with just a message field
-interface CartActionResponse {
-  message: string;
-}
 
 export async function addItemV2(
   prevState: any,
@@ -20,7 +15,7 @@ export async function addItemV2(
     selectedProductId: number;
     selectedVariantId: number;
   }
-): Promise<Result<CartActionResponse, CartActionResponse>> {
+): Promise<ActionResponse> {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
@@ -32,28 +27,28 @@ export async function addItemV2(
     });
 
     if (result.isErr()) {
-      return err({
-        message: 'Failed to add item to cart'
-      });
+      return {
+        message: 'Failed to add item to cart',
+        success: false
+      };
     }
 
     revalidateTag(TAGS.cart);
     cookies().set('cartId', result.value.data.cart_item.cart_id.toString());
 
-    return ok({
-      message: result.value.data.message || 'Added to cart successfully'
-    });
+    return {
+      message: result.value.data.message || 'Added to cart successfully',
+      success: true
+    };
   } catch (error: any) {
-    return err({
-      message: 'Error adding item to cart'
-    });
+    return {
+      message: 'Error adding item to cart',
+      success: false
+    };
   }
 }
 
-export async function removeItemV2(
-  prevState: any,
-  lineId: number
-): Promise<Result<CartActionResponse, CartActionResponse>> {
+export async function removeItemV2(prevState: any, lineId: number): Promise<ActionResponse> {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
@@ -61,19 +56,22 @@ export async function removeItemV2(
     const result = await api.deleteCartItem(lineId);
 
     if (result.isErr()) {
-      return err({
-        message: 'Failed to remove item from cart'
-      });
+      return {
+        message: 'Failed to remove item from cart',
+        success: false
+      };
     }
 
     revalidateTag(TAGS.cart);
-    return ok({
-      message: result.value.data.message || 'Removed from cart successfully'
-    });
+    return {
+      message: result.value.data.message || 'Removed from cart successfully',
+      success: true
+    };
   } catch (error: any) {
-    return err({
-      message: 'Error removing item from cart'
-    });
+    return {
+      message: 'Error removing item from cart',
+      success: false
+    };
   }
 }
 
@@ -86,7 +84,7 @@ export async function updateItemQuantityV2(
     lineId: number;
     quantity: number;
   }
-): Promise<Result<CartActionResponse, CartActionResponse>> {
+): Promise<ActionResponse> {
   // If quantity is 0 or less, remove the item instead
   if (quantity <= 0) {
     return await removeItemV2(prevState, lineId);
@@ -100,26 +98,26 @@ export async function updateItemQuantityV2(
     const result = await api.updateCartItem(lineId, { qyt: quantity });
 
     if (result.isErr()) {
-      return err({
-        message: 'Failed to update item quantity'
-      });
+      return {
+        message: 'Failed to update item quantity',
+        success: false
+      };
     }
 
     revalidateTag(TAGS.cart);
-    return ok({
-      message: 'Updated item quantity successfully'
-    });
+    return {
+      message: 'Updated item quantity successfully',
+      success: true
+    };
   } catch (error: any) {
-    return err({
-      message: 'Error updating item quantity'
-    });
+    return {
+      message: 'Error updating item quantity',
+      success: false
+    };
   }
 }
 
-export async function applyCouponV2(
-  prevState: any,
-  couponCode: string
-): Promise<Result<CartActionResponse, CartActionResponse>> {
+export async function applyCouponV2(prevState: any, couponCode: string): Promise<ActionResponse> {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
@@ -127,18 +125,21 @@ export async function applyCouponV2(
     const result = await api.applyCoupon(couponCode);
 
     if (result.isErr()) {
-      return err({
-        message: 'Failed to apply coupon'
-      });
+      return {
+        message: 'Failed to apply coupon',
+        success: false
+      };
     }
 
     revalidateTag(TAGS.cart);
-    return ok({
-      message: result.value.data.message || 'Coupon applied successfully'
-    });
+    return {
+      message: result.value.data.message || 'Coupon applied successfully',
+      success: true
+    };
   } catch (error: any) {
-    return err({
-      message: 'Error applying coupon'
-    });
+    return {
+      message: 'Error applying coupon',
+      success: false
+    };
   }
 }

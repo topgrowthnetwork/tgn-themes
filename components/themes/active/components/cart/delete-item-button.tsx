@@ -3,7 +3,7 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { removeItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
-import { getNotificationData } from 'lib/utils';
+
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -31,20 +31,25 @@ function SubmitButton({ item }: { item: any }) {
 }
 
 export function DeleteItemButton({ item }: { item: any }) {
-  const [state, formAction] = useFormState(removeItemV2, null);
-
-  const { type, message } = getNotificationData(state);
+  const [state, formAction] = useFormState(removeItemV2, {
+    message: '',
+    success: false
+  });
 
   return (
     <>
       <form action={formAction.bind(null, item.id)}>
         <SubmitButton item={item} />
         <p aria-live="polite" className="sr-only" role="status">
-          {message}
+          {state.message}
         </p>
       </form>
 
-      <ToastNotification message={message} type={type} autoClose={3000} />
+      <ToastNotification
+        type={state.success ? 'success' : 'error'}
+        message={state.message}
+        autoClose={3000}
+      />
     </>
   );
 }

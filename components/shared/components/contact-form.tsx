@@ -5,7 +5,7 @@ import { submitContact } from '@shared/components/contact-actions';
 import FieldError from '@shared/components/field-error';
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { ToastNotification } from '@shared/components/toast-notification';
-import { getNotificationData } from 'lib/utils';
+
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
@@ -39,7 +39,10 @@ function SubmitButton({ disabled, isLoading }: { disabled: boolean; isLoading: b
 export default function ContactForm() {
   const t = useTranslations('Contact');
   const [isLoading, setIsLoading] = useState(false);
-  const [state, formAction] = useFormState(submitContact, null);
+  const [state, formAction] = useFormState(submitContact, {
+    message: '',
+    success: false
+  });
 
   const {
     register,
@@ -54,7 +57,7 @@ export default function ContactForm() {
     setIsLoading(true);
     try {
       await formAction(data);
-      if (state?.isOk()) {
+      if (state?.success) {
         reset();
       }
     } finally {
@@ -67,7 +70,11 @@ export default function ContactForm() {
       <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
         {t('sendMessage')}
       </h2>
-      <ToastNotification {...getNotificationData(state)} autoClose={state?.isOk() ? 5000 : false} />
+      <ToastNotification
+        type={state.success ? 'success' : 'error'}
+        message={state.message}
+        autoClose={state.success ? 5000 : false}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -124,7 +131,7 @@ export default function ContactForm() {
           {errors.message && <FieldError message={errors.message.message} />}
         </div>
 
-        <SubmitButton disabled={state?.isOk() ?? false} isLoading={isLoading} />
+        <SubmitButton disabled={state.success} isLoading={isLoading} />
       </form>
     </div>
   );

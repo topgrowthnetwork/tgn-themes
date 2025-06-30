@@ -1,4 +1,3 @@
-import { Result } from 'neverthrow';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { Product, ProductVariant } from './api/types';
 
@@ -287,22 +286,4 @@ export function getAvailableOptionsForAttribute(
   });
 
   return Array.from(availableValues);
-}
-
-/**
- * Extracts notification type and message from cart action Result for toast notifications
- * @param state - The Result from cart actions (addItemV2, removeItemV2, etc.)
- * @returns Object with type ('success' | 'error' | 'info') and message string
- */
-export function getNotificationData<T extends { message: string }>(
-  state: Result<T, T> | null
-): { type: 'success' | 'error' | 'info'; message: string } {
-  if (!state) {
-    return { type: 'info', message: '' };
-  }
-
-  return {
-    type: state.isOk() ? 'success' : 'error',
-    message: state.isOk() ? state.value.message : state.error.message
-  };
 }

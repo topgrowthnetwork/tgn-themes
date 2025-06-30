@@ -5,7 +5,7 @@ import { updateItemQuantityV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
-import { getNotificationData } from 'lib/utils';
+
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -67,9 +67,10 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   minStock?: number;
 }) {
-  const [state, formAction] = useFormState(updateItemQuantityV2, null);
-
-  console.log('💓💓', state);
+  const [state, formAction] = useFormState(updateItemQuantityV2, {
+    message: '',
+    success: false
+  });
 
   const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
@@ -82,18 +83,20 @@ export function EditItemQuantityButton({
   // Disable plus button if no stock available or below min_stock
   const isDisabled = type === 'plus' && !canIncrease;
 
-  const { message } = getNotificationData(state);
-
   return (
     <>
       <form action={formAction.bind(null, { lineId: item.id, quantity })}>
         <SubmitButton type={type} item={item} disabled={isDisabled} />
         <p aria-live="polite" className="sr-only" role="status">
-          {message}
+          {state.message}
         </p>
       </form>
 
-      <ToastNotification {...getNotificationData(state)} autoClose={3000} />
+      <ToastNotification
+        type={state.success ? 'success' : 'error'}
+        message={state.message}
+        autoClose={3000}
+      />
     </>
   );
 }

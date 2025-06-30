@@ -2,27 +2,26 @@
 
 import { createApi } from 'lib/api';
 import { ActionResponse, ContactRequest } from 'lib/api/types';
-import { err, ok, Result } from 'neverthrow';
 
-export async function submitContact(
-  prevState: any,
-  data: ContactRequest
-): Promise<Result<ActionResponse, ActionResponse>> {
+export async function submitContact(prevState: any, data: ContactRequest): Promise<ActionResponse> {
   const api = createApi({ language: 'en' });
 
   try {
     const result = await api.submitContact(data);
     if (result.isErr()) {
-      return err({
-        message: 'Failed to submit contact form'
-      });
+      return {
+        message: 'Failed to submit contact form',
+        success: false
+      };
     }
-    return ok({
-      message: result.value.data.message || 'Message sent successfully!'
-    });
+    return {
+      message: result.value.data.message || 'Message sent successfully!',
+      success: true
+    };
   } catch (error: any) {
-    return err({
-      message: 'Error sending message. Please try again.'
-    });
+    return {
+      message: 'Error sending message. Please try again.',
+      success: false
+    };
   }
 }

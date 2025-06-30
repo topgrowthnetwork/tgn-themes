@@ -2,18 +2,17 @@
 
 import { createApi } from 'lib/api';
 import { ActionResponse, CheckoutRequest } from 'lib/api/types';
-import { err, ok, Result } from 'neverthrow';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 interface CheckoutActionResponse extends ActionResponse {
-  redirectUrl: string;
+  redirectUrl?: string;
 }
 
 export async function processCheckout(
   prevState: any,
   formData: FormData
-): Promise<Result<CheckoutActionResponse, ActionResponse>> {
+): Promise<CheckoutActionResponse> {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
@@ -38,9 +37,10 @@ export async function processCheckout(
     const result = await api.checkout(checkoutData);
 
     if (result.isErr()) {
-      return err({
-        message: 'Checkout failed. Please try again.'
-      });
+      return {
+        message: 'Checkout failed. Please try again.',
+        success: false
+      };
     }
 
     const { order, response } = result.value.data;
@@ -54,18 +54,21 @@ export async function processCheckout(
       case 'paymob_card_gateway':
       case 'paymob_wallet_gateway':
         // Return the external payment URL for client-side redirect
-        return ok({
+        return {
           message: 'Redirecting to payment gateway...',
-          redirectUrl: response
-        });
+          redirectUrl: response,
+          success: true
+        };
       default:
-        return err({
-          message: 'Unsupported payment method.'
-        });
+        return {
+          message: 'Unsupported payment method.',
+          success: false
+        };
     }
   } catch (error: any) {
-    return err({
-      message: 'An unexpected error occurred. Please try again.'
-    });
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      success: false
+    };
   }
 }
