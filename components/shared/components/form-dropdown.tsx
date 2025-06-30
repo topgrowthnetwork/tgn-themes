@@ -34,15 +34,13 @@ export default function FormDropdown({
 
   return (
     <div>
-      <label className="form-label">{label}</label>
+      <label className="label">{label}</label>
       <Listbox value={value} onChange={onChange} disabled={disabled}>
         <div className="relative">
           <Listbox.Button
-            className={clsx(
-              'form-input cursor-pointer bg-white text-start',
-              disabled && 'cursor-not-allowed opacity-50',
-              error && 'border-red-500 focus:border-red-500 focus:ring-red-500'
-            )}
+            className={clsx('input cursor-pointer bg-white text-start', {
+              'border-red-500 focus:border-red-500 focus:ring-red-500': error
+            })}
           >
             <span className={clsx('block truncate', !selectedOption && 'text-gray-500')}>
               {selectedOption ? selectedOption.name : placeholder}
@@ -57,7 +55,7 @@ export default function FormDropdown({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {options.map((option) => (
                 <Listbox.Option
                   key={option.id}

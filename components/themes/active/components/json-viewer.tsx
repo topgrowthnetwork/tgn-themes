@@ -87,7 +87,7 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
   };
 
   return (
-    <pre className="overflow-auto rounded-lg bg-gray-100 p-4 text-sm">
+    <pre className="overflow-auto rounded-theme bg-gray-100 p-4 text-sm">
       {renderValue(data, 'root')}
     </pre>
   );

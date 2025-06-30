@@ -101,7 +101,7 @@ export default function CartModal({
                       });
 
                       const merchandiseUrl = createUrl(
-                        item.product.title,
+                        `/product/${item.product.title}`,
                         new URLSearchParams(merchandiseSearchParams)
                       );
 
@@ -123,7 +123,7 @@ export default function CartModal({
                               onClick={closeCart}
                               className="z-30 flex flex-row gap-x-4"
                             >
-                              <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                              <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-theme border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                                 <Image
                                   className="h-full w-full object-cover"
                                   width={64}
@@ -193,10 +193,7 @@ export default function CartModal({
                       />
                     </div>
                   </div>
-                  <a
-                    href="/checkout"
-                    className="block w-full rounded-full bg-primary-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-                  >
+                  <a href="/checkout" className="button">
                     {t('proceedToCheckout')}
                   </a>
                 </div>

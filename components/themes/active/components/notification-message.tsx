@@ -30,7 +30,7 @@ export function NotificationMessage({
   return (
     <div
       className={clsx(
-        'rounded-lg p-3 text-sm font-medium transition-all duration-200',
+        'rounded-theme p-3 text-sm font-medium transition-all duration-200',
         getStyles(),
         className
       )}

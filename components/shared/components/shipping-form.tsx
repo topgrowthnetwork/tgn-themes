@@ -110,7 +110,7 @@ export default function ShippingForm({
   return (
     <div
       className={clsx(
-        'mb-8 rounded-lg border p-6',
+        'mb-8 rounded-theme border p-6',
         isActive
           ? 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
           : 'border-gray-200'
@@ -119,7 +119,7 @@ export default function ShippingForm({
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-semibold">{t('shippingAddress')}</h2>
         {!isActive && onEdit && (
-          <button onClick={onEdit} className="form-button-secondary">
+          <button onClick={onEdit} className="button-secondary">
             {t('edit')}
           </button>
         )}
@@ -129,21 +129,21 @@ export default function ShippingForm({
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="form-label">{t('name')} *</label>
-              <input type="text" {...register('name')} className="form-input" />
-              <FieldError message={errors.name?.message} />
+              <label className="label">{t('name')} *</label>
+              <input type="text" {...register('name')} className="input" />
+              {errors.name && <FieldError message={errors.name.message} />}
             </div>
             <div>
-              <label className="form-label">{t('email')} *</label>
-              <input type="email" {...register('email')} className="form-input" />
-              <FieldError message={errors.email?.message} />
+              <label className="label">{t('email')} *</label>
+              <input type="email" {...register('email')} className="input" />
+              {errors.email && <FieldError message={errors.email.message} />}
             </div>
           </div>
 
           <div>
-            <label className="form-label">{t('phone')} *</label>
-            <input type="tel" {...register('phone')} className="form-input" />
-            <FieldError message={errors.phone?.message} />
+            <label className="label">{t('phone')} *</label>
+            <input type="tel" {...register('phone')} className="input" />
+            {errors.phone && <FieldError message={errors.phone.message} />}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -196,16 +196,12 @@ export default function ShippingForm({
           </div>
 
           <div>
-            <label className="form-label">{t('address')} *</label>
-            <textarea
-              {...register('shipping_address.address')}
-              rows={3}
-              className="form-textarea"
-            />
+            <label className="label">{t('address')} *</label>
+            <textarea {...register('shipping_address.address')} rows={3} className="textarea" />
             <FieldError message={errors.shipping_address?.address?.message} />
           </div>
 
-          <button type="submit" className="form-button">
+          <button type="submit" className="button">
             {t('next')}
           </button>
         </form>

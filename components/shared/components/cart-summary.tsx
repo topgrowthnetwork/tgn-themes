@@ -30,7 +30,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+    <div className="rounded-theme border border-gray-200 bg-gray-50 p-6">
       <h3 className="mb-4 text-lg font-semibold">{t('orderSummary')}</h3>
 
       {/* Cart Items */}
@@ -41,7 +41,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
 
           return (
             <div key={index} className="flex items-center gap-x-3">
-              <div className="relative h-12 w-12 overflow-hidden rounded-md border border-gray-200 bg-white">
+              <div className="relative h-12 w-12 overflow-hidden rounded-theme border border-gray-200 bg-white">
                 <Image
                   className="h-full w-full object-cover"
                   width={48}
@@ -79,13 +79,9 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder={t('couponCode')}
-              className="w-full flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              className="input flex-1"
             />
-            <button
-              type="submit"
-              disabled={!couponCode.trim()}
-              className="rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            <button type="submit" disabled={!couponCode.trim()} className="button">
               {t('apply')}
             </button>
           </div>

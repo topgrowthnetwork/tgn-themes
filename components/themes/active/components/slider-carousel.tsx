@@ -51,7 +51,7 @@ function SlideContent({ slider }: SlideContentProps) {
           {slider.link && (
             <a
               href={slider.link}
-              className="inline-flex items-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base"
+              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base"
             >
               Learn More
               <svg

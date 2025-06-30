@@ -18,7 +18,7 @@
   --theme-color-950: #172554;
   --theme-font-en: var(--font-inter), system-ui, sans-serif;
   --theme-font-ar: var(--font-noto-sans-arabic), system-ui, sans-serif;
-  --theme-border-radius: 0.75rem;
+  --theme-border-radius: 0.5rem;
 }
 
 /* Minimal Theme */
@@ -83,24 +83,25 @@
 }
 
 @layer components {
-  /* Reusable input styles */
-  .form-input {
-    @apply mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500;
+  /* Active Theme Input Styles */
+  [data-theme='active'] .input {
+    @apply mt-1 block w-full border border-gray-300 px-3 py-2 text-sm transition-colors duration-200 placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-white placeholder:dark:text-gray-400 dark:focus:border-primary-400 dark:focus:ring-primary-400;
   }
 
-  .form-textarea {
-    @apply mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500;
+  /* Active Theme Button Styles */
+  [data-theme='active'] .button {
+    @apply flex items-center justify-center bg-primary-600 px-4 py-2 text-white transition-colors duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-900;
   }
 
-  .form-label {
+  [data-theme='active'] .textarea {
+    @apply mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500;
+  }
+
+  [data-theme='active'] .label {
     @apply block text-sm font-medium text-gray-700;
   }
 
-  .form-button {
-    @apply w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-  }
-
-  .form-button-secondary {
+  [data-theme='active'] .button-secondary {
     @apply text-sm text-primary-600 hover:text-primary-800;
   }
 }

@@ -48,7 +48,7 @@ export default function MobileMenu({
       <button
         onClick={openMobileMenu}
         aria-label={t('openMobileMenu')}
-        className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+        className="flex h-11 w-11 items-center justify-center rounded-theme border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
       >
         <Bars3Icon className="h-4" />
       </button>
@@ -84,7 +84,7 @@ export default function MobileMenu({
                 <div className="flex items-center justify-between border-b border-neutral-200 p-4 dark:border-neutral-700">
                   <h2 className="text-lg font-semibold text-black dark:text-white">Menu</h2>
                   <button
-                    className="flex h-10 w-10 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                    className="flex h-10 w-10 items-center justify-center rounded-theme border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
                     onClick={closeMobileMenu}
                     aria-label={t('closeMobileMenu')}
                   >
@@ -132,7 +132,7 @@ export default function MobileMenu({
                             <Link
                               href={`/category/${item.id}`}
                               onClick={closeMobileMenu}
-                              className="block rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                              className="block rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
                             >
                               {item.name}
                             </Link>
@@ -147,7 +147,7 @@ export default function MobileMenu({
                     <Link
                       href="/contact-us"
                       onClick={closeMobileMenu}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                      className="flex items-center gap-3 rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
                     >
                       <EnvelopeIcon className="h-5 w-5" />
                       {t('contactUs')}
@@ -157,11 +157,7 @@ export default function MobileMenu({
 
                 {/* Footer with Shop All link */}
                 <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
-                  <Link
-                    href="/products"
-                    onClick={closeMobileMenu}
-                    className="block w-full rounded-md bg-primary-600 px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-primary-700"
-                  >
+                  <Link href="/products" onClick={closeMobileMenu} className="button">
                     {t('shopAll')}
                   </Link>
                 </div>

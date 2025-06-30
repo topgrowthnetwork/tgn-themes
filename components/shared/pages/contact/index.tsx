@@ -27,7 +27,7 @@ export default function ContactPage({ settings }: ContactPageProps) {
 
         {/* Contact Information */}
         <div className="lg:col-span-1">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+          <div className="rounded-theme border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
             <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
               {t('contactInfo')}
             </h2>

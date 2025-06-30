@@ -27,7 +27,7 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+        className="flex items-center gap-x-2 rounded-theme px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         <span>{currentLanguage?.flag}</span>
         <span>{currentLanguage?.name}</span>
@@ -42,7 +42,7 @@ export default function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
+        <div className="absolute right-0 mt-2 w-48 rounded-theme bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
           {languages.map((language) => (
             <button
               key={language.code}

@@ -86,7 +86,7 @@ export default function CheckoutPage({
         {state?.message && (
           <div
             className={clsx(
-              'mb-4 rounded-md p-4',
+              'mb-4 rounded-theme p-4',
               state?.success
                 ? 'border border-green-200 bg-green-50 text-green-800'
                 : 'border border-red-200 bg-red-50 text-red-800'

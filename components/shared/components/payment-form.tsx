@@ -93,7 +93,7 @@ export default function PaymentForm({
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 p-6">
+    <div className="rounded-theme border border-gray-200 p-6">
       <h2 className="mb-4 text-xl font-semibold">{t('paymentMethod')}</h2>
 
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
@@ -101,7 +101,7 @@ export default function PaymentForm({
           {paymentGateways.map((gateway) => (
             <label
               key={gateway.key}
-              className="flex cursor-pointer items-center gap-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50"
             >
               <input
                 type="radio"
@@ -118,15 +118,15 @@ export default function PaymentForm({
         {/* Optional fields based on payment method */}
         {watchedPaymentGateway === 'paymob_wallet_gateway' && (
           <div>
-            <label className="form-label">{t('walletNumber')}</label>
-            <input type="text" {...register('wallet_number')} className="form-input" />
-            <FieldError message={errors.wallet_number?.message} />
+            <label className="label">{t('walletNumber')}</label>
+            <input type="text" {...register('wallet_number')} className="input" />
+            {errors.wallet_number && <FieldError message={errors.wallet_number.message} />}
           </div>
         )}
 
         {watchedPaymentGateway === 'send_receipt' && (
           <div>
-            <label className="form-label">{t('receiptImage')}</label>
+            <label className="label">{t('receiptImage')}</label>
             <input
               type="file"
               accept="image/*"
@@ -137,7 +137,7 @@ export default function PaymentForm({
                   onFormDataChange('receipt_image', file.name);
                 }
               }}
-              className="form-input"
+              className="input"
             />
             <FieldError message={errors.receipt_image?.message} />
           </div>
@@ -147,7 +147,7 @@ export default function PaymentForm({
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            className="flex-1 rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           >
             {t('back')}
           </button>
@@ -155,7 +155,7 @@ export default function PaymentForm({
             type="submit"
             disabled={isSubmitting}
             className={clsx(
-              'flex-1 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+              'flex-1 rounded-theme px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
               'bg-primary-600 hover:bg-primary-700',
               isSubmitting && 'opacity-50'
             )}
