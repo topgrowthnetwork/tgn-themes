@@ -53,7 +53,7 @@ export default function ProductsPage({
             onClick={() => handleCategoryChange(cat.id)}
             className={clsx(
               'rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 hover:shadow-md',
-              currentCategory?.id === cat.id
+              category === cat.id.toString()
                 ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             )}
@@ -72,7 +72,7 @@ export default function ProductsPage({
 
           <div className="text-start">
             <p className="text-gray-600 dark:text-gray-400">
-              {products.length} {products.length === 1 ? 'product' : 'products'} found
+              {t('resultsFound', { count: products.length })}
             </p>
           </div>
 
@@ -82,9 +82,7 @@ export default function ProductsPage({
             </Grid>
           ) : (
             <div className="py-12 text-center">
-              <p className="text-gray-500 dark:text-gray-400">
-                No products found in this category.
-              </p>
+              <p className="text-gray-500 dark:text-gray-400">{t('noProducts')}</p>
             </div>
           )}
 

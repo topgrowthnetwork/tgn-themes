@@ -63,7 +63,7 @@ export default async function Page({
     <CategoryPage
       productsResult={productsResult.value.data}
       settings={settings}
-      categoryName={category?.name}
+      categoryName={category?.name || ''}
     />
   );
 }

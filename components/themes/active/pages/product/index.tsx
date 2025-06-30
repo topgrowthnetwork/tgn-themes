@@ -5,6 +5,7 @@ import { createApi } from 'lib/api';
 import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
+import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 
 interface ProductPageProps {
@@ -92,7 +93,7 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
 
   return (
     <div className="py-8">
-      <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
+      <RelatedProductsTitle />
       <ul className="scrollbar-hide flex w-full gap-4 overflow-x-auto pt-1">
         {relatedProducts.map((relatedProduct: Product) => (
           <li
@@ -117,4 +118,10 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
       </ul>
     </div>
   );
+}
+
+function RelatedProductsTitle() {
+  const t = useTranslations('Product');
+
+  return <h2 className="mb-4 text-2xl font-bold">{t('relatedProducts')}</h2>;
 }

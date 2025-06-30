@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useTranslations } from 'next-intl';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -7,6 +8,7 @@ interface LoadingSpinnerProps {
 }
 
 export function LoadingSpinner({ size = 'md', color = 'primary', className }: LoadingSpinnerProps) {
+  const t = useTranslations('Common');
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
@@ -28,9 +30,9 @@ export function LoadingSpinner({ size = 'md', color = 'primary', className }: Lo
         className
       )}
       role="status"
-      aria-label="Loading"
+      aria-label={t('loading')}
     >
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">{t('loading')}...</span>
     </div>
   );
 }

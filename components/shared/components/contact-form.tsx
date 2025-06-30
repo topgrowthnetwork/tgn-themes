@@ -2,9 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { submitContact } from '@shared/components/contact-actions';
+import FieldError from '@shared/components/field-error';
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { NotificationMessage } from '@shared/components/notification-message';
-import FieldError from '@theme/components/field-error';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';

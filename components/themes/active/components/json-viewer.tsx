@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 type JsonViewerProps = {
@@ -9,6 +10,7 @@ type JsonViewerProps = {
 };
 
 function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
+  const t = useTranslations('Common');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const toggleExpand = (key: string) => {
@@ -19,8 +21,8 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
   };
 
   const renderValue = (value: any, key: string, depth: number = 0) => {
-    if (value === null) return <span className="text-gray-500">null</span>;
-    if (value === undefined) return <span className="text-gray-500">undefined</span>;
+    if (value === null) return <span className="text-gray-500">{t('null')}</span>;
+    if (value === undefined) return <span className="text-gray-500">{t('undefined')}</span>;
 
     if (typeof value === 'object') {
       const isArray = Array.isArray(value);

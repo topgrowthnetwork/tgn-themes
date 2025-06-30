@@ -5,6 +5,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 export type NotificationType = 'success' | 'error' | 'info' | 'warning';
@@ -26,6 +27,7 @@ export function NotificationMessage({
   dismissDelay = 5000,
   className
 }: NotificationMessageProps) {
+  const t = useTranslations('Common');
   const [isVisible, setIsVisible] = useState(true);
 
   // Auto-dismiss functionality
@@ -90,7 +92,7 @@ export function NotificationMessage({
         <button
           onClick={handleDismiss}
           className="flex-shrink-0 rounded-theme p-1 transition-colors hover:bg-black/10 dark:hover:bg-white/10"
-          aria-label="Dismiss notification"
+          aria-label={t('dismissNotification')}
         >
           <XMarkIcon className="h-4 w-4" />
         </button>

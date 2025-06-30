@@ -10,7 +10,7 @@ import { getTranslations } from 'next-intl/server';
 interface CategoryPageProps {
   productsResult: ProductsResponse;
   settings: GlobalSettings;
-  categoryName?: string;
+  categoryName: string;
 }
 
 export default async function CategoryPage({
@@ -18,13 +18,13 @@ export default async function CategoryPage({
   settings,
   categoryName
 }: CategoryPageProps) {
+  const t = await getTranslations('Category');
+  const sortingT = await getTranslations('Sorting');
+  const commonT = await getTranslations('Common');
   const products = productsResult.products.data;
   const totalPages = productsResult.products.last_page;
   const currentPage = productsResult.products.current_page;
-
-  const t = await getTranslations('Sorting');
-  const commonT = await getTranslations('Common');
-  const sortingOptions = getSortingOptions(t);
+  const sortingOptions = getSortingOptions(sortingT);
 
   return (
     <section className="space-y-8">
@@ -33,7 +33,7 @@ export default async function CategoryPage({
       <FilterList list={sortingOptions} title={commonT('sortBy')} />
 
       {products.length === 0 ? (
-        <p className="py-3 text-lg">{`No products found in this collection`}</p>
+        <p className="py-3 text-lg">{t('noProducts')}</p>
       ) : (
         <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <ProductGridItems products={products} currency={settings.site_global_currency} />

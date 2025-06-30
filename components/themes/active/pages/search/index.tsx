@@ -2,6 +2,7 @@ import Grid from '@theme/components/grid';
 import ProductGridItems from '@theme/components/layout/product-grid-items';
 import { PaginationWithUrl } from '@theme/components/pagination-with-url';
 import { GlobalSettings, ProductsResponse } from 'lib/api/types';
+import { useTranslations } from 'next-intl';
 
 interface SearchPageProps {
   productsResult: ProductsResponse;
@@ -10,19 +11,18 @@ interface SearchPageProps {
 }
 
 export default function SearchPage({ productsResult, searchValue, settings }: SearchPageProps) {
+  const t = useTranslations('Search');
   const products = productsResult.products.data;
   const totalPages = productsResult.products.last_page;
   const currentPage = productsResult.products.current_page;
-  const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (
     <div className="space-y-8">
       {searchValue ? (
         <p className="mb-4">
           {products.length === 0
-            ? 'There are no products that match '
-            : `Showing ${products.length} ${resultsText} for `}
-          <span className="font-bold">&quot;{searchValue}&quot;</span>
+            ? t('noResults', { query: searchValue })
+            : t('showingResults', { count: products.length, query: searchValue })}
         </p>
       ) : null}
 

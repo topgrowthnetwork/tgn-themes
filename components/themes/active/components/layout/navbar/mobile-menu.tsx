@@ -26,6 +26,7 @@ export default function MobileMenu({
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
   const t = useTranslations('Navigation');
+  const commonT = useTranslations('Common');
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
@@ -82,7 +83,7 @@ export default function MobileMenu({
               <div className="flex h-full flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-neutral-200 p-4 dark:border-neutral-700">
-                  <h2 className="text-lg font-semibold text-black dark:text-white">Menu</h2>
+                  <h2 className="text-lg font-semibold text-black dark:text-white">{t('menu')}</h2>
                   <button
                     className="flex h-10 w-10 items-center justify-center rounded-theme border border-neutral-200 text-black transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
                     onClick={closeMobileMenu}
@@ -103,7 +104,7 @@ export default function MobileMenu({
                   {products.length > 0 && (
                     <div className="border-b border-neutral-200 p-4 dark:border-neutral-700">
                       <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                        Recommended Products
+                        {t('recommendedProducts')}
                       </h3>
                       <div className="grid gap-3">
                         {products.map((product) => (
@@ -124,7 +125,7 @@ export default function MobileMenu({
                   {menu.length > 0 && (
                     <div className="p-4">
                       <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                        Categories
+                        {commonT('categories')}
                       </h3>
                       <ul className="space-y-1">
                         {menu.map((item) => (

@@ -32,7 +32,9 @@
     "githubRepository": "مستودع جيثب"
   },
   "Search": {
-    "placeholder": "البحث عن المنتجات..."
+    "placeholder": "البحث عن المنتجات...",
+    "noResults": "لم يتم العثور على نتائج لـ '{query}'",
+    "showingResults": "عرض {count} نتيجة لـ '{query}'"
   },
   "Navigation": {
     "openMobileMenu": "فتح القائمة المحمولة",
@@ -40,12 +42,15 @@
     "shopAll": "تسوق الكل",
     "contactUs": "اتصل بنا",
     "products": "المنتجات",
-    "all": "الكل"
+    "all": "الكل",
+    "menu": "القائمة",
+    "recommendedProducts": "المنتجات الموصى بها"
   },
   "Product": {
     "previousProductImage": "الصورة السابقة للمنتج",
     "nextProductImage": "الصورة التالية للمنتج",
-    "enlargeProductImage": "تكبير صورة المنتج"
+    "enlargeProductImage": "تكبير صورة المنتج",
+    "relatedProducts": "المنتجات ذات الصلة"
   },
   "Products": {
     "bestSelling": "أفضل المنتجات مبيعاً",
@@ -53,7 +58,11 @@
   },
   "Common": {
     "categories": "الفئات",
-    "sortBy": "ترتيب حسب"
+    "sortBy": "ترتيب حسب",
+    "loading": "جاري التحميل",
+    "dismissNotification": "إغلاق الإشعار",
+    "null": "فارغ",
+    "undefined": "غير محدد"
   },
   "Sorting": {
     "popularity": "الشعبية",

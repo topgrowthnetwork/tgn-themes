@@ -32,7 +32,9 @@
     "githubRepository": "Github Repository"
   },
   "Search": {
-    "placeholder": "Search for products..."
+    "placeholder": "Search for products...",
+    "noResults": "No results found for '{query}'",
+    "showingResults": "Showing {count} results for '{query}'"
   },
   "Navigation": {
     "openMobileMenu": "Open mobile menu",
@@ -40,12 +42,15 @@
     "shopAll": "Shop All",
     "contactUs": "Contact Us",
     "products": "Products",
-    "all": "All"
+    "all": "All",
+    "menu": "Menu",
+    "recommendedProducts": "Recommended Products"
   },
   "Product": {
     "previousProductImage": "Previous product image",
     "nextProductImage": "Next product image",
-    "enlargeProductImage": "Enlarge product image"
+    "enlargeProductImage": "Enlarge product image",
+    "relatedProducts": "Related Products"
   },
   "Products": {
     "bestSelling": "Best Selling Products",
@@ -53,7 +58,11 @@
   },
   "Common": {
     "categories": "Categories",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "loading": "Loading",
+    "dismissNotification": "Dismiss notification",
+    "null": "null",
+    "undefined": "undefined"
   },
   "Sorting": {
     "popularity": "Popularity",
