@@ -37,7 +37,7 @@ export async function addItemV2(
     cookies().set('cartId', result.value.data.cart_item.cart_id.toString());
 
     return {
-      message: result.value.data.message || 'Added to cart successfully',
+      message: result.value.message || 'Added to cart successfully',
       success: true
     };
   } catch (error: any) {

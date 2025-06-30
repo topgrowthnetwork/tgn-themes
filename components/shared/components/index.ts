@@ -2,11 +2,11 @@
 export {
   ErrorToast,
   InfoToast,
+  showToast,
   SuccessToast,
   ToastContainerWrapper,
   ToastNotification,
   WarningToast,
-  showToast,
   type ToastType
 } from './toast-notification';
 
@@ -26,12 +26,6 @@ export { default as Container } from './container';
 export { default as EmptyCartMessage } from './empty-cart-message';
 export { ExpandableContent } from './expandable-content';
 export { default as FieldError } from './field-error';
-export {
-  ButtonLoadingSpinner,
-  InputLoadingSpinner,
-  LoadingSpinner,
-  PageLoadingSpinner
-} from './loading-spinner';
 export { default as SocialMediaLinks } from './social-media-links';
 
 // Cart components

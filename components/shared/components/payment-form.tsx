@@ -1,6 +1,6 @@
 'use client';
 
-import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
+import LoadingDots from '@theme/components/loading-dots';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
@@ -128,7 +128,7 @@ export default function PaymentForm({
         className="button flex flex-1 items-center justify-center gap-2"
         data-testid="payment-form-submit"
       >
-        {pending && <ButtonLoadingSpinner />}
+        {pending && <LoadingDots className="bg-white" />}
         {pending ? t('processing') : t('placeOrder')}
       </button>
     </div>

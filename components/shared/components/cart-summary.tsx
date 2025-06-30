@@ -1,8 +1,8 @@
 'use client';
 
 import { applyCouponV2 } from '@shared/components/cart-actions';
-import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { ToastNotification } from '@shared/components/toast-notification';
+import LoadingDots from '@theme/components/loading-dots';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
 import { getFullPath, getItemPrice } from 'lib/utils';
@@ -26,7 +26,7 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
       disabled={disabled || pending}
       className="button flex items-center justify-center gap-2"
     >
-      {pending && <ButtonLoadingSpinner />}
+      {pending && <LoadingDots className="bg-white" />}
       {t('apply')}
     </button>
   );

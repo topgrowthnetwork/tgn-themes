@@ -16,7 +16,6 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
-    "@hookform/resolvers": "^5.1.1",
     "@sentry/nextjs": "^9.33.0",
     "clsx": "^2.0.0",
     "cookies-next": "4.3.0",
@@ -31,7 +30,6 @@
     "react": "18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
-    "react-hook-form": "^7.59.0",
     "react-hot-toast": "^2.5.2",
     "react-toastify": "^11.0.5",
     "swr": "^2.3.3",

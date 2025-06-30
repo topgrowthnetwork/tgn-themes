@@ -1,68 +1,83 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { submitContact } from '@shared/components/contact-actions';
 import FieldError from '@shared/components/field-error';
-import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { ToastNotification } from '@shared/components/toast-notification';
-
+import LoadingDots from '@theme/components/loading-dots';
+import { contactFormSchema } from 'lib/validation/contact';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
-import { useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
-const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(6, 'Phone number is required'),
-  message: z.string().min(10, 'Message must be at least 10 characters')
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
-
-function SubmitButton({ disabled, isLoading }: { disabled: boolean; isLoading: boolean }) {
+function SubmitButton() {
   const t = useTranslations('Contact');
+  const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      disabled={disabled || isLoading}
+      disabled={pending}
       className="button flex items-center justify-center gap-2"
     >
-      {isLoading && <ButtonLoadingSpinner />}
-      {isLoading ? t('sending') : t('sendMessage')}
+      {pending && <LoadingDots className="bg-white" />}
+      {pending ? t('sending') : t('sendMessage')}
     </button>
   );
 }
 
 export default function ContactForm() {
   const t = useTranslations('Contact');
-  const [isLoading, setIsLoading] = useState(false);
   const [state, formAction] = useFormState(submitContact, {
     message: '',
     success: false
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema)
-  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const onSubmit = async (data: ContactFormData) => {
-    setIsLoading(true);
-    try {
-      await formAction(data);
-      if (state?.success) {
-        reset();
-      }
-    } finally {
-      setIsLoading(false);
+  // Reset form when successful
+  useEffect(() => {
+    if (state?.success) {
+      setErrors({});
+      formRef.current?.reset();
     }
+  }, [state?.success]);
+
+  // Client-side validation using Zod
+  const validateForm = (formData: FormData): boolean => {
+    try {
+      // Prepare data for validation
+      const dataToValidate = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        message: formData.get('message') as string
+      };
+
+      // Validate with Zod
+      contactFormSchema.parse(dataToValidate);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Convert Zod errors to our error format
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const field = err.path[0] as string;
+          newErrors[field] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  const handleSubmit = (formData: FormData) => {
+    if (validateForm(formData)) {
+      return formAction(formData);
+    }
+    return null;
   };
 
   return (
@@ -76,19 +91,14 @@ export default function ContactForm() {
         autoClose={state.success ? 5000 : false}
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form ref={formRef} action={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="name" className="form-label">
               {t('name')}
             </label>
-            <input
-              type="text"
-              {...register('name')}
-              placeholder={t('namePlaceholder')}
-              className="input"
-            />
-            {errors.name && <FieldError message={errors.name.message} />}
+            <input type="text" name="name" placeholder={t('namePlaceholder')} className="input" />
+            {errors.name && <FieldError message={errors.name} />}
           </div>
 
           <div>
@@ -97,11 +107,11 @@ export default function ContactForm() {
             </label>
             <input
               type="email"
-              {...register('email')}
+              name="email"
               placeholder={t('emailPlaceholder')}
               className="input"
             />
-            {errors.email && <FieldError message={errors.email.message} />}
+            {errors.email && <FieldError message={errors.email} />}
           </div>
         </div>
 
@@ -109,13 +119,8 @@ export default function ContactForm() {
           <label htmlFor="phone" className="form-label">
             {t('phone')}
           </label>
-          <input
-            type="tel"
-            {...register('phone')}
-            placeholder={t('phonePlaceholder')}
-            className="input"
-          />
-          {errors.phone && <FieldError message={errors.phone.message} />}
+          <input type="tel" name="phone" placeholder={t('phonePlaceholder')} className="input" />
+          {errors.phone && <FieldError message={errors.phone} />}
         </div>
 
         <div>
@@ -123,15 +128,15 @@ export default function ContactForm() {
             {t('message')}
           </label>
           <textarea
-            {...register('message')}
+            name="message"
             rows={5}
             placeholder={t('messagePlaceholder')}
             className="textarea"
           />
-          {errors.message && <FieldError message={errors.message.message} />}
+          {errors.message && <FieldError message={errors.message} />}
         </div>
 
-        <SubmitButton disabled={state.success} isLoading={isLoading} />
+        <SubmitButton />
       </form>
     </div>
   );
