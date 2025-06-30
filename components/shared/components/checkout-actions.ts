@@ -3,6 +3,7 @@
 import { createApi } from 'lib/api';
 import { ActionResponse, CheckoutRequest } from 'lib/api/types';
 import { TAGS } from 'lib/constants';
+import { transformServerActionData, validateServerActionData } from 'lib/validation/checkout';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -19,21 +20,33 @@ export async function processCheckout(
   const api = createApi({ language: 'en', guestToken });
 
   // Extract data from FormData
-  const checkoutData: CheckoutRequest = {
+  const rawData = {
     name: formData.get('name') as string,
     email: formData.get('email') as string,
     phone: formData.get('phone') as string,
-    shipping_address: {
-      country: formData.get('shipping_address_country') as string,
-      state: formData.get('shipping_address_state') as string,
-      city: formData.get('shipping_address_city') as string,
-      address: formData.get('shipping_address_address') as string
-    },
-    payment_gateway: formData.get('payment_gateway') as CheckoutRequest['payment_gateway'],
-    coupon_code: (formData.get('coupon_code') as string) || undefined,
-    receipt_image: (formData.get('receipt_image') as string) || undefined,
-    wallet_number: (formData.get('wallet_number') as string) || undefined
+    shipping_address_country: formData.get('shipping_address_country') as string,
+    shipping_address_state: formData.get('shipping_address_state') as string,
+    shipping_address_city: formData.get('shipping_address_city') as string,
+    shipping_address_address: formData.get('shipping_address_address') as string,
+    payment_gateway: formData.get('payment_gateway') as string,
+    coupon_code: formData.get('coupon_code') as string,
+    receipt_image: formData.get('receipt_image') as string,
+    wallet_number: formData.get('wallet_number') as string
   };
+
+  // Validate the data using Zod
+  const validationResult = validateServerActionData(rawData);
+
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.errors.map((err) => err.message).join(', ');
+    return {
+      message: `Validation failed: ${errorMessages}`,
+      success: false
+    };
+  }
+
+  // Transform validated data to CheckoutRequest format
+  const checkoutData: CheckoutRequest = transformServerActionData(validationResult.data);
 
   const result = await api.checkout(checkoutData);
 

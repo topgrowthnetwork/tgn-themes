@@ -3,8 +3,10 @@
 import clsx from 'clsx';
 import { CheckoutRequest, City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
+import { checkoutFormSchema } from 'lib/validation/checkout';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { z } from 'zod';
 import FieldError from './field-error';
 import FormDropdown from './form-dropdown';
 
@@ -41,91 +43,79 @@ export default function ShippingForm({
     selectedState: formData.shipping_address?.state || ''
   });
 
-  // Validation function
+  // Validation using Zod
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name || formData.name.length < 2) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email address';
-    }
-
-    if (!formData.phone || formData.phone.length < 6) {
-      newErrors.phone = 'Phone is required';
-    }
-
-    if (!formData.shipping_address?.country) {
-      newErrors.country = 'Country is required';
-    }
-
-    if (!formData.shipping_address?.state) {
-      newErrors.state = 'State is required';
-    }
-
-    if (!formData.shipping_address?.city) {
-      newErrors.city = 'City is required';
-    }
-
-    if (!formData.shipping_address?.address) {
-      newErrors.address = 'Address is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Clear dependent fields when parent selection changes
-  const handleCountryChange = (country: string) => {
-    if (formData.shipping_address?.country !== country) {
-      onFormDataChange({
-        ...formData,
+    try {
+      // Prepare data for validation - matching CheckoutRequest structure exactly
+      const dataToValidate = {
+        name: formData.name || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
         shipping_address: {
-          country,
-          state: '',
-          city: '',
-          address: formData.shipping_address?.address || ''
-        }
-      });
-      clearState();
-      clearCity();
-    } else {
-      onFormDataChange({
-        ...formData,
-        shipping_address: {
-          country,
+          country: formData.shipping_address?.country || '',
           state: formData.shipping_address?.state || '',
           city: formData.shipping_address?.city || '',
           address: formData.shipping_address?.address || ''
-        }
-      });
+        },
+        payment_gateway: formData.payment_gateway || 'cash_on_delivery',
+        coupon_code: formData.coupon_code,
+        receipt_image: formData.receipt_image,
+        wallet_number: formData.wallet_number
+      };
+
+      // Validate with Zod
+      checkoutFormSchema.parse(dataToValidate);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Convert Zod errors to our error format
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const field = err.path.join('.');
+          newErrors[field] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  // Event handlers
+  const handleCountryChange = (country: string) => {
+    const isCountryChanged = formData.shipping_address?.country !== country;
+
+    onFormDataChange({
+      ...formData,
+      shipping_address: {
+        country,
+        state: isCountryChanged ? '' : formData.shipping_address?.state || '',
+        city: isCountryChanged ? '' : formData.shipping_address?.city || '',
+        address: formData.shipping_address?.address || ''
+      }
+    });
+
+    if (isCountryChanged) {
+      clearState();
+      clearCity();
     }
   };
 
   const handleStateChange = (state: string) => {
-    if (formData.shipping_address?.state !== state) {
-      onFormDataChange({
-        ...formData,
-        shipping_address: {
-          country: formData.shipping_address?.country || '',
-          state,
-          city: '',
-          address: formData.shipping_address?.address || ''
-        }
-      });
+    const isStateChanged = formData.shipping_address?.state !== state;
+
+    onFormDataChange({
+      ...formData,
+      shipping_address: {
+        country: formData.shipping_address?.country || '',
+        state,
+        city: isStateChanged ? '' : formData.shipping_address?.city || '',
+        address: formData.shipping_address?.address || ''
+      }
+    });
+
+    if (isStateChanged) {
       clearCity();
-    } else {
-      onFormDataChange({
-        ...formData,
-        shipping_address: {
-          country: formData.shipping_address?.country || '',
-          state,
-          city: formData.shipping_address?.city || '',
-          address: formData.shipping_address?.address || ''
-        }
-      });
     }
   };
 
@@ -155,6 +145,124 @@ export default function ShippingForm({
     }
   };
 
+  // Helper function to get error for a field
+  const getFieldError = (fieldPath: string): string | undefined => {
+    return errors[fieldPath];
+  };
+
+  // Render functions
+  const renderPersonalInfoFields = () => (
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label className="label">{t('name')} *</label>
+          <input
+            type="text"
+            value={formData.name || ''}
+            onChange={(e) => handleInputChange('name', e.target.value)}
+            className="input"
+            data-testid="shipping-form-name"
+          />
+          {getFieldError('name') && <FieldError message={getFieldError('name')!} />}
+        </div>
+        <div>
+          <label className="label">{t('email')} *</label>
+          <input
+            type="email"
+            value={formData.email || ''}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            className="input"
+            data-testid="shipping-form-email"
+          />
+          {getFieldError('email') && <FieldError message={getFieldError('email')!} />}
+        </div>
+      </div>
+
+      <div>
+        <label className="label">{t('phone')} *</label>
+        <input
+          type="tel"
+          value={formData.phone || ''}
+          onChange={(e) => handleInputChange('phone', e.target.value)}
+          className="input"
+          data-testid="shipping-form-phone"
+        />
+        {getFieldError('phone') && <FieldError message={getFieldError('phone')!} />}
+      </div>
+    </>
+  );
+
+  const renderAddressFields = () => (
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <FormDropdown
+          label={`${t('country')} *`}
+          options={countries}
+          value={formData.shipping_address?.country || ''}
+          onChange={handleCountryChange}
+          error={getFieldError('shipping_address.country')}
+          placeholder={t('selectCountry')}
+          dataTestId="shipping-form-country"
+        />
+
+        <FormDropdown
+          label={`${t('state')} *`}
+          options={availableStates}
+          value={formData.shipping_address?.state || ''}
+          onChange={handleStateChange}
+          error={getFieldError('shipping_address.state')}
+          placeholder={t('selectState')}
+          disabled={!formData.shipping_address?.country}
+          dataTestId="shipping-form-state"
+        />
+
+        <FormDropdown
+          label={`${t('city')} *`}
+          options={availableCities}
+          value={formData.shipping_address?.city || ''}
+          onChange={(city) => handleAddressChange('city', city)}
+          error={getFieldError('shipping_address.city')}
+          placeholder={t('selectCity')}
+          disabled={!formData.shipping_address?.state}
+          dataTestId="shipping-form-city"
+        />
+      </div>
+
+      <div>
+        <label className="label">{t('address')} *</label>
+        <textarea
+          value={formData.shipping_address?.address || ''}
+          onChange={(e) => handleAddressChange('address', e.target.value)}
+          rows={3}
+          className="textarea"
+          data-testid="shipping-form-address"
+        />
+        {getFieldError('shipping_address.address') && (
+          <FieldError message={getFieldError('shipping_address.address')!} />
+        )}
+      </div>
+    </>
+  );
+
+  const renderSummary = () => (
+    <div className="space-y-2">
+      <p>
+        <strong>{t('name')}:</strong> {formData.name}
+      </p>
+      <p>
+        <strong>{t('email')}:</strong> {formData.email}
+      </p>
+      <p>
+        <strong>{t('phone')}:</strong> {formData.phone}
+      </p>
+      <p>
+        <strong>{t('address')}:</strong> {formData.shipping_address?.address},{' '}
+        {formData.shipping_address?.city}, {formData.shipping_address?.state},{' '}
+        {formData.shipping_address?.country}
+      </p>
+    </div>
+  );
+
   return (
     <div
       className={clsx(
@@ -173,91 +281,10 @@ export default function ShippingForm({
         )}
       </div>
 
-      {isActive && (
+      {isActive ? (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="label">{t('name')} *</label>
-              <input
-                type="text"
-                value={formData.name || ''}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className="input"
-                data-testid="shipping-form-name"
-              />
-              {errors.name && <FieldError message={errors.name} />}
-            </div>
-            <div>
-              <label className="label">{t('email')} *</label>
-              <input
-                type="email"
-                value={formData.email || ''}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className="input"
-                data-testid="shipping-form-email"
-              />
-              {errors.email && <FieldError message={errors.email} />}
-            </div>
-          </div>
-
-          <div>
-            <label className="label">{t('phone')} *</label>
-            <input
-              type="tel"
-              value={formData.phone || ''}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              className="input"
-              data-testid="shipping-form-phone"
-            />
-            {errors.phone && <FieldError message={errors.phone} />}
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <FormDropdown
-              label={`${t('country')} *`}
-              options={countries}
-              value={formData.shipping_address?.country || ''}
-              onChange={handleCountryChange}
-              error={errors.country}
-              placeholder={t('selectCountry')}
-              dataTestId="shipping-form-country"
-            />
-
-            <FormDropdown
-              label={`${t('state')} *`}
-              options={availableStates}
-              value={formData.shipping_address?.state || ''}
-              onChange={handleStateChange}
-              error={errors.state}
-              placeholder={t('selectState')}
-              disabled={!formData.shipping_address?.country}
-              dataTestId="shipping-form-state"
-            />
-
-            <FormDropdown
-              label={`${t('city')} *`}
-              options={availableCities}
-              value={formData.shipping_address?.city || ''}
-              onChange={(city) => handleAddressChange('city', city)}
-              error={errors.city}
-              placeholder={t('selectCity')}
-              disabled={!formData.shipping_address?.state}
-              dataTestId="shipping-form-city"
-            />
-          </div>
-
-          <div>
-            <label className="label">{t('address')} *</label>
-            <textarea
-              value={formData.shipping_address?.address || ''}
-              onChange={(e) => handleAddressChange('address', e.target.value)}
-              rows={3}
-              className="textarea"
-              data-testid="shipping-form-address"
-            />
-            {errors.address && <FieldError message={errors.address} />}
-          </div>
-
+          {renderPersonalInfoFields()}
+          {renderAddressFields()}
           <button
             type="button"
             onClick={handleFormSubmit}
@@ -267,25 +294,8 @@ export default function ShippingForm({
             {t('next')}
           </button>
         </div>
-      )}
-
-      {!isActive && (
-        <div className="space-y-2">
-          <p>
-            <strong>{t('name')}:</strong> {formData.name}
-          </p>
-          <p>
-            <strong>{t('email')}:</strong> {formData.email}
-          </p>
-          <p>
-            <strong>{t('phone')}:</strong> {formData.phone}
-          </p>
-          <p>
-            <strong>{t('address')}:</strong> {formData.shipping_address?.address},{' '}
-            {formData.shipping_address?.city}, {formData.shipping_address?.state},{' '}
-            {formData.shipping_address?.country}
-          </p>
-        </div>
+      ) : (
+        renderSummary()
       )}
     </div>
   );

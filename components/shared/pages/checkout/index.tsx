@@ -32,6 +32,21 @@ interface CheckoutPageProps {
   cities: City[];
 }
 
+// Constants
+const STORAGE_KEY = 'checkout_shipping_data';
+const INITIAL_FORM_DATA: Partial<CheckoutRequest> = {
+  shipping_address: {
+    country: '',
+    state: '',
+    city: '',
+    address: ''
+  },
+  name: '',
+  email: '',
+  phone: '',
+  payment_gateway: 'cash_on_delivery'
+};
+
 export default function CheckoutPage({
   paymentSettings,
   cartResponse,
@@ -45,19 +60,7 @@ export default function CheckoutPage({
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const { isLoaded } = useShippingStorage();
 
-  const [formData, setFormData] = useState<Partial<CheckoutRequest>>({
-    shipping_address: {
-      country: '',
-      state: '',
-      city: '',
-      address: ''
-    },
-    name: '',
-    email: '',
-    phone: '',
-    payment_gateway: 'cash_on_delivery'
-  });
-
+  const [formData, setFormData] = useState<Partial<CheckoutRequest>>(INITIAL_FORM_DATA);
   const [state, formAction] = useFormState(processCheckout, {
     message: '',
     success: false
@@ -65,7 +68,7 @@ export default function CheckoutPage({
 
   // Use form persistence hook
   const { saveStoredData } = useFormPersistence({
-    storageKey: 'checkout_shipping_data',
+    storageKey: STORAGE_KEY,
     formData,
     reset: setFormData,
     isLoaded
@@ -74,7 +77,6 @@ export default function CheckoutPage({
   // Handle external payment gateway redirect
   useEffect(() => {
     if (state?.success) {
-      // Redirect to external payment gateway
       if (state.internalRedirect) {
         router.push('/thank-you');
       }
@@ -91,8 +93,7 @@ export default function CheckoutPage({
     }));
   };
 
-  const handleShippingDataChange = (shippingData: any) => {
-    // Update form data with shipping info
+  const handleShippingDataChange = (shippingData: Partial<CheckoutRequest>) => {
     setFormData((prev) => ({
       ...prev,
       ...shippingData
@@ -100,7 +101,6 @@ export default function CheckoutPage({
   };
 
   const handleNextStep = () => {
-    // Save current form data to localStorage before moving to next step
     saveStoredData(formData as CheckoutRequest);
     setStep('payment');
   };
@@ -109,12 +109,50 @@ export default function CheckoutPage({
     setStep('shipping');
   };
 
+  // Generate hidden form fields
+  const renderHiddenFields = () => (
+    <>
+      <input type="hidden" name="name" value={formData.name || ''} />
+      <input type="hidden" name="email" value={formData.email || ''} />
+      <input type="hidden" name="phone" value={formData.phone || ''} />
+      <input
+        type="hidden"
+        name="shipping_address_country"
+        value={formData.shipping_address?.country || ''}
+      />
+      <input
+        type="hidden"
+        name="shipping_address_state"
+        value={formData.shipping_address?.state || ''}
+      />
+      <input
+        type="hidden"
+        name="shipping_address_city"
+        value={formData.shipping_address?.city || ''}
+      />
+      <input
+        type="hidden"
+        name="shipping_address_address"
+        value={formData.shipping_address?.address || ''}
+      />
+      <input type="hidden" name="payment_gateway" value={formData.payment_gateway || ''} />
+      {formData.wallet_number && (
+        <input type="hidden" name="wallet_number" value={formData.wallet_number} />
+      )}
+      {formData.receipt_image && (
+        <input type="hidden" name="receipt_image" value={formData.receipt_image} />
+      )}
+      {formData.coupon_code && (
+        <input type="hidden" name="coupon_code" value={formData.coupon_code} />
+      )}
+    </>
+  );
+
   return (
     <Container>
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-8 text-3xl font-bold">{t('title')}</h1>
 
-        {/* Toast Notification */}
         {state?.message && (
           <ToastNotification
             type={state.success ? 'success' : 'error'}
@@ -124,45 +162,10 @@ export default function CheckoutPage({
         )}
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Main Checkout Forms */}
           <div className="lg:col-span-2">
             <form action={formAction}>
-              {/* Hidden form fields to pass data to server action */}
-              <input type="hidden" name="name" value={formData.name || ''} />
-              <input type="hidden" name="email" value={formData.email || ''} />
-              <input type="hidden" name="phone" value={formData.phone || ''} />
-              <input
-                type="hidden"
-                name="shipping_address_country"
-                value={formData.shipping_address?.country || ''}
-              />
-              <input
-                type="hidden"
-                name="shipping_address_state"
-                value={formData.shipping_address?.state || ''}
-              />
-              <input
-                type="hidden"
-                name="shipping_address_city"
-                value={formData.shipping_address?.city || ''}
-              />
-              <input
-                type="hidden"
-                name="shipping_address_address"
-                value={formData.shipping_address?.address || ''}
-              />
-              <input type="hidden" name="payment_gateway" value={formData.payment_gateway || ''} />
-              {formData.wallet_number && (
-                <input type="hidden" name="wallet_number" value={formData.wallet_number} />
-              )}
-              {formData.receipt_image && (
-                <input type="hidden" name="receipt_image" value={formData.receipt_image} />
-              )}
-              {formData.coupon_code && (
-                <input type="hidden" name="coupon_code" value={formData.coupon_code} />
-              )}
+              {renderHiddenFields()}
 
-              {/* Shipping Form */}
               <ShippingForm
                 formData={formData}
                 onFormDataChange={handleShippingDataChange}
@@ -174,7 +177,6 @@ export default function CheckoutPage({
                 cities={cities}
               />
 
-              {/* Payment Form */}
               {step === 'payment' && (
                 <PaymentForm
                   formData={formData}
@@ -186,7 +188,6 @@ export default function CheckoutPage({
             </form>
           </div>
 
-          {/* Cart Summary Sidebar */}
           <div className="lg:col-span-1">
             <CartSummary cartResponse={cartResponse} currency={settings.site_global_currency} />
           </div>

@@ -13,6 +13,11 @@ interface PaymentFormProps {
   onBack: () => void;
 }
 
+interface PaymentGateway {
+  key: string;
+  label: string;
+}
+
 export default function PaymentForm({
   formData,
   onFormDataChange,
@@ -22,14 +27,19 @@ export default function PaymentForm({
   const t = useTranslations('Checkout');
   const { pending } = useFormStatus();
 
-  const paymentGateways = [
+  // Extract payment gateways configuration
+  const getPaymentGateways = (): PaymentGateway[] => [
     { key: 'cash_on_delivery', label: t('cashOnDelivery') },
     { key: 'cash_on_site', label: t('cashOnSite') },
     { key: 'fawaterk_gateway', label: t('fawaterkGateway') },
     { key: 'send_receipt', label: t('sendReceipt') },
     { key: 'paymob_card_gateway', label: t('paymobCardGateway') },
     { key: 'paymob_wallet_gateway', label: t('paymobWalletGateway') }
-  ].filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1');
+  ];
+
+  const paymentGateways = getPaymentGateways().filter(
+    (gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1'
+  );
 
   const handlePaymentGatewayChange = (gateway: string) => {
     onFormDataChange('payment_gateway', gateway);
@@ -43,80 +53,96 @@ export default function PaymentForm({
     onFormDataChange('receipt_image', file.name);
   };
 
+  const renderPaymentGatewayOptions = () => (
+    <div className="space-y-3">
+      {paymentGateways.map((gateway) => (
+        <label
+          key={gateway.key}
+          className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50"
+        >
+          <input
+            type="radio"
+            name="payment_gateway"
+            value={gateway.key}
+            checked={formData.payment_gateway === gateway.key}
+            onChange={() => handlePaymentGatewayChange(gateway.key)}
+            className={clsx(
+              `paymentForm__radio ${gateway.key}`,
+              'h-4 w-4 text-primary-600 focus:ring-primary-500'
+            )}
+            data-testid={`payment-form-radio-${gateway.key}`}
+          />
+          <span className="text-sm font-medium">{gateway.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+
+  const renderWalletNumberField = () => {
+    if (formData.payment_gateway !== 'paymob_wallet_gateway') return null;
+
+    return (
+      <div>
+        <label className="label">{t('walletNumber')}</label>
+        <input
+          type="text"
+          name="wallet_number"
+          value={formData.wallet_number || ''}
+          onChange={(e) => handleWalletNumberChange(e.target.value)}
+          className="input"
+        />
+      </div>
+    );
+  };
+
+  const renderReceiptImageField = () => {
+    if (formData.payment_gateway !== 'send_receipt') return null;
+
+    return (
+      <div>
+        <label className="label">{t('receiptImage')}</label>
+        <input
+          type="file"
+          name="receipt_image"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleReceiptImageChange(file);
+            }
+          }}
+          className="input"
+        />
+      </div>
+    );
+  };
+
+  const renderActionButtons = () => (
+    <div className="flex gap-x-4">
+      <button type="button" onClick={onBack} className="button-secondary flex-1">
+        {t('back')}
+      </button>
+      <button
+        type="submit"
+        disabled={pending}
+        className="button flex flex-1 items-center justify-center gap-2"
+        data-testid="payment-form-submit"
+      >
+        {pending && <ButtonLoadingSpinner />}
+        {pending ? t('processing') : t('placeOrder')}
+      </button>
+    </div>
+  );
+
   return (
     <div className="rounded-theme border border-gray-200 p-6" data-testid="payment-form">
       <h2 className="mb-4 text-xl font-semibold">{t('paymentMethod')}</h2>
 
       <div className="space-y-4">
-        <div className="space-y-3">
-          {paymentGateways.map((gateway) => (
-            <label
-              key={gateway.key}
-              className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50"
-            >
-              <input
-                type="radio"
-                name="payment_gateway"
-                value={gateway.key}
-                checked={formData.payment_gateway === gateway.key}
-                onChange={() => handlePaymentGatewayChange(gateway.key)}
-                className={clsx(
-                  `paymentForm__radio ${gateway.key}`,
-                  'h-4 w-4 text-primary-600 focus:ring-primary-500'
-                )}
-                data-testid={`payment-form-radio-${gateway.key}`}
-              />
-              <span className="text-sm font-medium">{gateway.label}</span>
-            </label>
-          ))}
-        </div>
-
-        {/* Optional fields based on payment method */}
-        {formData.payment_gateway === 'paymob_wallet_gateway' && (
-          <div>
-            <label className="label">{t('walletNumber')}</label>
-            <input
-              type="text"
-              name="wallet_number"
-              value={formData.wallet_number || ''}
-              onChange={(e) => handleWalletNumberChange(e.target.value)}
-              className="input"
-            />
-          </div>
-        )}
-
-        {formData.payment_gateway === 'send_receipt' && (
-          <div>
-            <label className="label">{t('receiptImage')}</label>
-            <input
-              type="file"
-              name="receipt_image"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  handleReceiptImageChange(file);
-                }
-              }}
-              className="input"
-            />
-          </div>
-        )}
-
-        <div className="flex gap-x-4">
-          <button type="button" onClick={onBack} className="button-secondary flex-1">
-            {t('back')}
-          </button>
-          <button
-            type="submit"
-            disabled={pending}
-            className="button flex flex-1 items-center justify-center gap-2"
-            data-testid="payment-form-submit"
-          >
-            {pending && <ButtonLoadingSpinner />}
-            {pending ? t('processing') : t('placeOrder')}
-          </button>
-        </div>
+        {renderPaymentGatewayOptions()}
+        {renderWalletNumberField()}
+        {renderReceiptImageField()}
+        {renderActionButtons()}
       </div>
     </div>
   );
