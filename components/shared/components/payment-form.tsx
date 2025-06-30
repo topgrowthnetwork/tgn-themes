@@ -4,6 +4,7 @@ import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import FieldError from './field-error';
@@ -21,8 +22,8 @@ interface PaymentFormProps {
   onFormDataChange: (field: keyof CheckoutRequest, value: any) => void;
   paymentSettings: PaymentSettings;
   formAction: (formData: FormData) => void;
-  isSubmitting?: boolean;
   onBack: () => void;
+  finished: boolean;
 }
 
 export default function PaymentForm({
@@ -30,10 +31,11 @@ export default function PaymentForm({
   onFormDataChange,
   paymentSettings,
   formAction,
-  isSubmitting = false,
-  onBack
+  onBack,
+  finished
 }: PaymentFormProps) {
   const t = useTranslations('Checkout');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -60,6 +62,7 @@ export default function PaymentForm({
   ].filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1');
 
   const handleFormSubmit = (data: PaymentFormData) => {
+    setIsSubmitting(true);
     // Update form data with payment info
     onFormDataChange('payment_gateway', data.payment_gateway);
     if (data.wallet_number) {
@@ -158,8 +161,8 @@ export default function PaymentForm({
             className="button flex flex-1 items-center justify-center gap-2"
             data-testid="payment-form-submit"
           >
-            {isSubmitting && <ButtonLoadingSpinner />}
-            {isSubmitting ? t('processing') : t('placeOrder')}
+            {isSubmitting && !finished && <ButtonLoadingSpinner />}
+            {isSubmitting && !finished ? t('processing') : t('placeOrder')}
           </button>
         </div>
       </form>

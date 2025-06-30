@@ -28,7 +28,7 @@ export async function addItemV2(
 
     if (result.isErr()) {
       return {
-        message: 'Failed to add item to cart',
+        message: `Failed to add item to cart.`,
         success: false
       };
     }
@@ -42,7 +42,7 @@ export async function addItemV2(
     };
   } catch (error: any) {
     return {
-      message: 'Error adding item to cart',
+      message: `Error adding item to cart.`,
       success: false
     };
   }
@@ -57,7 +57,7 @@ export async function removeItemV2(prevState: any, lineId: number): Promise<Acti
 
     if (result.isErr()) {
       return {
-        message: 'Failed to remove item from cart',
+        message: `Failed to remove item from cart.`,
         success: false
       };
     }
@@ -69,7 +69,7 @@ export async function removeItemV2(prevState: any, lineId: number): Promise<Acti
     };
   } catch (error: any) {
     return {
-      message: 'Error removing item from cart',
+      message: `Error removing item from cart.`,
       success: false
     };
   }
@@ -99,7 +99,7 @@ export async function updateItemQuantityV2(
 
     if (result.isErr()) {
       return {
-        message: 'Failed to update item quantity',
+        message: `Failed to update item quantity.`,
         success: false
       };
     }
@@ -111,7 +111,7 @@ export async function updateItemQuantityV2(
     };
   } catch (error: any) {
     return {
-      message: 'Error updating item quantity',
+      message: `Error updating item quantity.`,
       success: false
     };
   }
@@ -126,7 +126,7 @@ export async function applyCouponV2(prevState: any, couponCode: string): Promise
 
     if (result.isErr()) {
       return {
-        message: 'Failed to apply coupon',
+        message: `Failed to apply coupon.`,
         success: false
       };
     }
@@ -138,7 +138,7 @@ export async function applyCouponV2(prevState: any, couponCode: string): Promise
     };
   } catch (error: any) {
     return {
-      message: 'Error applying coupon',
+      message: `Error applying coupon.`,
       success: false
     };
   }

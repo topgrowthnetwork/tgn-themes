@@ -14,7 +14,7 @@ describe('Checkout Flow', () => {
     cy.get('[data-testid="product-card-link"]')
       .should('be.visible')
       .should('have.length.at.least', 2)
-      .eq(1) // Get the 2nd product card link
+      .eq(2) // Get the 3nd product card link
       .click();
 
     cy.wait(2000); // Wait for navigation to product page
@@ -65,7 +65,7 @@ describe('Checkout Flow', () => {
     cy.get('[data-testid="shipping-form-email"]')
       .should('be.visible')
       .clear()
-      .type('john.doe@example.com')
+      .type('moaaz_bs@yahoo.com')
       .wait(500);
 
     // Fill phone
@@ -127,7 +127,7 @@ describe('Checkout Flow', () => {
     // Step 7: Select cash on delivery payment method
     cy.get('[data-testid="payment-form-radio-cash_on_delivery"]').should('be.visible').check();
 
-    cy.wait(1000);
+    cy.wait(5000);
     cy.log('✅ Step 7: Selected cash on delivery');
 
     // Verify the radio button is checked
@@ -143,7 +143,7 @@ describe('Checkout Flow', () => {
     cy.log('✅ Step 8: Submitted payment form');
 
     // Step 9: Verify we're on the thank you page
-    cy.url().should('include', '/thank-you');
+    cy.url().should('include', '/en/thank-you');
     cy.wait(2000);
 
     // Additional verification for thank you page content

@@ -10,7 +10,7 @@ export async function submitContact(prevState: any, data: ContactRequest): Promi
     const result = await api.submitContact(data);
     if (result.isErr()) {
       return {
-        message: 'Failed to submit contact form',
+        message: `Failed to submit contact form. ${result.error.message}`,
         success: false
       };
     }
@@ -20,7 +20,7 @@ export async function submitContact(prevState: any, data: ContactRequest): Promi
     };
   } catch (error: any) {
     return {
-      message: 'Error sending message. Please try again.',
+      message: `Error sending message. ${error.message}`,
       success: false
     };
   }

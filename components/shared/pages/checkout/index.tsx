@@ -15,6 +15,7 @@ import {
   PaymentSettings,
   State
 } from 'lib/api/types';
+import { useRouter } from 'lib/i18n/navigation';
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -38,7 +39,7 @@ export default function CheckoutPage({
   cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
-
+  const router = useRouter();
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
 
   const [formData, setFormData] = useState<Partial<CheckoutRequest>>({
@@ -56,15 +57,19 @@ export default function CheckoutPage({
 
   const [state, formAction] = useFormState(processCheckout, {
     message: '',
-    success: false,
-    redirectUrl: undefined
+    success: false
   });
 
   // Handle external payment gateway redirect
   useEffect(() => {
-    if (state?.success && state.redirectUrl) {
+    if (state?.success) {
       // Redirect to external payment gateway
-      window.location.href = state.redirectUrl;
+      if (state.internalRedirect) {
+        router.push('/thank-you');
+      }
+      if (state.redirectUrl) {
+        window.location.href = state.redirectUrl;
+      }
     }
   }, [state]);
 
@@ -94,11 +99,13 @@ export default function CheckoutPage({
         <h1 className="mb-8 text-3xl font-bold">{t('title')}</h1>
 
         {/* Toast Notification */}
-        <ToastNotification
-          type={state.success ? 'success' : 'error'}
-          message={state.message}
-          autoClose={3000}
-        />
+        {state?.message && (
+          <ToastNotification
+            type={state.success ? 'success' : 'error'}
+            message={state.message}
+            autoClose={3000}
+          />
+        )}
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Main Checkout Forms */}
@@ -122,8 +129,8 @@ export default function CheckoutPage({
                 onFormDataChange={updateFormData}
                 paymentSettings={paymentSettings}
                 formAction={formAction}
-                isSubmitting={state.success}
                 onBack={handleBackToShipping}
+                finished={Boolean(state.message)}
               />
             )}
           </div>
