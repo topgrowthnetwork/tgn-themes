@@ -15,9 +15,10 @@ import {
   PaymentSettings,
   State
 } from 'lib/api/types';
+import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 
 interface CheckoutPageProps {
@@ -38,6 +39,8 @@ export default function CheckoutPage({
   cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
+  const { isLoaded } = useShippingStorage();
+
   const [step, setStep] = useQueryState<'shipping' | 'payment'>('step', {
     defaultValue: 'shipping',
     parse: (value): 'shipping' | 'payment' => (value === 'payment' ? 'payment' : 'shipping')
@@ -59,8 +62,18 @@ export default function CheckoutPage({
   const [state, formAction] = useFormState(processCheckout, {
     success: false,
     message: '',
-    error: null
+    error: null,
+    redirectUrl: null,
+    order: null
   });
+
+  // Handle external payment gateway redirect
+  useEffect(() => {
+    if (state?.success && state?.redirectUrl) {
+      // Redirect to external payment gateway
+      window.location.href = state.redirectUrl;
+    }
+  }, [state?.success, state?.redirectUrl]);
 
   const updateFormData = (field: keyof CheckoutRequest, value: any) => {
     setFormData((prev) => ({

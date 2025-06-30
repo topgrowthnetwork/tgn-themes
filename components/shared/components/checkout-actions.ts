@@ -37,20 +37,29 @@ export async function processCheckout(prevState: any, formData: FormData) {
       };
     }
 
-    const order = result.value.data.order;
+    const { order, response } = result.value.data;
 
-    if (order.payment_gateway == 'cash_on_site' || order.payment_gateway == 'cash_on_delivery') {
-      redirect('/thank-you');
-    }
-
+    // Handle different payment gateways
     switch (order.payment_gateway) {
       case 'cash_on_site':
       case 'cash_on_delivery':
-        return redirect('/thank-you');
+        redirect('/thank-you');
       case 'fawaterk_gateway':
       case 'paymob_card_gateway':
       case 'paymob_wallet_gateway':
-        return;
+        // Return the external payment URL for client-side redirect
+        return {
+          success: true,
+          message: 'Redirecting to payment gateway...',
+          redirectUrl: response,
+          order
+        };
+      default:
+        return {
+          success: false,
+          message: 'Unsupported payment method.',
+          error: 'Unsupported payment method'
+        };
     }
   } catch (error: any) {
     return {
