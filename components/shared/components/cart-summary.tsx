@@ -1,6 +1,8 @@
+'use client';
+
 import { applyCouponV2 } from '@shared/components/cart-actions';
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
-import { NotificationMessage } from '@shared/components/notification-message';
+import { ToastNotification } from '@shared/components/toast-notification';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
 import { getFullPath, getItemPrice } from 'lib/utils';
@@ -103,11 +105,10 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
             />
             <CouponSubmitButton disabled={!couponCode.trim()} />
           </div>
-          <NotificationMessage
+          <ToastNotification
             message={message}
             type={message?.includes('Error') ? 'error' : 'success'}
-            autoDismiss={true}
-            dismissDelay={3000}
+            autoClose={3000}
           />
         </form>
       </div>

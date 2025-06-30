@@ -1,4 +1,5 @@
 import ThemeContent from '@theme/layout';
+import { ToastContainerWrapper } from 'components/shared/components';
 import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
@@ -76,6 +77,7 @@ export default async function LocaleLayout({
               <main>{children}</main>
             </Suspense>
           </ThemeContent>
+          <ToastContainerWrapper />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { addItemV2 } from '@shared/components/cart-actions';
-import { NotificationMessage } from '@shared/components/notification-message';
+import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { ProductVariant } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
@@ -101,12 +101,7 @@ export function AddToCart({
         />
       </form>
 
-      <NotificationMessage
-        message={message}
-        type={getNotificationType()}
-        autoDismiss={true}
-        dismissDelay={3000}
-      />
+      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
     </div>
   );
 }

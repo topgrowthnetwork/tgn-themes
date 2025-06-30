@@ -2,6 +2,7 @@
 
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { updateItemQuantityV2 } from '@shared/components/cart-actions';
+import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
@@ -78,12 +79,22 @@ export function EditItemQuantityButton({
   // Disable plus button if no stock available or below min_stock
   const isDisabled = type === 'plus' && !canIncrease;
 
+  // Determine notification type based on message content
+  const getNotificationType = () => {
+    if (!message) return 'info';
+    return message.includes('Error') ? 'error' : 'success';
+  };
+
   return (
-    <form action={formAction.bind(null, { lineId: item.id, quantity })}>
-      <SubmitButton type={type} item={item} disabled={isDisabled} />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
-    </form>
+    <>
+      <form action={formAction.bind(null, { lineId: item.id, quantity })}>
+        <SubmitButton type={type} item={item} disabled={isDisabled} />
+        <p aria-live="polite" className="sr-only" role="status">
+          {message}
+        </p>
+      </form>
+
+      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
+    </>
   );
 }

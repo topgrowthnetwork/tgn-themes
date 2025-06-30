@@ -1,8 +1,8 @@
-import clsx from 'clsx';
+import { ToastNotification, type ToastType } from '@shared/components/toast-notification';
 
 interface NotificationMessageProps {
   message: string | null;
-  type?: 'success' | 'error' | 'info' | 'warning';
+  type?: ToastType;
   className?: string;
 }
 
@@ -11,33 +11,11 @@ export function NotificationMessage({
   type = 'info',
   className
 }: NotificationMessageProps) {
-  if (!message) return null;
-
-  const getStyles = () => {
-    switch (type) {
-      case 'success':
-        return 'bg-green-50 text-green-800 border border-green-200';
-      case 'error':
-        return 'bg-red-50 text-red-800 border border-red-200';
-      case 'warning':
-        return 'bg-yellow-50 text-yellow-800 border border-yellow-200';
-      case 'info':
-      default:
-        return 'bg-primary-50 text-primary-800 border border-primary-200';
-    }
-  };
-
   return (
-    <div
-      className={clsx(
-        'rounded-theme p-3 text-sm font-medium transition-all duration-200',
-        getStyles(),
-        className
-      )}
-      role="alert"
-      aria-live="polite"
-    >
-      {message}
-    </div>
+    <ToastNotification
+      message={message}
+      type={type}
+      autoClose={type === 'success' ? 5000 : false}
+    />
   );
 }

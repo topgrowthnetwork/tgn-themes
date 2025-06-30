@@ -3,7 +3,6 @@ export { default as JsonViewer } from './json-viewer';
 export { default as Label } from './label';
 export { default as LoadingDots } from './loading-dots';
 export { default as LogoSquare } from './logo-square';
-export { NotificationMessage } from './notification-message';
 export { default as OpengraphImage } from './opengraph-image';
 export { default as Price } from './price';
 export { ProductsCarousel } from './products-carousel';

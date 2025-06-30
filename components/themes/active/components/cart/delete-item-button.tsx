@@ -2,6 +2,7 @@
 
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { removeItemV2 } from '@shared/components/cart-actions';
+import { ToastNotification } from '@shared/components/toast-notification';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -31,12 +32,22 @@ function SubmitButton({ item }: { item: any }) {
 export function DeleteItemButton({ item }: { item: any }) {
   const [message, formAction] = useFormState(removeItemV2, null);
 
+  // Determine notification type based on message content
+  const getNotificationType = () => {
+    if (!message) return 'info';
+    return message.includes('Error') ? 'error' : 'success';
+  };
+
   return (
-    <form action={formAction.bind(null, item.id)}>
-      <SubmitButton item={item} />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
-    </form>
+    <>
+      <form action={formAction.bind(null, item.id)}>
+        <SubmitButton item={item} />
+        <p aria-live="polite" className="sr-only" role="status">
+          {message}
+        </p>
+      </form>
+
+      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
+    </>
   );
 }

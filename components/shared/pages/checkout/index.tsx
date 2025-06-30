@@ -2,9 +2,9 @@
 
 import CartSummary from '@shared/components/cart-summary';
 import { processCheckout } from '@shared/components/checkout-actions';
-import { NotificationMessage } from '@shared/components/notification-message';
 import PaymentForm from '@shared/components/payment-form';
 import ShippingForm from '@shared/components/shipping-form';
+import { ToastNotification } from '@shared/components/toast-notification';
 import Container from '@theme/components/container';
 import {
   CartResponse,
@@ -94,12 +94,11 @@ export default function CheckoutPage({
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-8 text-3xl font-bold">{t('title')}</h1>
 
-        {/* Error/Success Message */}
-        <NotificationMessage
+        {/* Toast Notification */}
+        <ToastNotification
           message={state?.message || null}
           type={state?.success ? 'success' : 'error'}
-          autoDismiss={state?.success}
-          dismissDelay={5000}
+          autoClose={state?.success ? 5000 : false}
         />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">

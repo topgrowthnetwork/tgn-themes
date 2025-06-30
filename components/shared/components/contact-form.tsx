@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { submitContact } from '@shared/components/contact-actions';
 import FieldError from '@shared/components/field-error';
 import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
-import { NotificationMessage } from '@shared/components/notification-message';
+import { ToastNotification } from '@shared/components/toast-notification';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
@@ -69,11 +69,10 @@ export default function ContactForm() {
       <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
         {t('sendMessage')}
       </h2>
-      <NotificationMessage
+      <ToastNotification
         message={state.message}
         type={state.success ? 'success' : 'error'}
-        autoDismiss={state.success}
-        dismissDelay={5000}
+        autoClose={state.success ? 5000 : false}
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
