@@ -5,6 +5,7 @@ import { addItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { ProductVariant } from 'lib/api/types';
+import { getNotificationData } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -73,7 +74,7 @@ export function AddToCart({
   selectedVariant: ProductVariant | null;
   availableForSale: boolean;
 }) {
-  const [message, formAction] = useFormState(addItemV2, null);
+  const [state, formAction] = useFormState(addItemV2, null);
   const selectedVariantId = selectedVariant?.id;
   const selectedProductId = selectedVariant?.product_id;
 
@@ -85,12 +86,6 @@ export function AddToCart({
     selectedVariantId: selectedVariantId || NaN
   });
 
-  // Determine notification type based on message content
-  const getNotificationType = () => {
-    if (!message) return 'info';
-    return message.includes('Error') ? 'error' : 'success';
-  };
-
   return (
     <div className="space-y-3">
       <form action={actionWithVariant}>
@@ -101,7 +96,7 @@ export function AddToCart({
         />
       </form>
 
-      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
+      <ToastNotification {...getNotificationData(state)} autoClose={3000} />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { removeItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
+import { getNotificationData } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -30,13 +31,9 @@ function SubmitButton({ item }: { item: any }) {
 }
 
 export function DeleteItemButton({ item }: { item: any }) {
-  const [message, formAction] = useFormState(removeItemV2, null);
+  const [state, formAction] = useFormState(removeItemV2, null);
 
-  // Determine notification type based on message content
-  const getNotificationType = () => {
-    if (!message) return 'info';
-    return message.includes('Error') ? 'error' : 'success';
-  };
+  const { type, message } = getNotificationData(state);
 
   return (
     <>
@@ -47,7 +44,7 @@ export function DeleteItemButton({ item }: { item: any }) {
         </p>
       </form>
 
-      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
+      <ToastNotification message={message} type={type} autoClose={3000} />
     </>
   );
 }

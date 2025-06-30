@@ -1,11 +1,19 @@
 'use server';
 
 import { createApi } from 'lib/api';
-import { CheckoutRequest } from 'lib/api/types';
+import { ActionResponse, CheckoutRequest } from 'lib/api/types';
+import { err, ok, Result } from 'neverthrow';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-export async function processCheckout(prevState: any, formData: FormData) {
+interface CheckoutActionResponse extends ActionResponse {
+  redirectUrl: string;
+}
+
+export async function processCheckout(
+  prevState: any,
+  formData: FormData
+): Promise<Result<CheckoutActionResponse, ActionResponse>> {
   const guestToken = cookies().get('guest_token')?.value;
   const api = createApi({ language: 'en', guestToken });
 
@@ -30,11 +38,9 @@ export async function processCheckout(prevState: any, formData: FormData) {
     const result = await api.checkout(checkoutData);
 
     if (result.isErr()) {
-      return {
-        success: false,
-        message: 'Checkout failed. Please try again.',
-        error: result.error
-      };
+      return err({
+        message: 'Checkout failed. Please try again.'
+      });
     }
 
     const { order, response } = result.value.data;
@@ -48,24 +54,18 @@ export async function processCheckout(prevState: any, formData: FormData) {
       case 'paymob_card_gateway':
       case 'paymob_wallet_gateway':
         // Return the external payment URL for client-side redirect
-        return {
-          success: true,
+        return ok({
           message: 'Redirecting to payment gateway...',
-          redirectUrl: response,
-          order
-        };
+          redirectUrl: response
+        });
       default:
-        return {
-          success: false,
-          message: 'Unsupported payment method.',
-          error: 'Unsupported payment method'
-        };
+        return err({
+          message: 'Unsupported payment method.'
+        });
     }
   } catch (error: any) {
-    return {
-      success: false,
-      message: 'An unexpected error occurred. Please try again.',
-      error: error.message
-    };
+    return err({
+      message: 'An unexpected error occurred. Please try again.'
+    });
   }
 }

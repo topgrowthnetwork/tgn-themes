@@ -5,7 +5,7 @@ import { ButtonLoadingSpinner } from '@shared/components/loading-spinner';
 import { ToastNotification } from '@shared/components/toast-notification';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
-import { getFullPath, getItemPrice } from 'lib/utils';
+import { getFullPath, getItemPrice, getNotificationData } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -35,7 +35,7 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
 export default function CartSummary({ cartResponse, currency }: CartSummaryProps) {
   const t = useTranslations('Cart');
   const [couponCode, setCouponCode] = useState('');
-  const [message, formAction] = useFormState(applyCouponV2, null);
+  const [state, formAction] = useFormState(applyCouponV2, null);
 
   if (!cartResponse.cart || cartResponse.cart.cart_items.length === 0) {
     return null;
@@ -105,11 +105,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
             />
             <CouponSubmitButton disabled={!couponCode.trim()} />
           </div>
-          <ToastNotification
-            message={message}
-            type={message?.includes('Error') ? 'error' : 'success'}
-            autoClose={3000}
-          />
+          <ToastNotification {...getNotificationData(state)} autoClose={3000} />
         </form>
       </div>
 

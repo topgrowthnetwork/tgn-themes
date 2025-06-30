@@ -569,3 +569,7 @@ export interface ContactResponse {
   data: null;
   message: string;
 }
+
+export interface ActionResponse {
+  message: string;
+}

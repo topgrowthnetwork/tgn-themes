@@ -15,6 +15,7 @@ import {
   PaymentSettings,
   State
 } from 'lib/api/types';
+import { getNotificationData } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
@@ -53,21 +54,15 @@ export default function CheckoutPage({
     payment_gateway: 'cash_on_delivery'
   });
 
-  const [state, formAction] = useFormState(processCheckout, {
-    success: false,
-    message: '',
-    error: null,
-    redirectUrl: null,
-    order: null
-  });
+  const [state, formAction] = useFormState(processCheckout, null);
 
   // Handle external payment gateway redirect
   useEffect(() => {
-    if (state?.success && state?.redirectUrl) {
+    if (state?.isOk() && state.value.redirectUrl) {
       // Redirect to external payment gateway
-      window.location.href = state.redirectUrl;
+      window.location.href = state.value.redirectUrl;
     }
-  }, [state?.success, state?.redirectUrl]);
+  }, [state]);
 
   const updateFormData = (field: keyof CheckoutRequest, value: any) => {
     setFormData((prev) => ({
@@ -95,11 +90,7 @@ export default function CheckoutPage({
         <h1 className="mb-8 text-3xl font-bold">{t('title')}</h1>
 
         {/* Toast Notification */}
-        <ToastNotification
-          message={state?.message || null}
-          type={state?.success ? 'success' : 'error'}
-          autoClose={state?.success ? 5000 : false}
-        />
+        <ToastNotification {...getNotificationData(state)} autoClose={3000} />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Main Checkout Forms */}
@@ -123,7 +114,7 @@ export default function CheckoutPage({
                 onFormDataChange={updateFormData}
                 paymentSettings={paymentSettings}
                 formAction={formAction}
-                isSubmitting={state?.success}
+                isSubmitting={state?.isOk()}
                 onBack={handleBackToShipping}
               />
             )}

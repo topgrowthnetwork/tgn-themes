@@ -5,6 +5,7 @@ import { updateItemQuantityV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
+import { getNotificationData } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
@@ -66,7 +67,9 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   minStock?: number;
 }) {
-  const [message, formAction] = useFormState(updateItemQuantityV2, null);
+  const [state, formAction] = useFormState(updateItemQuantityV2, null);
+
+  console.log('💓💓', state);
 
   const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
@@ -79,11 +82,7 @@ export function EditItemQuantityButton({
   // Disable plus button if no stock available or below min_stock
   const isDisabled = type === 'plus' && !canIncrease;
 
-  // Determine notification type based on message content
-  const getNotificationType = () => {
-    if (!message) return 'info';
-    return message.includes('Error') ? 'error' : 'success';
-  };
+  const { message } = getNotificationData(state);
 
   return (
     <>
@@ -94,7 +93,7 @@ export function EditItemQuantityButton({
         </p>
       </form>
 
-      <ToastNotification message={message} type={getNotificationType()} autoClose={3000} />
+      <ToastNotification {...getNotificationData(state)} autoClose={3000} />
     </>
   );
 }
