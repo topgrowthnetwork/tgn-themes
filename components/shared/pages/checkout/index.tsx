@@ -15,9 +15,7 @@ import {
   PaymentSettings,
   State
 } from 'lib/api/types';
-import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 
@@ -39,12 +37,8 @@ export default function CheckoutPage({
   cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
-  const { isLoaded } = useShippingStorage();
 
-  const [step, setStep] = useQueryState<'shipping' | 'payment'>('step', {
-    defaultValue: 'shipping',
-    parse: (value): 'shipping' | 'payment' => (value === 'payment' ? 'payment' : 'shipping')
-  });
+  const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
 
   const [formData, setFormData] = useState<Partial<CheckoutRequest>>({
     shipping_address: {
