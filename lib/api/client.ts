@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/nextjs';
 import { err, ok, Result } from 'neverthrow';
 import { ApiConfig, ApiError, ApiResponse } from './types';
 
@@ -121,6 +122,25 @@ export class ApiClient {
           error: apiError
         });
 
+        // Send error to Sentry with context
+        Sentry.captureException(new Error(`API Error: ${apiError.message}`), {
+          tags: {
+            component: 'api-client',
+            endpoint: endpoint,
+            method: options.method || 'GET',
+            status_code: response.status.toString()
+          },
+          extra: {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+            error: apiError,
+            requestHeaders: Object.fromEntries(headers.entries()),
+            responseBody: errorText
+          },
+          level: 'error'
+        });
+
         return err(apiError);
       }
 
@@ -132,7 +152,29 @@ export class ApiClient {
         error instanceof Error ? error.message : 'Network error occurred',
         error instanceof Error && 'status' in error ? (error as any).status : undefined
       );
+
       console.error('API Error:', apiError);
+
+      // Send network error to Sentry with context
+      Sentry.captureException(
+        error instanceof Error ? error : new Error('Network error occurred'),
+        {
+          tags: {
+            component: 'api-client',
+            endpoint: endpoint,
+            method: options.method || 'GET',
+            error_type: 'network_error'
+          },
+          extra: {
+            url,
+            apiError,
+            requestHeaders: Object.fromEntries(headers.entries()),
+            originalError: error
+          },
+          level: 'error'
+        }
+      );
+
       return err(apiError);
     }
   }
