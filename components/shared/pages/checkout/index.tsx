@@ -16,6 +16,7 @@ import {
   State
 } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
+import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
 
@@ -37,7 +38,11 @@ export default function CheckoutPage({
   cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
-  const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
+  const [step, setStep] = useQueryState<'shipping' | 'payment'>('step', {
+    defaultValue: 'shipping',
+    parse: (value): 'shipping' | 'payment' => (value === 'payment' ? 'payment' : 'shipping')
+  });
+
   const [formData, setFormData] = useState<Partial<CheckoutRequest>>({
     shipping_address: {
       country: '',

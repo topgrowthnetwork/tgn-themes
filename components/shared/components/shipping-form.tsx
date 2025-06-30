@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import { CheckoutRequest, City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
+import { useFormPersistence } from 'lib/hooks/use-form-persistence';
+import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -46,6 +48,7 @@ export default function ShippingForm({
   cities
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
+  const { isLoaded } = useShippingStorage();
 
   const {
     register,
@@ -53,6 +56,7 @@ export default function ShippingForm({
     control,
     watch,
     setValue,
+    reset,
     formState: { errors }
   } = useForm<ShippingFormData>({
     resolver: zodResolver(shippingSchema),
@@ -67,6 +71,14 @@ export default function ShippingForm({
         address: formData.shipping_address?.address || ''
       }
     }
+  });
+
+  // Use form persistence hook for automatic localStorage handling
+  const { saveStoredData } = useFormPersistence({
+    storageKey: 'checkout_shipping_data',
+    formData,
+    reset,
+    isLoaded
   });
 
   const watchedCountry = watch('shipping_address.country');
@@ -103,6 +115,10 @@ export default function ShippingForm({
   const watchedValues = watch();
 
   const handleFormSubmit = (data: ShippingFormData) => {
+    // Save to localStorage
+    saveStoredData(data);
+
+    // Update parent component
     onFormDataChange(data);
     onSubmit();
   };

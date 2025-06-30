@@ -102,7 +102,8 @@
   }
 
   [data-theme='active'] .button-secondary {
-    @apply text-sm text-primary-600 hover:text-primary-800;
+    @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
+    focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
 }
 

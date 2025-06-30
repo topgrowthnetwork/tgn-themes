@@ -144,11 +144,7 @@ export default function PaymentForm({
         )}
 
         <div className="flex gap-x-4">
-          <button
-            type="button"
-            onClick={onBack}
-            className="button flex-1 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-          >
+          <button type="button" onClick={onBack} className="button-secondary flex-1">
             {t('back')}
           </button>
           <button
