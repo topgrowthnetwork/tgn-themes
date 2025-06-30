@@ -64,7 +64,7 @@ export async function removeItemV2(prevState: any, lineId: number): Promise<Acti
 
     revalidateTag(TAGS.cart);
     return {
-      message: result.value.data.message || 'Removed from cart successfully',
+      message: result.value.message || 'Removed from cart successfully',
       success: true
     };
   } catch (error: any) {
@@ -133,7 +133,7 @@ export async function applyCouponV2(prevState: any, couponCode: string): Promise
 
     revalidateTag(TAGS.cart);
     return {
-      message: result.value.data.message || 'Coupon applied successfully',
+      message: result.value.message || 'Coupon applied successfully',
       success: true
     };
   } catch (error: any) {
