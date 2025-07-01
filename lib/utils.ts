@@ -65,10 +65,10 @@ export function getFullPath(path: string | null | undefined): string {
 
 export function getItemPrice(
   product: { price: number; final_price: number },
-  variant?: { price: number }
+  variant?: { price: number; final_price: number }
 ) {
   // Use variant price if available, otherwise use product's final price
-  return variant?.price ?? product.final_price;
+  return variant?.final_price ?? product.final_price;
 }
 
 /**
@@ -134,7 +134,7 @@ export function getCheapestVariant(product: Product): ProductVariant | null {
   }
 
   return availableVariants.reduce((cheapest, current) => {
-    return current.price < cheapest.price ? current : cheapest;
+    return current.final_price < cheapest.final_price ? current : cheapest;
   });
 }
 
@@ -145,7 +145,7 @@ export function getCheapestVariant(product: Product): ProductVariant | null {
  */
 export function getCheapestVariantPrice(product: Product): number {
   const cheapestVariant = getCheapestVariant(product);
-  return cheapestVariant ? cheapestVariant.price : product.final_price;
+  return cheapestVariant ? cheapestVariant.final_price : product.final_price;
 }
 
 /**

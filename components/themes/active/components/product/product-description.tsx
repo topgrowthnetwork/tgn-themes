@@ -18,8 +18,10 @@ export function ProductDescription({
   currency: string;
   selectedVariant: ProductVariant | null;
 }) {
-  // Use selected variant price if available, otherwise fall back to product price
-  const displayPrice = selectedVariant ? selectedVariant.price : product.final_price;
+  // Use selected variant prices if available, otherwise fall back to product prices
+  const displayPrice = selectedVariant ? selectedVariant.final_price : product.final_price;
+  const originalPrice = selectedVariant ? selectedVariant.price : product.price;
+  const hasDiscount = originalPrice > displayPrice;
 
   const availableForSale = (function isAvailableForSale() {
     if (selectedVariant) {
@@ -29,12 +31,23 @@ export function ProductDescription({
     return product.stock > 0;
   })();
 
+  console.log(selectedVariant);
+
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
         <h1 className="mb-2 text-5xl font-medium">{product.title}</h1>
-        <div className="me-auto w-auto rounded-full bg-primary-600 p-2 text-sm text-white">
-          <Price amount={displayPrice.toString()} currencyCode={currency} />
+        <div className="flex items-center">
+          <div className=" flex w-auto flex-none items-center rounded-full bg-primary-600 p-2 text-sm text-white">
+            <Price amount={displayPrice.toString()} currencyCode={currency} />
+          </div>
+          {hasDiscount && (
+            <Price
+              className="me-auto ms-2 text-xs line-through opacity-70"
+              amount={originalPrice.toString()}
+              currencyCode={currency}
+            />
+          )}
         </div>
       </div>
       <VariantSelector

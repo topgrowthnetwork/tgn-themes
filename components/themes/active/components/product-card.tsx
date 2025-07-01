@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { Product } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
-import { buildProductUrlWithCheapestVariant, getFullPath } from 'lib/utils';
+import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath } from 'lib/utils';
 import { GridTileImage } from './grid/tile';
 
 interface ProductCardProps {
@@ -22,6 +22,7 @@ export function ProductCard({
   isInteractive = true
 }: ProductCardProps) {
   const currencyCode = currency || 'EGP';
+  const cheapestVariant = getCheapestVariant(product);
 
   return (
     <Link
@@ -34,9 +35,13 @@ export function ProductCard({
         isInteractive={isInteractive}
         label={{
           title: product.title,
-          amount: product.final_price.toString(),
+          amount: cheapestVariant
+            ? cheapestVariant.final_price.toString()
+            : product.final_price.toString(),
           currencyCode: currencyCode,
-          originalAmount: product.price.toString()
+          originalAmount: cheapestVariant
+            ? cheapestVariant.price.toString()
+            : product.price.toString()
         }}
         src={getFullPath(product.thumbnail?.path)}
         fill

@@ -49,6 +49,9 @@ async function handleProductPage(url: URL): Promise<URL | null> {
 
   if (!productMatch) return null;
 
+  // Skip if variant query parameter already exists
+  if (url.searchParams.has('variant')) return null;
+
   try {
     const productSlug = productMatch[1];
     const api = createApi({ language: 'en' });

@@ -1,9 +1,8 @@
-import { GridTileImage } from '@theme/components/grid/tile';
+import { ProductCard } from '@theme/components/product-card';
 import { Gallery } from '@theme/components/product/gallery';
 import { ProductDescription } from '@theme/components/product/product-description';
 import { createApi } from 'lib/api';
 import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
-import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
@@ -37,7 +36,7 @@ export default function ProductPage({
         product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       priceCurrency: settings.site_global_currency,
       highPrice: product.price,
-      lowPrice: product.price
+      lowPrice: product.final_price
     }
   };
 
@@ -100,19 +99,12 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
             key={relatedProduct.slug}
             className="aspect-square w-full flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
           >
-            <Link className="relative h-full w-full" href={`/product/${relatedProduct.slug}`}>
-              <GridTileImage
-                alt={relatedProduct.title}
-                label={{
-                  title: relatedProduct.title,
-                  amount: relatedProduct.price.toString(),
-                  currencyCode: currency
-                }}
-                src={getFullPath(relatedProduct.thumbnail?.path || '')}
-                fill
-                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-              />
-            </Link>
+            <ProductCard
+              product={relatedProduct}
+              currency={currency}
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+              className="h-full w-full"
+            />
           </li>
         ))}
       </ul>

@@ -208,6 +208,7 @@ export interface CartResponse {
         product_id: number;
         sku: string;
         price: number;
+        final_price: number;
         stock: number;
         images: number[];
         created_at: string;
@@ -336,6 +337,7 @@ export interface ProductVariant {
   product_id: number;
   sku: string;
   price: number;
+  final_price: number;
   stock: number;
   images: number[];
   created_at: string;
