@@ -1,12 +1,12 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
 import { Bars3Icon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Category, GlobalSettings, Product } from 'lib/api/types';
-import { Link } from 'lib/i18n/navigation';
+import { Link, usePathname } from 'lib/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from '../../product-card';
 import Search from './search';

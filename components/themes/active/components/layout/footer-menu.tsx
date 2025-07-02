@@ -2,9 +2,8 @@
 
 import clsx from 'clsx';
 import { Category } from 'lib/api/types';
-import { Link } from 'lib/i18n/navigation';
+import { Link, usePathname } from 'lib/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const FooterMenuItem = ({ item }: { item: Category }) => {

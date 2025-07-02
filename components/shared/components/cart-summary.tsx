@@ -8,7 +8,6 @@ import { CartResponse } from 'lib/api/types';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
 interface CartSummaryProps {
@@ -34,7 +33,6 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function CartSummary({ cartResponse, currency }: CartSummaryProps) {
   const t = useTranslations('Cart');
-  const [couponCode, setCouponCode] = useState('');
   const [state, formAction] = useFormState(applyCouponV2, {
     message: '',
     success: false
@@ -47,7 +45,6 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
   const handleCouponSubmit = (formData: FormData) => {
     const code = formData.get('couponCode') as string;
     if (code?.trim()) {
-      setCouponCode('');
       return formAction(code.trim());
     }
     return null;
@@ -101,12 +98,10 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
             <input
               type="text"
               name="couponCode"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
               placeholder={t('couponCode')}
               className="input flex-1"
             />
-            <CouponSubmitButton disabled={!couponCode.trim()} />
+            <CouponSubmitButton disabled={false} />
           </div>
           <ToastNotification
             type={state.success ? 'success' : 'error'}

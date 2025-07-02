@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'lib/i18n/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Pagination } from './pagination';
 

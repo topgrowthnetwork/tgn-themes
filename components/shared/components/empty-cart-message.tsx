@@ -1,5 +1,3 @@
-'use client';
-
 import Container from '@theme/components/container';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { useTranslations } from 'next-intl';
