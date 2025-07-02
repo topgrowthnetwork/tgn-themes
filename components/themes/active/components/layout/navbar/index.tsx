@@ -36,7 +36,13 @@ export default async function Navbar() {
     // <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6 dark:border-neutral-700 dark:bg-black/80">
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="me-2 block flex-none">
-        <MobileMenu menu={categories} products={products} settings={settings} />
+        <Suspense
+          fallback={
+            <div className="h-11 w-11 rounded-theme border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
+          }
+        >
+          <MobileMenu menu={categories} products={products} settings={settings} />
+        </Suspense>
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-1/3">
@@ -59,7 +65,13 @@ export default async function Navbar() {
           </div>
         </div>
         <div className="hidden justify-center md:flex md:w-1/3">
-          <Search />
+          <Suspense
+            fallback={
+              <div className="h-10 w-80 rounded-theme border bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
+            }
+          >
+            <Search />
+          </Suspense>
         </div>
         <div className="flex justify-end md:w-1/3">
           <Suspense fallback={<OpenCart />}>
