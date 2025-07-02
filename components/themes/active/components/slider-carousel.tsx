@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Slider } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -23,6 +25,10 @@ interface CarouselDotsProps {
 
 // Slide Content Component
 function SlideContent({ slider }: SlideContentProps) {
+  const t = useTranslations('Common');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   return (
     <div className="relative h-64 w-full md:h-96 lg:h-[500px]">
       <Image
@@ -53,20 +59,12 @@ function SlideContent({ slider }: SlideContentProps) {
               href={slider.link}
               className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base"
             >
-              Learn More
-              <svg
-                className="ms-2 h-4 w-4 md:h-5 md:w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              {t('learnMore')}
+              {isRTL ? (
+                <ChevronLeft className="ms-2 h-4 w-4 md:h-5 md:w-5" />
+              ) : (
+                <ChevronRight className="ms-2 h-4 w-4 md:h-5 md:w-5" />
+              )}
             </a>
           )}
         </div>

@@ -5,7 +5,7 @@ import { GridTileImage } from '@theme/components/grid/tile';
 import { ProductVariant } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
@@ -18,6 +18,8 @@ export function Gallery({
 }) {
   const [imageIndex, setImageIndex] = useQueryState('image', parseAsInteger.withDefault(0));
   const t = useTranslations('Product');
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   // Use variant images if available, otherwise fall back to product images
   const displayImages = selectedVariant?.images_url?.length
@@ -55,7 +57,7 @@ export function Gallery({
                 onClick={() => setImageIndex(previousImageIndex)}
                 className={buttonClassName}
               >
-                <ArrowLeftIcon className="h-5" />
+                {isRTL ? <ArrowRightIcon className="h-5" /> : <ArrowLeftIcon className="h-5" />}
               </button>
               <div className="mx-1 h-6 w-px bg-neutral-500"></div>
               <button
@@ -63,7 +65,7 @@ export function Gallery({
                 onClick={() => setImageIndex(nextImageIndex)}
                 className={buttonClassName}
               >
-                <ArrowRightIcon className="h-5" />
+                {isRTL ? <ArrowLeftIcon className="h-5" /> : <ArrowRightIcon className="h-5" />}
               </button>
             </div>
           </div>
