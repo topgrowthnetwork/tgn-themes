@@ -4,7 +4,9 @@ const path = require('path');
 const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts');
 
 // Get theme from environment variable, default to 'active'
-const theme = process.env.NEXT_PUBLIC_THEME || 'active';
+const theme = process.env.NEXT_PUBLIC_THEME
+  ? process.env.NEXT_PUBLIC_THEME.split('.')[0]
+  : 'active';
 
 // Extract hostname from NEXT_PUBLIC_API_URL
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
