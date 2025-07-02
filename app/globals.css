@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 /* Theme CSS Variables - Active Theme */
-:root,
 [data-theme='active'] {
   --theme-color-50: #eff6ff;
   --theme-color-100: #dbeafe;
@@ -21,7 +20,6 @@
   --theme-border-radius: 0.5rem;
 }
 
-:root,
 [data-theme='active.velvet'] {
   --theme-color-50: #fdf2f8;
   --theme-color-100: #fce7f3;
