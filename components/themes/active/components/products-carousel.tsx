@@ -33,7 +33,7 @@ export function ProductsCarousel({
               key={`${product.slug}${i}`}
               className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
             >
-              <Link href={`/${product.slug}`} className="relative h-full w-full">
+              <Link href={`/product/${product.slug}`} className="relative h-full w-full">
                 <GridTileImage
                   alt={product.title}
                   label={{
