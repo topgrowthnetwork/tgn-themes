@@ -65,9 +65,15 @@ export default async function LocaleLayout({
 
   // Get current theme from environment variable
   const theme = process.env.NEXT_PUBLIC_THEME || 'active';
+  const themeVariant = process.env.NEXT_PUBLIC_THEME_VARIANT || '';
 
   return (
-    <html lang={language} dir={isRTL ? 'rtl' : 'ltr'} data-theme={theme}>
+    <html
+      lang={language}
+      dir={isRTL ? 'rtl' : 'ltr'}
+      data-theme={theme}
+      data-theme-variant={themeVariant}
+    >
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${
           isRTL ? 'rtl' : 'ltr'

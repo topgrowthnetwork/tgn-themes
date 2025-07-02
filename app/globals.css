@@ -20,7 +20,7 @@
   --theme-border-radius: 0.5rem;
 }
 
-[data-theme='active.velvet'] {
+[data-theme-variant='velvet'] {
   --theme-color-50: #fdf2f8;
   --theme-color-100: #fce7f3;
   --theme-color-200: #fbcfe8;
