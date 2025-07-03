@@ -5,10 +5,15 @@ import CartModal from './modal';
 
 export default async function Cart() {
   const locale = await getLocale();
-  const guestToken = cookies().get('guest_token')?.value;
+  const guestToken = await cookies().get('guest_token')?.value;
+
+  console.log('guestToken 🔐', guestToken);
+
   const api = createApi({ language: locale, guestToken });
   const cartResult = await api.getCart();
   const settingsResult = await api.getGlobalSettings();
+
+  console.log('cartResult 🛒', cartResult);
 
   if (cartResult.isErr() || settingsResult.isErr()) {
     return null;

@@ -58,8 +58,6 @@ export function useFormPersistence<T>({
     // Merge stored data with existing form data
     const mergedData = { ...formData, ...storedData };
 
-    console.log('mergedData', mergedData);
-
     // Reset form with merged data
     reset(mergedData as T);
   };

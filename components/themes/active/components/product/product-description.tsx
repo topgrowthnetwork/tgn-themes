@@ -31,8 +31,6 @@ export function ProductDescription({
     return product.stock > 0;
   })();
 
-  console.log(selectedVariant);
-
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
