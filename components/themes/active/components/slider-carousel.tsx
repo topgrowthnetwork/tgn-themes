@@ -35,11 +35,23 @@ function SlideContent({ slider }: SlideContentProps) {
 
   return (
     <div className="relative h-64 w-full md:h-96 lg:h-[500px]">
+      {/* Mobile Image */}
+      {slider.mob_img && (
+        <Image
+          src={getFullPath(slider.mob_img.path)}
+          alt={slider.title}
+          fill
+          className="object-cover md:hidden"
+          priority
+        />
+      )}
+
+      {/* Desktop Image */}
       <Image
         src={getFullPath(slider.img.path)}
         alt={slider.title}
         fill
-        className="object-cover"
+        className={`object-cover ${slider.mob_img ? 'hidden md:block' : ''}`}
         priority
       />
 
