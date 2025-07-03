@@ -130,7 +130,7 @@ function CategoryProductsSkeleton() {
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="h-48 w-full animate-pulse rounded-theme bg-gray-200 md:h-64 dark:bg-gray-700"
+            className="aspect-[5/4] w-full animate-pulse rounded-theme bg-gray-200 dark:bg-gray-700"
           />
         ))}
       </div>

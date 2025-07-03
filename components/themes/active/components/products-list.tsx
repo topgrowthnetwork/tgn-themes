@@ -25,7 +25,7 @@ export function ProductsList({ products, settings, title }: ProductsListProps) {
             key={product.id}
             product={product}
             currency={settings.site_global_currency}
-            className="aspect-square h-48 w-full md:h-64"
+            className="aspect-[5/4] w-full"
           />
         ))}
       </div>

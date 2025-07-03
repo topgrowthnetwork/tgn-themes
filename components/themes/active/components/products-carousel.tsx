@@ -1,9 +1,7 @@
 import { GlobalSettings, Product } from 'lib/api/types';
-import { Link } from 'lib/i18n/navigation';
-import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import ActiveContainer from './container';
-import { GridTileImage } from './grid/tile';
+import { ProductCard } from './product-card';
 import { SectionTitle } from './section-title';
 
 export function ProductsCarousel({
@@ -31,21 +29,13 @@ export function ProductsCarousel({
           {carouselProducts.map((product, i) => (
             <li
               key={`${product.slug}${i}`}
-              className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
+              className="relative aspect-[5/4] w-2/3 min-w-[200px] max-w-[475px] flex-none md:w-1/3"
             >
-              <Link href={`/product/${product.slug}`} className="relative h-full w-full">
-                <GridTileImage
-                  alt={product.title}
-                  label={{
-                    title: product.title,
-                    amount: product.final_price.toString(),
-                    currencyCode: settings.site_global_currency
-                  }}
-                  src={getFullPath(product.thumbnail?.path)}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                />
-              </Link>
+              <ProductCard
+                product={product}
+                className="h-full w-full"
+                currency={settings.site_global_currency}
+              />
             </li>
           ))}
         </ul>
