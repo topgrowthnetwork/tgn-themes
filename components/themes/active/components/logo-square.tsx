@@ -6,10 +6,10 @@ import Image from 'next/image';
 export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) {
   const api = createApi({ language: 'en' });
   const settingsResult = await api.getGlobalSettings();
-  if (settingsResult.isErr()) {
+
+  if (settingsResult.isErr() || !settingsResult.value.data.site_logo) {
     return null;
   }
-  const settings = settingsResult.value.data;
   return (
     <div
       className={clsx(
@@ -21,8 +21,8 @@ export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) 
       )}
     >
       <Image
-        src={getFullPath(settings.site_logo.path)}
-        alt={settings.site_title}
+        src={getFullPath(settingsResult.value.data.site_logo.path)}
+        alt={settingsResult.value.data.site_title}
         width={40}
         height={40}
       />

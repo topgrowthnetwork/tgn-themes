@@ -40,7 +40,7 @@ export async function generateMetadata({
       template: `%s | ${globalSettings.site_title}`
     },
     description: globalSettings.site_description || '',
-    icons: [{ url: getFullPath(globalSettings.site_favicon.path) }]
+    icons: [{ url: getFullPath(globalSettings.site_favicon?.path || '') }]
   };
 }
 

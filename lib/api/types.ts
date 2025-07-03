@@ -235,7 +235,7 @@ export interface CartResponse {
       };
     }>;
     coupon: any | null;
-  };
+  } | null;
   sub_total: number;
   total_price: number;
   discount: number;
@@ -429,11 +429,11 @@ export interface GlobalSettings {
   site_title: string;
   site_description: string | null;
   site_footer_copyright: string;
-  site_logo: ProductImage;
-  site_favicon: ProductImage;
-  invoice_logo: ProductImage;
-  footer_logo: ProductImage;
-  page_header_img: ProductImage;
+  site_logo: ProductImage | null;
+  site_favicon: ProductImage | null;
+  invoice_logo: ProductImage | null;
+  footer_logo: ProductImage | null;
+  page_header_img: ProductImage | null;
   site_color: string;
   tax_fee_amount: string;
   tax_fee_type: string;
