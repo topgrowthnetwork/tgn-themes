@@ -4,7 +4,7 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { updateItemQuantityV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
-import { CartResponse } from 'lib/api/types';
+import { CartItemDetail } from 'lib/api/types';
 
 import { useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
@@ -63,7 +63,7 @@ export function EditItemQuantityButton({
   type,
   minStock = 0
 }: {
-  item: CartResponse['cart']['cart_items'][number];
+  item: CartItemDetail;
   type: 'plus' | 'minus';
   minStock?: number;
 }) {
