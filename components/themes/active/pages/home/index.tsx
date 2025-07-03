@@ -13,6 +13,10 @@ interface HomePageProps {
 }
 
 export default function HomePage({ sliders, products, categories, settings }: HomePageProps) {
+  if (sliders.length === 0 || sliders.some((slider) => !slider.img)) {
+    return null;
+  }
+
   return (
     <>
       <Container>

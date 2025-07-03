@@ -29,6 +29,10 @@ function SlideContent({ slider }: SlideContentProps) {
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
+  if (!slider.img) {
+    return null;
+  }
+
   return (
     <div className="relative h-64 w-full md:h-96 lg:h-[500px]">
       <Image

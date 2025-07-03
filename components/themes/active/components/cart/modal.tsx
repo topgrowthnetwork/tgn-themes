@@ -136,8 +136,8 @@ export default function CartModal({
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={item.product.thumbnail.title || item.product.title}
-                                  src={getFullPath(item.product.thumbnail.path)}
+                                  alt={item.product.thumbnail?.title || item.product.title}
+                                  src={getFullPath(item.product.thumbnail?.path || '')}
                                 />
                               </div>
 

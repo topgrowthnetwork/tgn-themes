@@ -145,7 +145,7 @@ export interface CartItemDetail {
     title: string;
     description: string;
     product_attributes: Record<string, any>;
-    thumbnail: ProductImage;
+    thumbnail: ProductImage | null;
     translations: ProductTranslation[];
   };
   variant: {
@@ -208,7 +208,7 @@ export interface CartItemResponse {
       title: string;
       description: string;
       product_attributes: Record<string, any>;
-      thumbnail: ProductImage;
+      thumbnail: ProductImage | null;
       translations: ProductTranslation[];
     };
     variant: {
@@ -371,7 +371,7 @@ export interface Product {
   title: string;
   description: string;
   product_attributes?: Record<string, any>;
-  thumbnail?: ProductImage;
+  thumbnail: ProductImage | null;
   category: Category;
   variants: ProductVariant[];
   translations: ProductTranslation[];
@@ -421,7 +421,7 @@ export interface ProductCombination {
 
 export interface ProductResponse {
   product: Product;
-  images: ProductImage[];
+  images: ProductImage[] | null;
   attributes: ProductAttributes;
   combinations: ProductCombination[];
 }
@@ -496,8 +496,8 @@ export interface Slider {
   mobile_image: string;
   created_at: string;
   updated_at: string;
-  img: ProductImage;
-  mob_img: ProductImage;
+  img: ProductImage | null;
+  mob_img: ProductImage | null;
 }
 
 export interface SlidersResponse {

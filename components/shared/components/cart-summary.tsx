@@ -67,8 +67,8 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
                   className="h-full w-full object-cover"
                   width={48}
                   height={48}
-                  alt={item.product.thumbnail.title || item.product.title}
-                  src={getFullPath(item.product.thumbnail.path)}
+                  alt={item.product.thumbnail?.title || item.product.title}
+                  src={getFullPath(item.product.thumbnail?.path || '')}
                 />
               </div>
               <div className="min-w-0 flex-1">

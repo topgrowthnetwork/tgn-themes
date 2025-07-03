@@ -80,7 +80,7 @@ export default async function Page({
   return (
     <ProductPage
       product={product}
-      images={images}
+      images={images || []}
       attributes={attributes}
       combinations={combinations}
       settings={settings}
