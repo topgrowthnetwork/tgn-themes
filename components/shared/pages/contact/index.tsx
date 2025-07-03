@@ -1,3 +1,4 @@
+import { Container } from '@shared/components';
 import SocialMediaLinks from '@shared/components/social-media-links';
 import { GlobalSettings } from 'lib/api/types';
 import { Mail, MapPin, Phone } from 'lucide-react';
@@ -12,7 +13,7 @@ export default function ContactPage({ settings }: ContactPageProps) {
   const t = useTranslations('Contact');
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <Container>
       {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
@@ -98,6 +99,6 @@ export default function ContactPage({ settings }: ContactPageProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

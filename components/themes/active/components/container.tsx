@@ -1,4 +1,4 @@
-import Container from '@shared/components/container';
+import BaseContainer from '@shared/components/container';
 import clsx from 'clsx';
 import { ReactNode } from 'react';
 
@@ -7,8 +7,8 @@ type Props = {
   className?: string;
 };
 
-function ActiveContainer({ children, className = '' }: Props) {
-  return <Container className={clsx('max-w-screen-2xl', className)}>{children}</Container>;
+function Container({ children, className = '' }: Props) {
+  return <BaseContainer className={clsx('max-w-screen-2xl', className)}>{children}</BaseContainer>;
 }
 
-export default ActiveContainer;
+export default Container;

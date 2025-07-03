@@ -6,7 +6,7 @@ type Props = {
   className?: string;
 };
 
-function Container({ children, className = '' }: Props) {
+function BaseContainer({ children, className = '' }: Props) {
   return (
     <div
       className={clsx('mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10', className)}
@@ -16,4 +16,4 @@ function Container({ children, className = '' }: Props) {
   );
 }
 
-export default Container;
+export default BaseContainer;
