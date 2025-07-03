@@ -1,19 +1,52 @@
-import { GlobalSettings, Product } from 'lib/api/types';
-import { useTranslations } from 'next-intl';
+import { createApi } from 'lib/api';
+import { GlobalSettings } from 'lib/api/types';
+import { getLocale, getTranslations } from 'next-intl/server';
 import ActiveContainer from './container';
 import { ProductCard } from './product-card';
 import { SectionTitle } from './section-title';
 
-export function ProductsCarousel({
-  products,
-  settings
-}: {
-  products: Product[];
-  settings: GlobalSettings;
-}) {
-  const t = useTranslations('Products');
+// Skeleton component for loading state
+function ProductsCarouselSkeleton() {
+  return (
+    <div className="w-full space-y-6" dir="ltr">
+      {/* Title Section */}
+      <ActiveContainer className="!py-0">
+        <div className="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+      </ActiveContainer>
 
+      {/* Carousel Section */}
+      <div className="overflow-x-auto pb-6 pt-1">
+        <ul className="flex gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <li
+              key={i}
+              className="relative aspect-[5/4] w-2/3 min-w-[200px] max-w-[475px] flex-none md:w-1/3"
+            >
+              <div className="h-full w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export async function ProductsCarousel({ settings }: { settings: GlobalSettings }) {
+  const t = await getTranslations('Products');
+  const language = await getLocale();
+
+  const api = createApi({ language });
+  const productsResult = await api.getProducts({
+    order: 'best_selling',
+    per_page: '5'
+  });
   // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
+
+  if (productsResult.isErr()) {
+    return null;
+  }
+
+  const products = productsResult.value.data.products.data;
   const carouselProducts = [...products, ...products, ...products];
 
   return (
@@ -43,3 +76,6 @@ export function ProductsCarousel({
     </div>
   );
 }
+
+// Export the skeleton for use in Suspense
+export { ProductsCarouselSkeleton };
