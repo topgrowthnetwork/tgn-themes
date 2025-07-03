@@ -20,7 +20,10 @@ const nextConfig = {
     optimizePackageImports: []
   },
   images: {
-    remotePatterns: [...(apiHostname ? [{ hostname: apiHostname }] : [])]
+    remotePatterns: [
+      ...(apiHostname ? [{ hostname: apiHostname }] : []),
+      { hostname: 'placehold.co' }
+    ]
   },
   webpack(config) {
     config.resolve.alias['@theme'] = path.resolve(__dirname, `components/themes/${theme}`);

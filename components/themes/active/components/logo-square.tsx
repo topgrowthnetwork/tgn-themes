@@ -7,9 +7,17 @@ export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) 
   const api = createApi({ language: 'en' });
   const settingsResult = await api.getGlobalSettings();
 
-  if (settingsResult.isErr() || !settingsResult.value.data.site_logo) {
-    return null;
-  }
+  const [logoPath, logoTitle] = (function getLogoData() {
+    if (settingsResult.isOk() && settingsResult.value.data.site_logo) {
+      return [
+        getFullPath(settingsResult.value.data.site_logo.path),
+        settingsResult.value.data.site_title
+      ];
+    }
+
+    return ['https://placehold.co/600x400.png', 'Logo'];
+  })();
+
   return (
     <div
       className={clsx(
@@ -20,12 +28,7 @@ export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) 
         }
       )}
     >
-      <Image
-        src={getFullPath(settingsResult.value.data.site_logo.path)}
-        alt={settingsResult.value.data.site_title}
-        width={40}
-        height={40}
-      />
+      <Image src={logoPath} alt={logoTitle} width={40} height={40} />
     </div>
   );
 }

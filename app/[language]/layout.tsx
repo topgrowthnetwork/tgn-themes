@@ -1,3 +1,4 @@
+import NProgressProvider from '@shared/components/nprogress-provider';
 import ThemeContent from '@theme/layout';
 import { ToastContainerWrapper } from 'components/shared/components';
 import { createApi } from 'lib/api';
@@ -6,6 +7,7 @@ import { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
 import '../globals.css';
@@ -40,7 +42,11 @@ export async function generateMetadata({
       template: `%s | ${globalSettings.site_title}`
     },
     description: globalSettings.site_description || '',
-    icons: [{ url: getFullPath(globalSettings.site_favicon?.path || '') }]
+    icons: [
+      globalSettings.site_favicon?.path
+        ? { url: getFullPath(globalSettings.site_favicon?.path) }
+        : { url: '/favicon.ico' }
+    ]
   };
 }
 
@@ -79,14 +85,18 @@ export default async function LocaleLayout({
           isRTL ? 'rtl' : 'ltr'
         }`}
       >
-        <NextIntlClientProvider>
-          <ThemeContent>
-            <Suspense>
-              <main>{children}</main>
-            </Suspense>
-          </ThemeContent>
-          <ToastContainerWrapper />
-        </NextIntlClientProvider>
+        <NProgressProvider>
+          <NuqsAdapter>
+            <NextIntlClientProvider>
+              <ThemeContent>
+                <Suspense>
+                  <main>{children}</main>
+                </Suspense>
+              </ThemeContent>
+              <ToastContainerWrapper />
+            </NextIntlClientProvider>
+          </NuqsAdapter>
+        </NProgressProvider>
       </body>
     </html>
   );

@@ -131,7 +131,7 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
     };
   }, [emblaApi, onSelect]);
 
-  if (!sliders || sliders.length === 0) {
+  if (!sliders || sliders.length === 0 || sliders.some((slider) => !slider.img)) {
     return null;
   }
 
