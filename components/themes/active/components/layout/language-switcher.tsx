@@ -1,11 +1,10 @@
 'use client';
 
-import { usePathname, useRouter } from 'lib/i18n/navigation';
+import { Link, usePathname } from 'lib/i18n/navigation';
 import { useLocale } from 'next-intl';
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
   const pathname = usePathname();
 
   const languages = [
@@ -13,17 +12,13 @@ export default function LanguageSwitcher() {
     { code: 'ar', name: 'AR' }
   ];
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Navigate to the same path with the new locale
-    router.replace(pathname, { locale: newLocale });
-  };
-
   return (
     <div className="flex items-center gap-2">
       {languages.map((language) => (
-        <button
+        <Link
           key={language.code}
-          onClick={() => handleLanguageChange(language.code)}
+          href={pathname}
+          locale={language.code}
           className={`flex items-center gap-1 rounded-theme px-2 py-1 text-xs font-medium transition-colors ${
             locale === language.code
               ? 'bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-white'
@@ -32,7 +27,7 @@ export default function LanguageSwitcher() {
           aria-label={`Switch to ${language.name}`}
         >
           <span>{language.name}</span>
-        </button>
+        </Link>
       ))}
     </div>
   );

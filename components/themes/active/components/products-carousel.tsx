@@ -19,7 +19,7 @@ export function ProductsCarousel({
   const carouselProducts = [...products, ...products, ...products];
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6" dir="ltr">
       {/* Title Section */}
       <ActiveContainer className="!py-0">
         <SectionTitle title={t('bestSelling')} />
@@ -27,7 +27,7 @@ export function ProductsCarousel({
 
       {/* Carousel Section */}
       <div className="overflow-x-auto pb-6 pt-1">
-        <ul dir="ltr" className="flex animate-carousel gap-4">
+        <ul className="flex animate-carousel gap-4">
           {carouselProducts.map((product, i) => (
             <li
               key={`${product.slug}${i}`}
