@@ -11,6 +11,9 @@ interface CheckoutLayoutProps {
 export default async function CheckoutLayout({ children, language }: CheckoutLayoutProps) {
   // Fetch cart data to check if it's empty
   const guestToken = cookies().get('guest_token')?.value;
+  if (!guestToken) {
+    return <EmptyCartMessage language={language} />;
+  }
   const api = createApi({ language, guestToken });
   const cartResult = await api.getCart();
 
