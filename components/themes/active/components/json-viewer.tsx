@@ -21,8 +21,10 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
   };
 
   const renderValue = (value: any, key: string, depth: number = 0) => {
-    if (value === null) return <span className="text-gray-500">{t('null')}</span>;
-    if (value === undefined) return <span className="text-gray-500">{t('undefined')}</span>;
+    if (value === null)
+      return <span className="text-gray-500 dark:text-gray-400">{t('null')}</span>;
+    if (value === undefined)
+      return <span className="text-gray-500 dark:text-gray-400">{t('undefined')}</span>;
 
     if (typeof value === 'object') {
       const isArray = Array.isArray(value);
@@ -30,18 +32,18 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
       const isExpanded = expanded[key] ?? initialExpanded;
 
       if (isEmpty) {
-        return <span className="text-gray-500">{isArray ? '[]' : '{}'}</span>;
+        return <span className="text-gray-500 dark:text-gray-400">{isArray ? '[]' : '{}'}</span>;
       }
 
       return (
         <div className="ms-4">
           <div className="flex cursor-pointer items-center gap-1" onClick={() => toggleExpand(key)}>
             {isExpanded ? (
-              <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+              <ChevronDownIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
             ) : (
-              <ChevronRightIcon className="h-4 w-4 text-gray-500" />
+              <ChevronRightIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
             )}
-            <span className="text-gray-500">{isArray ? '[' : '{'}</span>
+            <span className="text-gray-500 dark:text-gray-400">{isArray ? '[' : '{'}</span>
           </div>
 
           {isExpanded && (
@@ -49,21 +51,21 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
               {Object.entries(value).map(([k, v], index) => (
                 <div key={k} className="ms-4">
                   <span className="text-primary-600">{k}</span>
-                  <span className="text-gray-500">: </span>
+                  <span className="text-gray-500 dark:text-gray-400">: </span>
                   {renderValue(v, `${key}.${k}`, depth + 1)}
                   {index < Object.keys(value).length - 1 && (
-                    <span className="text-gray-500">,</span>
+                    <span className="text-gray-500 dark:text-gray-400">,</span>
                   )}
                 </div>
               ))}
               <div className="ms-4">
-                <span className="text-gray-500">{isArray ? ']' : '}'}</span>
+                <span className="text-gray-500 dark:text-gray-400">{isArray ? ']' : '}'}</span>
               </div>
             </>
           )}
 
           {!isExpanded && (
-            <span className="text-gray-500">
+            <span className="text-gray-500 dark:text-gray-400">
               {isArray
                 ? `... ${value.length} items]`
                 : `... ${Object.keys(value).length} properties}`}
@@ -85,11 +87,11 @@ function JsonViewer({ data, initialExpanded = false }: JsonViewerProps) {
       return <span className="text-purple-600">{value.toString()}</span>;
     }
 
-    return <span className="text-gray-500">{String(value)}</span>;
+    return <span className="text-gray-500 dark:text-gray-400">{String(value)}</span>;
   };
 
   return (
-    <pre className="overflow-auto rounded-theme bg-gray-100 p-4 text-sm">
+    <pre className="overflow-auto rounded-theme bg-gray-100 p-4 text-sm dark:bg-gray-800">
       {renderValue(data, 'root')}
     </pre>
   );

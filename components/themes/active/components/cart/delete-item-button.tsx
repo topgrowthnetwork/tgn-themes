@@ -22,7 +22,7 @@ function SubmitButton({ item }: { item: any }) {
       className="ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200 dark:bg-neutral-400 dark:hover:bg-black dark:hover:text-white"
     >
       {pending ? (
-        <LoadingDots className="bg-white" />
+        <LoadingDots className="bg-white dark:bg-gray-600" />
       ) : (
         <TrashIcon className="mx-[1px] h-4 w-4 text-white transition-all ease-in-out hover:text-white" />
       )}

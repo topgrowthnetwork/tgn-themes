@@ -110,16 +110,20 @@
   }
 
   [data-theme='active'] .textarea {
-    @apply mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500;
+    @apply mt-1 block w-full border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-400 dark:focus:ring-primary-400;
   }
 
   [data-theme='active'] .label {
-    @apply block text-sm font-medium text-gray-700;
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  [data-theme='active'] .form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300;
   }
 
   [data-theme='active'] .button-secondary {
     @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
-    focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
   }
 }
 

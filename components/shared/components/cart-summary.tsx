@@ -25,7 +25,7 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
       disabled={disabled || pending}
       className="button flex items-center justify-center gap-2"
     >
-      {pending && <LoadingDots className="bg-white" />}
+      {pending && <LoadingDots className="bg-white dark:bg-gray-800" />}
       {t('apply')}
     </button>
   );
@@ -51,8 +51,8 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
   };
 
   return (
-    <div className="rounded-theme border border-gray-200 bg-gray-50 p-6">
-      <h3 className="mb-4 text-lg font-semibold">{t('orderSummary')}</h3>
+    <div className="rounded-theme border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+      <h3 className="mb-4 text-lg font-semibold dark:text-white">{t('orderSummary')}</h3>
 
       {/* Cart Items */}
       <div className="mb-4 space-y-3">
@@ -62,7 +62,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
 
           return (
             <div key={index} className="flex items-center gap-x-3">
-              <div className="relative h-12 w-12 overflow-hidden rounded-theme border border-gray-200 bg-white">
+              <div className="relative h-12 w-12 overflow-hidden rounded-theme border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-700">
                 <Image
                   className="h-full w-full object-cover"
                   width={48}
@@ -72,12 +72,14 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-900">{item.product.title}</p>
-                <p className="text-xs text-gray-500">
+                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                  {item.product.title}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t('quantity')}: {item.qyt}
                 </p>
               </div>
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-gray-900 dark:text-white">
                 <Price amount={totalPrice.toString()} currencyCode={currency} />
               </div>
             </div>
@@ -85,14 +87,14 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
         })}
 
         {cartResponse.cart.cart_items.length > 3 && (
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             +{cartResponse.cart.cart_items.length - 3} {t('moreItems')}
           </p>
         )}
       </div>
 
       {/* Coupon Section */}
-      <div className="mb-4 border-t border-gray-200 pt-4">
+      <div className="mb-4 border-t border-gray-200 pt-4 dark:border-gray-600">
         <form action={handleCouponSubmit} className="space-y-2">
           <div className="flex gap-2">
             <input
@@ -112,32 +114,32 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
       </div>
 
       {/* Totals */}
-      <div className="space-y-2 border-t border-gray-200 pt-4">
+      <div className="space-y-2 border-t border-gray-200 pt-4 dark:border-gray-600">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">{t('subtotal')}</span>
+          <span className="text-gray-600 dark:text-gray-300">{t('subtotal')}</span>
           <Price amount={cartResponse.sub_total.toString()} currencyCode={currency} />
         </div>
 
         {cartResponse.tax > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">{t('taxes')}</span>
+            <span className="text-gray-600 dark:text-gray-300">{t('taxes')}</span>
             <Price amount={cartResponse.tax.toString()} currencyCode={currency} />
           </div>
         )}
 
         {cartResponse.discount > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">{t('discount')}</span>
-            <span className="flex text-green-600">
+            <span className="text-gray-600 dark:text-gray-300">{t('discount')}</span>
+            <span className="flex text-green-600 dark:text-green-400">
               -<Price amount={cartResponse.discount.toString()} currencyCode={currency} />
             </span>
           </div>
         )}
 
-        <div className="flex justify-between border-t border-gray-200 pt-2">
-          <span className="font-semibold text-gray-900">{t('total')}</span>
+        <div className="flex justify-between border-t border-gray-200 pt-2 dark:border-gray-600">
+          <span className="font-semibold text-gray-900 dark:text-white">{t('total')}</span>
           <Price
-            className="font-semibold text-gray-900"
+            className="font-semibold text-gray-900 dark:text-white"
             amount={cartResponse.total_price.toString()}
             currencyCode={currency}
           />

@@ -58,7 +58,7 @@ export default function PaymentForm({
       {paymentGateways.map((gateway) => (
         <label
           key={gateway.key}
-          className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50"
+          className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
         >
           <input
             type="radio"
@@ -72,7 +72,7 @@ export default function PaymentForm({
             )}
             data-testid={`payment-form-radio-${gateway.key}`}
           />
-          <span className="text-sm font-medium">{gateway.label}</span>
+          <span className="text-sm font-medium dark:text-white">{gateway.label}</span>
         </label>
       ))}
     </div>
@@ -83,8 +83,11 @@ export default function PaymentForm({
 
     return (
       <div>
-        <label className="label">{t('walletNumber')}</label>
+        <label htmlFor="payment-wallet-number" className="label">
+          {t('walletNumber')}
+        </label>
         <input
+          id="payment-wallet-number"
           type="text"
           name="wallet_number"
           value={formData.wallet_number || ''}
@@ -100,8 +103,11 @@ export default function PaymentForm({
 
     return (
       <div>
-        <label className="label">{t('receiptImage')}</label>
+        <label htmlFor="payment-receipt-image" className="label">
+          {t('receiptImage')}
+        </label>
         <input
+          id="payment-receipt-image"
           type="file"
           name="receipt_image"
           accept="image/*"
@@ -128,15 +134,18 @@ export default function PaymentForm({
         className="button flex flex-1 items-center justify-center gap-2"
         data-testid="payment-form-submit"
       >
-        {pending && <LoadingDots className="bg-white" />}
+        {pending && <LoadingDots className="bg-white dark:bg-gray-800" />}
         {pending ? t('processing') : t('placeOrder')}
       </button>
     </div>
   );
 
   return (
-    <div className="rounded-theme border border-gray-200 p-6" data-testid="payment-form">
-      <h2 className="mb-4 text-xl font-semibold">{t('paymentMethod')}</h2>
+    <div
+      className="rounded-theme border border-gray-200 p-6 dark:border-gray-700 dark:bg-gray-800"
+      data-testid="payment-form"
+    >
+      <h2 className="mb-4 text-xl font-semibold dark:text-white">{t('paymentMethod')}</h2>
 
       <div className="space-y-4">
         {renderPaymentGatewayOptions()}

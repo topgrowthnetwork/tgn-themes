@@ -155,8 +155,11 @@ export default function ShippingForm({
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="label">{t('name')} *</label>
+          <label htmlFor="shipping-name" className="label">
+            {t('name')} *
+          </label>
           <input
+            id="shipping-name"
             type="text"
             value={formData.name || ''}
             onChange={(e) => handleInputChange('name', e.target.value)}
@@ -166,8 +169,11 @@ export default function ShippingForm({
           {getFieldError('name') && <FieldError message={getFieldError('name')!} />}
         </div>
         <div>
-          <label className="label">{t('email')} *</label>
+          <label htmlFor="shipping-email" className="label">
+            {t('email')} *
+          </label>
           <input
+            id="shipping-email"
             type="email"
             value={formData.email || ''}
             onChange={(e) => handleInputChange('email', e.target.value)}
@@ -179,8 +185,11 @@ export default function ShippingForm({
       </div>
 
       <div>
-        <label className="label">{t('phone')} *</label>
+        <label htmlFor="shipping-phone" className="label">
+          {t('phone')} *
+        </label>
         <input
+          id="shipping-phone"
           type="tel"
           value={formData.phone || ''}
           onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -196,6 +205,7 @@ export default function ShippingForm({
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <FormDropdown
+          id="shipping-country"
           label={`${t('country')} *`}
           options={countries}
           value={formData.shipping_address?.country || ''}
@@ -206,6 +216,7 @@ export default function ShippingForm({
         />
 
         <FormDropdown
+          id="shipping-state"
           label={`${t('state')} *`}
           options={availableStates}
           value={formData.shipping_address?.state || ''}
@@ -217,6 +228,7 @@ export default function ShippingForm({
         />
 
         <FormDropdown
+          id="shipping-city"
           label={`${t('city')} *`}
           options={availableCities}
           value={formData.shipping_address?.city || ''}
@@ -229,8 +241,11 @@ export default function ShippingForm({
       </div>
 
       <div>
-        <label className="label">{t('address')} *</label>
+        <label htmlFor="shipping-address" className="label">
+          {t('address')} *
+        </label>
         <textarea
+          id="shipping-address"
           value={formData.shipping_address?.address || ''}
           onChange={(e) => handleAddressChange('address', e.target.value)}
           rows={3}

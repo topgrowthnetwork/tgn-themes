@@ -21,6 +21,7 @@ interface FormDropdownProps {
   placeholder?: string;
   disabled?: boolean;
   dataTestId?: string;
+  id?: string;
 }
 
 export default function FormDropdown({
@@ -31,7 +32,8 @@ export default function FormDropdown({
   error,
   placeholder = 'Select an option',
   disabled = false,
-  dataTestId
+  dataTestId,
+  id
 }: FormDropdownProps) {
   const selectedOption = options.find((option) => option.name === value);
   const locale = useLocale();
@@ -39,16 +41,24 @@ export default function FormDropdown({
 
   return (
     <div>
-      <label className="label">{label}</label>
+      <label htmlFor={id} className="label">
+        {label}
+      </label>
       <Listbox value={value} onChange={onChange} disabled={disabled}>
         <div className="relative">
           <Listbox.Button
-            className={clsx('input cursor-pointer bg-white text-start', {
+            id={id}
+            className={clsx('input cursor-pointer bg-white text-start dark:bg-gray-800', {
               'border-red-500 focus:border-red-500 focus:ring-red-500': error
             })}
             data-testid={dataTestId}
           >
-            <span className={clsx('block truncate', !selectedOption && 'text-gray-500')}>
+            <span
+              className={clsx(
+                'block truncate',
+                !selectedOption && 'text-gray-500 dark:text-gray-400'
+              )}
+            >
               {selectedOption ? selectedOption.name : placeholder}
             </span>
             <span
@@ -57,7 +67,10 @@ export default function FormDropdown({
                 isRTL ? 'left-0' : 'right-0'
               )}
             >
-              <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <ChevronUpDownIcon
+                className="h-5 w-5 text-gray-400 dark:text-gray-500"
+                aria-hidden="true"
+              />
             </span>
           </Listbox.Button>
           <Transition
@@ -66,14 +79,16 @@ export default function FormDropdown({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-gray-800 dark:ring-gray-700">
               {options.map((option, index) => (
                 <Listbox.Option
                   key={option.id}
                   className={({ active }) =>
                     clsx(
                       'relative cursor-default select-none py-2 pe-4 ps-10',
-                      active ? 'bg-primary-100 text-primary-900' : 'text-gray-900'
+                      active
+                        ? 'bg-primary-100 text-primary-900 dark:bg-primary-800 dark:text-primary-100'
+                        : 'text-gray-900 dark:text-gray-100'
                     )
                   }
                   value={option.name}

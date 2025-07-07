@@ -63,7 +63,11 @@ function SubmitButton({
       data-testid="add-to-cart-button"
     >
       <div className={clsx('absolute me-4', isRTL ? 'left-0' : 'right-0')}>
-        {pending ? <LoadingDots className="mb-3 bg-white" /> : <PlusIcon className="h-5" />}
+        {pending ? (
+          <LoadingDots className="mb-3 bg-white dark:bg-gray-800" />
+        ) : (
+          <PlusIcon className="h-5" />
+        )}
       </div>
       {t('addToCart')}
     </button>

@@ -73,7 +73,7 @@ function SlideContent({ slider }: SlideContentProps) {
           {slider.link && (
             <a
               href={slider.link}
-              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base"
+              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
             >
               {t('learnMore')}
               {isRTL ? (
@@ -100,7 +100,7 @@ function CarouselDots({ scrollSnaps, selectedIndex, onDotClick }: CarouselDotsPr
           key={index}
           className={clsx(
             'h-3 w-3 rounded-full transition-colors',
-            index === selectedIndex ? 'bg-primary-600' : 'bg-gray-300'
+            index === selectedIndex ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
           )}
           onClick={() => onDotClick(index)}
           aria-label={`Go to slide ${index + 1}`}

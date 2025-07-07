@@ -20,7 +20,7 @@ function SubmitButton() {
       disabled={pending}
       className="button flex items-center justify-center gap-2"
     >
-      {pending && <LoadingDots className="bg-white" />}
+      {pending && <LoadingDots className="bg-white dark:bg-gray-800" />}
       {pending ? t('sending') : t('sendMessage')}
     </button>
   );
@@ -94,18 +94,25 @@ export default function ContactForm() {
       <form ref={formRef} action={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="name" className="form-label">
+            <label htmlFor="contact-name" className="form-label">
               {t('name')}
             </label>
-            <input type="text" name="name" placeholder={t('namePlaceholder')} className="input" />
+            <input
+              id="contact-name"
+              type="text"
+              name="name"
+              placeholder={t('namePlaceholder')}
+              className="input"
+            />
             {errors.name && <FieldError message={errors.name} />}
           </div>
 
           <div>
-            <label htmlFor="email" className="form-label">
+            <label htmlFor="contact-email" className="form-label">
               {t('email')}
             </label>
             <input
+              id="contact-email"
               type="email"
               name="email"
               placeholder={t('emailPlaceholder')}
@@ -116,18 +123,25 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label htmlFor="phone" className="form-label">
+          <label htmlFor="contact-phone" className="form-label">
             {t('phone')}
           </label>
-          <input type="tel" name="phone" placeholder={t('phonePlaceholder')} className="input" />
+          <input
+            id="contact-phone"
+            type="tel"
+            name="phone"
+            placeholder={t('phonePlaceholder')}
+            className="input"
+          />
           {errors.phone && <FieldError message={errors.phone} />}
         </div>
 
         <div>
-          <label htmlFor="message" className="form-label">
+          <label htmlFor="contact-message" className="form-label">
             {t('message')}
           </label>
           <textarea
+            id="contact-message"
             name="message"
             rows={5}
             placeholder={t('messagePlaceholder')}
