@@ -136,8 +136,8 @@ export async function middleware(request: NextRequest) {
   // Handle locale routing with next-intl
   const response = intlMiddleware(request);
 
-  // // Handle guest token
-  // await handleGuestToken(request, response);
+  // Handle guest token
+  await handleGuestToken(request, response);
 
   return response;
 }

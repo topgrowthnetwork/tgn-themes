@@ -5,7 +5,7 @@ import CartModal from './modal';
 
 export default async function Cart() {
   const locale = await getLocale();
-  const guestToken = await cookies().get('guest_token')?.value;
+  const guestToken = cookies().get('guest_token')?.value;
 
   const api = createApi({ language: locale, guestToken });
   const cartResult = await api.getCart();
