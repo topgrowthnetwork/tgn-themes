@@ -26,7 +26,7 @@ async function handleProductsPage(url: URL): Promise<URL | null> {
   // If no category parameter, fetch categories and set first one
   if (!url.searchParams.has('category')) {
     try {
-      const api = createApi({ language: 'en' });
+      const api = createApi({ language: 'en', timeout: 1000 });
       const categoriesResult = await api.getCategories();
 
       if (categoriesResult.isOk() && categoriesResult.value.data.categories.length > 0) {
@@ -54,7 +54,7 @@ async function handleProductPage(url: URL): Promise<URL | null> {
 
   try {
     const productSlug = productMatch[1];
-    const api = createApi({ language: 'en' });
+    const api = createApi({ language: 'en', timeout: 1000 });
     const productResult = await api.getProduct(productSlug);
 
     if (productResult.isOk()) {
@@ -90,7 +90,7 @@ async function handleGuestToken(request: NextRequest, response: NextResponse): P
 
   if (!guestToken) {
     try {
-      const api = createApi({ language: 'en' });
+      const api = createApi({ language: 'en', timeout: 1000 });
       const apiResult = await api.generateGuestToken();
 
       if (apiResult.isOk() && apiResult.value.data.guest_token) {
@@ -136,8 +136,8 @@ export async function middleware(request: NextRequest) {
   // Handle locale routing with next-intl
   const response = intlMiddleware(request);
 
-  // Handle guest token
-  await handleGuestToken(request, response);
+  // // Handle guest token
+  // await handleGuestToken(request, response);
 
   return response;
 }

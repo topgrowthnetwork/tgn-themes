@@ -251,6 +251,7 @@ export interface ApiConfig {
   language?: string;
   guestToken?: string;
   authToken?: string;
+  timeout?: number; // Timeout in milliseconds
 }
 
 // Category types

@@ -156,7 +156,11 @@ export default function MobileMenu({
 
                 {/* Footer with Shop All link */}
                 <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
-                  <Link href="/products" onClick={closeMobileMenu} className="button">
+                  <Link
+                    href={`/products?category=${menu[0]?.id}`}
+                    onClick={closeMobileMenu}
+                    className="button"
+                  >
                     {t('shopAll')}
                   </Link>
                 </div>

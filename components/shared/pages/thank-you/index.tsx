@@ -1,8 +1,18 @@
+import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 export default async function ThankYouPage() {
   const t = await getTranslations('ThankYou');
+  const language = await getLocale();
+  const api = createApi({ language });
+  const categoriesResult = await api.getCategories();
+  const firstCategoryId = (function getFirstCategoryId() {
+    if (categoriesResult.isOk() && categoriesResult.value.data.categories.length > 0) {
+      return categoriesResult.value.data.categories[0].id;
+    }
+    return null;
+  })();
 
   return (
     <div
@@ -31,7 +41,10 @@ export default async function ThankYouPage() {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href="/products" className="button !inline-flex !px-6 !py-3 !text-sm font-medium">
+          <Link
+            href={`/products?category=${firstCategoryId}`}
+            className="button !inline-flex !px-6 !py-3 !text-sm font-medium"
+          >
             {t('continueShopping')}
           </Link>
           <Link

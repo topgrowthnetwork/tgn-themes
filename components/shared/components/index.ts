@@ -2,11 +2,11 @@
 export {
   ErrorToast,
   InfoToast,
-  showToast,
   SuccessToast,
   ToastContainerWrapper,
   ToastNotification,
   WarningToast,
+  showToast,
   type ToastType
 } from './toast-notification';
 
@@ -18,6 +18,8 @@ export { submitContact } from './contact-actions';
 // Form components
 export { default as ContactForm } from './contact-form';
 export { default as FormDropdown } from './form-dropdown';
+export { default as GuestTokenProvider } from './guest-token-provider';
+export { default as LoadingDots } from './loading-dots';
 export { default as PaymentForm } from './payment-form';
 export { default as ShippingForm } from './shipping-form';
 

@@ -27,7 +27,8 @@ export class ApiClient {
       },
       language: config.language || 'en',
       guestToken: config.guestToken,
-      authToken: config.authToken
+      authToken: config.authToken,
+      timeout: config.timeout
     };
   }
 
@@ -57,6 +58,16 @@ export class ApiClient {
       ...((options.headers as Record<string, string>) || {})
     });
 
+    // Set up timeout using AbortController
+    const controller = new AbortController();
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    if (this.config.timeout) {
+      timeoutId = setTimeout(() => {
+        controller.abort();
+      }, this.config.timeout);
+    }
+
     // Set Content-Type based on body type
     if (options.body) {
       if (options.body instanceof FormData) {
@@ -85,7 +96,8 @@ export class ApiClient {
     // Use Next.js fetch with caching for GET requests
     const fetchOptions: RequestInit = {
       ...options,
-      headers
+      headers,
+      signal: controller.signal
     };
 
     // Add caching for GET requests with optional tags
@@ -97,6 +109,11 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, fetchOptions);
+
+      // Clear timeout if request completed successfully
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
       if (!response.ok) {
         // Get the error response body for better debugging
@@ -147,11 +164,23 @@ export class ApiClient {
       const data = await response.json();
       return ok(data);
     } catch (error) {
+      // Clear timeout if request failed
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
       // Handle network errors or other unexpected errors
-      const apiError = createApiError(
-        error instanceof Error ? error.message : 'Network error occurred',
-        error instanceof Error && 'status' in error ? (error as any).status : undefined
-      );
+      let apiError: ApiError;
+
+      if (error instanceof Error && error.name === 'AbortError') {
+        // Handle timeout specifically
+        apiError = createApiError('Request timeout', 408);
+      } else {
+        apiError = createApiError(
+          error instanceof Error ? error.message : 'Network error occurred',
+          error instanceof Error && 'status' in error ? (error as any).status : undefined
+        );
+      }
 
       console.error('API Error:', apiError);
 
@@ -163,13 +192,15 @@ export class ApiClient {
             component: 'api-client',
             endpoint: endpoint,
             method: options.method || 'GET',
-            error_type: 'network_error'
+            error_type:
+              error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'network_error'
           },
           extra: {
             url,
             apiError,
             requestHeaders: Object.fromEntries(headers.entries()),
-            originalError: error
+            originalError: error,
+            timeout: this.config.timeout
           },
           level: 'error'
         }

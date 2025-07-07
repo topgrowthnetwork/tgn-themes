@@ -6,13 +6,15 @@ import { ApiConfig } from './types';
 export function createApi({
   language = 'en',
   guestToken,
-  authToken
-}: Pick<ApiConfig, 'language' | 'guestToken' | 'authToken'>) {
+  authToken,
+  timeout
+}: Pick<ApiConfig, 'language' | 'guestToken' | 'authToken' | 'timeout'>) {
   const client = new ApiClient({
     baseURL: process.env.NEXT_PUBLIC_API_URL || '',
     language,
     guestToken,
-    authToken
+    authToken,
+    timeout
   });
 
   const apiEndpoints = new ApiEndpoints(client);

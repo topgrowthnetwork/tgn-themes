@@ -41,7 +41,7 @@ export default function FooterMenu({ menu }: { menu: Category[] }) {
       <ul>
         <li>
           <Link
-            href="/products"
+            href={`/products?category=${menu[0]?.id}`}
             className="block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
           >
             {t('all')}
