@@ -3,7 +3,7 @@ import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import Image from 'next/image';
 
-export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) {
+export default async function LogoSquare({ size = 'sm' }: { size?: string }) {
   const api = createApi({ language: 'en' });
   const settingsResult = await api.getGlobalSettings();
 
@@ -19,16 +19,15 @@ export default async function LogoSquare({ size }: { size?: 'sm' | undefined }) 
   })();
 
   return (
-    <div
-      className={clsx(
-        'flex flex-none items-center justify-center border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-black',
-        {
-          'h-[40px] w-[40px] rounded-xl': !size,
-          'h-[30px] w-[30px] rounded-theme': size === 'sm'
-        }
-      )}
-    >
-      <Image src={logoPath} alt={logoTitle} width={40} height={40} />
+    <div>
+      <Image
+        src={logoPath}
+        alt={logoTitle}
+        width={0}
+        height={0}
+        className={clsx('h-16 w-auto object-contain')}
+        sizes="7rem"
+      />
     </div>
   );
 }
