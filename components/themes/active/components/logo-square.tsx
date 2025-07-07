@@ -3,6 +3,7 @@ import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import Image from 'next/image';
 
+// TODO: Add size prop
 export default async function LogoSquare({ size = 'sm' }: { size?: string }) {
   const api = createApi({ language: 'en' });
   const settingsResult = await api.getGlobalSettings();
