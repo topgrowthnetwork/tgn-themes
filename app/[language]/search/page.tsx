@@ -22,7 +22,7 @@ export default async function Page({
   const { q: searchValue, sort, page = '1' } = searchParams as { [key: string]: string };
   const productParams = getProductParams(sort, searchValue);
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language });
   const [productsResult, settingsResult] = await Promise.all([
     api.getProducts({ ...productParams, page, per_page: '12' }),
     api.getGlobalSettings()

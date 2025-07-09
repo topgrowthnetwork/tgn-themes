@@ -5,6 +5,7 @@ import { createApi } from 'lib/api';
 import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
+import { getLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 interface ProductPageProps {
@@ -49,7 +50,7 @@ export default function ProductPage({
         }}
       />
       <div className="mx-auto max-w-screen-2xl px-4">
-        <div className="flex flex-col rounded-theme border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
+        <div className="flex flex-col rounded-theme border border-neutral-200 bg-white p-8 dark:border-neutral-800 dark:bg-black md:p-12 lg:flex-row lg:gap-8">
           <div className="h-full w-full basis-full lg:sticky lg:top-8 lg:basis-4/6 lg:self-start">
             <Gallery
               images={images.map((image) => ({
@@ -78,7 +79,8 @@ export default function ProductPage({
 }
 
 async function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
-  const api = createApi({ language: 'en' });
+  const locale = await getLocale();
+  const api = createApi({ language: locale });
   const relatedProductsResult = await api.getProducts({
     category_id: product.category_id.toString(),
     order_by: 'selling_count'

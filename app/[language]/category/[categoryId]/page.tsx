@@ -15,7 +15,7 @@ export async function generateMetadata({
 
   setRequestLocale(language);
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language });
   const categoryResult = await api.getCategories({ categoryId });
   if (categoryResult.isErr()) {
     throw new Error('Failed to get category');
@@ -43,7 +43,7 @@ export default async function Page({
 
   const { sort, page = '1' } = searchParams as { [key: string]: string };
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language });
   const productParams = getProductParams(sort, undefined, categoryId);
 
   const [productsResult, settingsResult, categoryResult] = await Promise.all([

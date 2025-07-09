@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { createApi } from 'lib/api';
 import { Category, GlobalSettings } from 'lib/api/types';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { Pagination } from './pagination';
@@ -16,10 +16,10 @@ interface CategoriesGridProps {
 }
 
 // SWR fetcher function using the API client
-const fetcher = async (params: { categoryId: number; page: number }) => {
+const fetcher = async (params: { categoryId: number; page: number; locale: string }) => {
   if (!params.categoryId) return { products: [], total: 0 };
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language: params.locale });
   const result = await api.getProducts({
     category_id: params.categoryId.toString(),
     order_by: 'selling_count',
@@ -40,6 +40,7 @@ const fetcher = async (params: { categoryId: number; page: number }) => {
 };
 
 export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
+  const locale = useLocale();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
     categories?.[0]?.id || null
   );
@@ -48,8 +49,8 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
 
   // SWR hook for fetching products
   const { data, error, isLoading } = useSWR(
-    selectedCategory ? `category-${selectedCategory}-page-${currentPage}` : null,
-    () => fetcher({ categoryId: selectedCategory!, page: currentPage })
+    selectedCategory ? `category-${selectedCategory}-page-${currentPage}-${locale}` : null,
+    () => fetcher({ categoryId: selectedCategory!, page: currentPage, locale })
   );
 
   if (!categories?.length) return null;

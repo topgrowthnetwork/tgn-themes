@@ -9,9 +9,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ language: string; handle: string }>;
 }): Promise<Metadata> {
-  const { handle } = await params;
+  const { language, handle } = await params;
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language });
   const productResult = await api.getProduct(handle);
 
   if (productResult.isErr()) {
@@ -62,7 +62,7 @@ export default async function Page({
 
   setRequestLocale(language);
 
-  const api = createApi({ language: 'en' });
+  const api = createApi({ language });
   const [productResult, settingsResult] = await Promise.all([
     api.getProduct(handle),
     api.getGlobalSettings()
