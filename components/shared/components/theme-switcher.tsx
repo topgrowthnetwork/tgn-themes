@@ -42,7 +42,6 @@ export function ThemeSwitcher() {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Ctrl+Shift+V to toggle theme switcher
       if (event.ctrlKey && event.shiftKey && event.key === 'V') {
-        console.log('toggle theme switcher');
         event.preventDefault();
         setIsOpen((prev) => !prev);
       }
@@ -69,7 +68,7 @@ export function ThemeSwitcher() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <div className="w-64 rounded-lg bg-white p-4 shadow-xl dark:bg-gray-800">
+      <div className="w-64 rounded-theme bg-white p-4 shadow-xl dark:bg-gray-800">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Theme Variants</h3>
