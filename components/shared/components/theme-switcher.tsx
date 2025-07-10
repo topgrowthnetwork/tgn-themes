@@ -60,7 +60,6 @@ export function ThemeSwitcher() {
       }
     };
 
-    console.log('handleKeyDown', handleKeyDown);
     document.addEventListener('keydown', handleKeyDown);
 
     if (isOpen) {
@@ -75,7 +74,6 @@ export function ThemeSwitcher() {
 
   const handleVariantChange = (variantId: string) => {
     const html = document.documentElement;
-    console.log('handleVariantChange', currentTheme, variantId);
     html.setAttribute('data-theme-variant', `${currentTheme}.${variantId}`);
     setCurrentVariant(variantId);
   };
@@ -94,7 +92,7 @@ export function ThemeSwitcher() {
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                   Theme Variants
                 </h3>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Ctrl+Shift+K</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Ctrl+Shift+V</div>
               </div>
 
               <div className="space-y-1">
