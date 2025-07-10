@@ -42,7 +42,7 @@ export function ThemeSwitcher() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       // Ctrl+Shift+K to toggle theme switcher
-      if (event.ctrlKey && event.shiftKey && event.key === 'K') {
+      if (event.ctrlKey && event.shiftKey && event.key === 'V') {
         console.log('toggle theme switcher');
         event.preventDefault();
         setIsOpen((prev) => !prev);
