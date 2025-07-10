@@ -32,3 +32,6 @@ export { default as SocialMediaLinks } from './social-media-links';
 
 // Cart components
 export { default as CartSummary } from './cart-summary';
+
+// Theme components
+export { ThemeSwitcher } from './theme-switcher';

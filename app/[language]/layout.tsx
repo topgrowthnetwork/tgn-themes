@@ -1,6 +1,6 @@
 import NProgressProvider from '@shared/components/nprogress-provider';
 import ThemeContent from '@theme/layout';
-import { ToastContainerWrapper } from 'components/shared/components';
+import { ThemeSwitcher, ToastContainerWrapper } from 'components/shared/components';
 import { createApi } from 'lib/api';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
@@ -95,6 +95,7 @@ export default async function LocaleLayout({
                 </Suspense>
               </ThemeContent>
               <ToastContainerWrapper />
+              <ThemeSwitcher />
             </NextIntlClientProvider>
           </NuqsAdapter>
         </NProgressProvider>

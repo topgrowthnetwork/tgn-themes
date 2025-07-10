@@ -20,7 +20,7 @@
   --theme-border-radius: 0.5rem;
 }
 
-[data-theme-variant='velvet'] {
+[data-theme-variant='active.velvet'] {
   --theme-color-50: #fdf2f8;
   --theme-color-100: #fce7f3;
   --theme-color-200: #fbcfe8;
@@ -32,6 +32,23 @@
   --theme-color-800: #9d174d;
   --theme-color-900: #831843;
   --theme-color-950: #500724;
+  --theme-font-en: var(--font-inter), system-ui, sans-serif;
+  --theme-font-ar: var(--font-noto-sans-arabic), system-ui, sans-serif;
+  --theme-border-radius: 0.5rem;
+}
+
+[data-theme-variant='active.emerald'] {
+  --theme-color-50: #ecfdf5;
+  --theme-color-100: #d1fae5;
+  --theme-color-200: #a7f3d0;
+  --theme-color-300: #6ee7b7;
+  --theme-color-400: #34d399;
+  --theme-color-500: #10b981;
+  --theme-color-600: #059669;
+  --theme-color-700: #047857;
+  --theme-color-800: #065f46;
+  --theme-color-900: #064e3b;
+  --theme-color-950: #022c22;
   --theme-font-en: var(--font-inter), system-ui, sans-serif;
   --theme-font-ar: var(--font-noto-sans-arabic), system-ui, sans-serif;
   --theme-border-radius: 0.5rem;
