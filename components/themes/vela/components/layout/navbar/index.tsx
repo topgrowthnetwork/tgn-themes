@@ -88,36 +88,22 @@ export default async function Navbar() {
 
   return (
     <nav className="relative flex h-full items-center justify-between">
-      <div className="flex items-center gap-2 md:hidden">
-        <Suspense
-          fallback={
-            <div className="h-11 w-11 rounded-theme border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
-          }
-        >
-          <MobileMenu menu={categories} products={products} settings={settings} />
-        </Suspense>
-      </div>
+      {/* Left side - Mobile menu and logo */}
+      {/* <div className="flex items-center gap-2"> */}
+      <Suspense
+        fallback={
+          <div className="h-11 w-11 rounded-theme border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
+        }
+      >
+        <MobileMenu menu={categories} products={products} settings={settings} />
+      </Suspense>
+      <Link href="/" className="ms-2 flex items-center md:ms-0">
+        <LogoSquare />
+      </Link>
+      {/* </div> */}
 
-      <div className="flex items-center justify-center md:hidden">
-        <Link href="/" className="flex items-center">
-          <LogoSquare />
-        </Link>
-      </div>
-
-      <div className="hidden items-center gap-2 md:flex">
-        <Suspense
-          fallback={
-            <div className="h-11 w-11 rounded-theme border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
-          }
-        >
-          <MobileMenu menu={categories} products={products} settings={settings} />
-        </Suspense>
-        <Link href="/" className="flex items-center">
-          <LogoSquare />
-        </Link>
-      </div>
-
-      <div className="hidden justify-center md:flex md:w-1/3">
+      {/* Center - Search (desktop only) */}
+      <div className="mx-auto hidden justify-center md:flex md:w-1/3">
         <Suspense
           fallback={
             <div className="h-10 w-80 rounded-theme border bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800" />
@@ -127,14 +113,9 @@ export default async function Navbar() {
         </Suspense>
       </div>
 
-      <div className="hidden items-center gap-2 md:flex lg:gap-4">
+      {/* Right side - WhatsApp and cart */}
+      <div className="flex items-center gap-2 lg:gap-4">
         {settings.contact_phone && <WhatsappButton phoneNumber={settings.contact_phone} />}
-        <Suspense fallback={<OpenCart />}>
-          <Cart />
-        </Suspense>
-      </div>
-
-      <div className="flex items-center md:hidden">
         <Suspense fallback={<OpenCart />}>
           <Cart />
         </Suspense>

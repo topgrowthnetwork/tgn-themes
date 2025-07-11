@@ -49,7 +49,7 @@ export default function MobileMenu({
       <button
         onClick={openMobileMenu}
         aria-label={t('openMobileMenu')}
-        className="group flex h-12 w-12 items-center justify-center text-black transition-colors dark:text-white"
+        className="group -ms-2 flex h-12 w-12 items-center justify-center text-black transition-colors dark:text-white"
       >
         <Bars3Icon className="h-8 w-auto transition-colors group-hover:text-primary-600 dark:group-hover:text-primary-400" />
       </button>
