@@ -219,12 +219,21 @@ export class ApiClient {
       return this.fetchWithRetry<T>(endpoint, options, tags, attempt + 1);
     }
 
-    // If we shouldn't retry or have exhausted attempts, return the error
-    if (attempt > 1) {
+    // If we shouldn't retry or have exhausted attempts, log error only on final failure
+    if (attempt >= retryConfig.maxAttempts) {
       console.error(`API request failed after ${attempt} attempts:`, {
         endpoint,
         finalError: error.message,
         statusCode: error.status_code
+      });
+
+      // Log to Sentry only on final failure
+      logErrorToSentry(error, {
+        url: `${this.config.baseURL}${endpoint}`,
+        endpoint,
+        method: options.method || 'GET',
+        status: error.status_code,
+        statusText: error.message
       });
     }
 
@@ -240,46 +249,37 @@ export class ApiClient {
     const method = options.method || 'GET';
 
     // Build headers
-    const headers = this.buildHeaders(options.headers as Record<string, string> | undefined);
-
-    // Set up timeout
-    const { controller, timeoutId } = this.setupTimeout();
-
-    // Set Content-Type based on body type
-    this.setContentType(headers, options.body || undefined);
-
-    // Add tokens
-    this.addTokens(headers);
-
-    // Build fetch options
-    const fetchOptions = this.buildFetchOptions(options, headers, controller.signal, tags);
-
-    try {
-      const response = await fetch(url, fetchOptions);
-      this.clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        return this.handleHttpError<T>(response, url, endpoint, method, headers);
-      }
-
-      const data = await response.json();
-      return ok(data);
-    } catch (error) {
-      this.clearTimeout(timeoutId);
-      return this.handleNetworkError<T>(error, url, endpoint, method, headers);
-    }
-  }
-
-  private buildHeaders(customHeaders?: Record<string, string>): Headers {
-    return new Headers({
+    const headers = new Headers({
       ...this.config.headers,
       'X-Language': this.config.language!,
       'X-CSRF-TOKEN': '',
-      ...(customHeaders || {})
+      ...((options.headers as Record<string, string>) || {})
     });
-  }
 
-  private setupTimeout(): { controller: AbortController; timeoutId?: NodeJS.Timeout } {
+    // Add tokens
+    if (this.config.guestToken) {
+      headers.set('X-Guest-Token', this.config.guestToken);
+    }
+    if (this.config.authToken) {
+      headers.set('Authorization', `Bearer ${this.config.authToken}`);
+    }
+
+    // Set Content-Type based on body type
+    if (options.body) {
+      if (options.body instanceof FormData) {
+        // Don't set Content-Type for FormData - browser will set it with boundary
+      } else if (typeof options.body === 'string') {
+        try {
+          // Try to parse as JSON to determine if it's JSON
+          JSON.parse(options.body);
+          headers.set('Content-Type', 'application/json');
+        } catch {
+          // If it's not valid JSON, don't set Content-Type
+        }
+      }
+    }
+
+    // Set up timeout using AbortController
     const controller = new AbortController();
     let timeoutId: NodeJS.Timeout | undefined;
 
@@ -289,51 +289,11 @@ export class ApiClient {
       }, this.config.timeout);
     }
 
-    return { controller, timeoutId };
-  }
-
-  private clearTimeout(timeoutId?: NodeJS.Timeout): void {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-  }
-
-  private setContentType(headers: Headers, body?: BodyInit): void {
-    if (!body) return;
-
-    if (body instanceof FormData) {
-      // Don't set Content-Type for FormData - browser will set it with boundary
-    } else if (typeof body === 'string') {
-      try {
-        // Try to parse as JSON to determine if it's JSON
-        JSON.parse(body);
-        headers.set('Content-Type', 'application/json');
-      } catch {
-        // If it's not valid JSON, don't set Content-Type
-      }
-    }
-  }
-
-  private addTokens(headers: Headers): void {
-    if (this.config.guestToken) {
-      headers.set('X-Guest-Token', this.config.guestToken);
-    }
-
-    if (this.config.authToken) {
-      headers.set('Authorization', `Bearer ${this.config.authToken}`);
-    }
-  }
-
-  private buildFetchOptions(
-    options: RequestInit,
-    headers: Headers,
-    signal: AbortSignal,
-    tags?: string[]
-  ): RequestInit {
+    // Build fetch options
     const fetchOptions: RequestInit = {
       ...options,
       headers,
-      signal
+      signal: controller.signal
     };
 
     // Add caching for GET requests with optional tags
@@ -341,59 +301,40 @@ export class ApiClient {
       fetchOptions.next = { tags };
     }
 
-    return fetchOptions;
-  }
+    try {
+      const response = await fetch(url, fetchOptions);
 
-  private async handleHttpError<T>(
-    response: Response,
-    url: string,
-    endpoint: string,
-    method: string,
-    headers: Headers
-  ): Promise<Result<ApiResponse<T>, ApiError>> {
-    const apiError = await parseErrorResponse(response);
-    const errorText = await response.text();
+      // Clear timeout if request completed successfully
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
-    console.error('API Error Response:', {
-      status: response.status,
-      statusText: response.statusText,
-      error: apiError
-    });
+      if (!response.ok) {
+        const apiError = await parseErrorResponse(response);
 
-    logErrorToSentry(apiError, {
-      url,
-      endpoint,
-      method,
-      status: response.status,
-      statusText: response.statusText,
-      requestHeaders: Object.fromEntries(headers.entries()),
-      responseBody: errorText
-    });
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: apiError
+        });
 
-    return err(apiError);
-  }
+        return err(apiError);
+      }
 
-  private handleNetworkError<T>(
-    error: unknown,
-    url: string,
-    endpoint: string,
-    method: string,
-    headers: Headers
-  ): Result<ApiResponse<T>, ApiError> {
-    const apiError = handleNetworkError(error, endpoint, method);
+      const data = await response.json();
+      return ok(data);
+    } catch (error) {
+      // Clear timeout if request failed
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
-    console.error('API Error:', apiError);
+      const apiError = handleNetworkError(error, endpoint, method);
 
-    logErrorToSentry(error instanceof Error ? error : new Error('Network error occurred'), {
-      url,
-      endpoint,
-      method,
-      requestHeaders: Object.fromEntries(headers.entries()),
-      originalError: error,
-      timeout: this.config.timeout
-    });
+      console.error('API Error:', apiError);
 
-    return err(apiError);
+      return err(apiError);
+    }
   }
 
   async get<T>(
