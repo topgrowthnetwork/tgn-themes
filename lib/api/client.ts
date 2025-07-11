@@ -16,9 +16,63 @@ function createApiError(
   };
 }
 
+// Helper function to calculate delay with exponential backoff
+function calculateDelay(attempt: number, baseDelay: number, multiplier: number): number {
+  return baseDelay * Math.pow(multiplier, attempt - 1);
+}
+
+// Helper function to check if an error is retryable
+function isRetryableError(
+  error: ApiError,
+  retryableStatusCodes: number[],
+  retryableErrors: string[]
+): boolean {
+  // Check status code
+  if (error.status_code && retryableStatusCodes.includes(error.status_code)) {
+    return true;
+  }
+
+  // Check error message
+  return retryableErrors.some((retryableError) =>
+    error.message.toLowerCase().includes(retryableError.toLowerCase())
+  );
+}
+
+// Helper function to sleep for a given number of milliseconds
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export class ApiClient {
   private config: ApiConfig;
+  private defaultRetryConfig = {
+    maxAttempts: 3,
+    delayMs: 1000,
+    backoffMultiplier: 2,
+    retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+    retryableErrors: ['Network error occurred', 'Request timeout']
+  };
 
+  /**
+   * Creates a new API client with optional retry configuration
+   *
+   * @example
+   * // Default retry behavior (3 attempts, 1s base delay, exponential backoff)
+   * const client = new ApiClient({ baseURL: 'https://api.example.com' });
+   *
+   * @example
+   * // Custom retry configuration
+   * const client = new ApiClient({
+   *   baseURL: 'https://api.example.com',
+   *   retry: {
+   *     maxAttempts: 5,
+   *     delayMs: 500,
+   *     backoffMultiplier: 1.5,
+   *     retryableStatusCodes: [408, 429, 500, 502, 503, 504, 520],
+   *     retryableErrors: ['Network error occurred', 'Request timeout', 'Service unavailable']
+   *   }
+   * });
+   */
   constructor(config: ApiConfig) {
     this.config = {
       baseURL: config.baseURL,
@@ -28,7 +82,11 @@ export class ApiClient {
       language: config.language || 'en',
       guestToken: config.guestToken,
       authToken: config.authToken,
-      timeout: config.timeout
+      timeout: config.timeout,
+      retry: {
+        ...this.defaultRetryConfig,
+        ...config.retry
+      }
     };
   }
 
@@ -43,6 +101,97 @@ export class ApiClient {
   clearTokens() {
     this.config.guestToken = undefined;
     this.config.authToken = undefined;
+  }
+
+  private async fetchWithRetry<T>(
+    endpoint: string,
+    options: RequestInit = {},
+    tags?: string[],
+    attempt: number = 1
+  ): Promise<Result<ApiResponse<T>, ApiError>> {
+    const retryConfig = this.config.retry || this.defaultRetryConfig;
+    const maxAttempts = retryConfig.maxAttempts || this.defaultRetryConfig.maxAttempts;
+    const delayMs = retryConfig.delayMs || this.defaultRetryConfig.delayMs;
+    const backoffMultiplier =
+      retryConfig.backoffMultiplier || this.defaultRetryConfig.backoffMultiplier;
+    const retryableStatusCodes =
+      retryConfig.retryableStatusCodes || this.defaultRetryConfig.retryableStatusCodes;
+    const retryableErrors = retryConfig.retryableErrors || this.defaultRetryConfig.retryableErrors;
+
+    try {
+      const result = await this.fetch<T>(endpoint, options, tags);
+
+      // If successful, return the result
+      if (result.isOk()) {
+        return result;
+      }
+
+      const error = result.error;
+
+      // Check if we should retry this error
+      if (attempt < maxAttempts && isRetryableError(error, retryableStatusCodes, retryableErrors)) {
+        const delay = calculateDelay(attempt, delayMs, backoffMultiplier);
+
+        console.warn(
+          `API request failed (attempt ${attempt}/${maxAttempts}), retrying in ${delay}ms:`,
+          {
+            endpoint,
+            error: error.message,
+            statusCode: error.status_code
+          }
+        );
+
+        // Wait before retrying
+        await sleep(delay);
+
+        // Retry the request
+        return this.fetchWithRetry<T>(endpoint, options, tags, attempt + 1);
+      }
+
+      // If we shouldn't retry or have exhausted attempts, return the error
+      if (attempt > 1) {
+        console.error(`API request failed after ${attempt} attempts:`, {
+          endpoint,
+          finalError: error.message,
+          statusCode: error.status_code
+        });
+      }
+
+      return result;
+    } catch (error) {
+      // Handle unexpected errors (like network failures)
+      if (attempt < maxAttempts) {
+        const delay = calculateDelay(attempt, delayMs, backoffMultiplier);
+
+        console.warn(
+          `Unexpected API error (attempt ${attempt}/${maxAttempts}), retrying in ${delay}ms:`,
+          {
+            endpoint,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        );
+
+        // Wait before retrying
+        await sleep(delay);
+
+        // Retry the request
+        return this.fetchWithRetry<T>(endpoint, options, tags, attempt + 1);
+      }
+
+      // If we've exhausted attempts, create a proper ApiError and return it
+      const apiError = createApiError(
+        error instanceof Error ? error.message : 'Network error occurred'
+      );
+
+      if (attempt > 1) {
+        console.error(`API request failed after ${attempt} attempts due to unexpected error:`, {
+          endpoint,
+          finalError: apiError.message
+        });
+      }
+
+      return err(apiError);
+    }
   }
 
   private async fetch<T>(
@@ -224,26 +373,26 @@ export class ApiClient {
     const queryString = filteredParams
       ? '?' + new URLSearchParams(filteredParams as Record<string, string>).toString()
       : '';
-    return this.fetch<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
+    return this.fetchWithRetry<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
   }
 
   async post<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
     const body = data instanceof FormData ? data : JSON.stringify(data);
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'POST',
       body
     });
   }
 
   async put<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data)
     });
   }
 
   async delete<T>(endpoint: string): Promise<Result<ApiResponse<T>, ApiError>> {
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'DELETE'
     });
   }

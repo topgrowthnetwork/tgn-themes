@@ -4,23 +4,29 @@ import clsx from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Slider } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface SliderCarouselProps {
   sliders: Slider[];
+  autoPlayInterval?: number; // in milliseconds, default 5000ms
 }
 
 interface SlideContentProps {
   slider: Slider;
 }
 
-interface CarouselDotsProps {
+interface CarouselControlsProps {
   scrollSnaps: number[];
   selectedIndex: number;
   onDotClick: (index: number) => void;
+  onNext: () => void;
+  onPrev: () => void;
+  isPlaying: boolean;
+  onTogglePlay: () => void;
+  progress: number; // 0 to 1
 }
 
 // Slide Content Component
@@ -41,7 +47,7 @@ function SlideContent({ slider }: SlideContentProps) {
           src={getFullPath(slider.mob_img.path)}
           alt={slider.title}
           fill
-          className="object-cover md:hidden"
+          className="rounded-xl object-cover md:hidden"
           priority
         />
       )}
@@ -51,12 +57,12 @@ function SlideContent({ slider }: SlideContentProps) {
         src={getFullPath(slider.img.path)}
         alt={slider.title}
         fill
-        className={`object-cover ${slider.mob_img ? 'hidden md:block' : ''}`}
+        className={clsx('rounded-xl object-cover', slider.mob_img ? 'hidden md:block' : '')}
         priority
       />
 
       {/* Gradient overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
       {/* Text content positioned at bottom for better UX */}
       <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-12">
@@ -71,10 +77,7 @@ function SlideContent({ slider }: SlideContentProps) {
             />
           )}
           {slider.link && (
-            <a
-              href={slider.link}
-              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-            >
+            <a href={slider.link} className="button !inline-flex">
               {t('learnMore')}
               {isRTL ? (
                 <ChevronLeft className="ms-2 h-4 w-4 md:h-5 md:w-5" />
@@ -89,36 +92,90 @@ function SlideContent({ slider }: SlideContentProps) {
   );
 }
 
-// Carousel Dots Component
-function CarouselDots({ scrollSnaps, selectedIndex, onDotClick }: CarouselDotsProps) {
+// Carousel Controls Component
+function CarouselControls({
+  scrollSnaps,
+  selectedIndex,
+  onDotClick,
+  onNext,
+  onPrev,
+  isPlaying,
+  onTogglePlay,
+  progress
+}: CarouselControlsProps) {
   if (scrollSnaps.length <= 1) return null;
 
   return (
-    <div className="mt-4 flex justify-center gap-x-2">
-      {scrollSnaps.map((_, index) => (
+    <div className="absolute bottom-6 right-6 flex items-center gap-3">
+      {/* Navigation Controls */}
+      <div className="flex items-center gap-2">
         <button
-          key={index}
-          className={clsx(
-            'h-3 w-3 rounded-full transition-colors',
-            index === selectedIndex ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
-          )}
-          onClick={() => onDotClick(index)}
-          aria-label={`Go to slide ${index + 1}`}
-        />
-      ))}
+          onClick={onPrev}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-colors hover:bg-black/30"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="h-5 w-5 text-white" />
+        </button>
+
+        <div className="flex items-center gap-1 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
+          <span className="text-sm font-medium text-white">{selectedIndex + 1}</span>
+          <span className="text-sm text-white/60">/</span>
+          <span className="text-sm text-white/60">{scrollSnaps.length}</span>
+        </div>
+
+        <button
+          onClick={onNext}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-colors hover:bg-black/30"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="h-5 w-5 text-white" />
+        </button>
+      </div>
+
+      {/* Play/Pause Button with Circular Progress */}
+      <div className="relative">
+        <button
+          onClick={onTogglePlay}
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-colors hover:bg-black/30"
+          aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
+        >
+          {/* Circular Progress using CSS */}
+          <div className="absolute inset-0 rounded-full border-2 border-white/20" />
+          <div
+            className="absolute inset-0 rounded-full border-2 border-white border-t-transparent transition-all duration-100 ease-linear"
+            style={{
+              transform: `rotate(${progress * 360}deg)`
+            }}
+          />
+
+          {/* Play/Pause Icon */}
+          <div className="relative z-10">
+            {isPlaying ? (
+              <Pause className="h-5 w-5 text-white" />
+            ) : (
+              <Play className="ml-0.5 h-5 w-5 text-white" />
+            )}
+          </div>
+        </button>
+      </div>
     </div>
   );
 }
 
 // Main Slider Carousel Component
-export function SliderCarousel({ sliders }: SliderCarouselProps) {
+export function SliderCarousel({ sliders, autoPlayInterval = 5000 }: SliderCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const progressRef = useRef<NodeJS.Timeout | null>(null);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
+    setProgress(0); // Reset progress when slide changes
   }, [emblaApi]);
 
   const scrollTo = useCallback(
@@ -128,6 +185,58 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
     },
     [emblaApi]
   );
+
+  const scrollNext = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const scrollPrev = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const togglePlay = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isPlaying) {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+        autoPlayRef.current = null;
+      }
+      if (progressRef.current) {
+        clearInterval(progressRef.current);
+        progressRef.current = null;
+      }
+      return;
+    }
+
+    // Auto-play timer
+    autoPlayRef.current = setInterval(() => {
+      scrollNext();
+    }, autoPlayInterval);
+
+    // Progress timer (update every 50ms for smooth animation)
+    const progressStep = 50 / autoPlayInterval;
+    progressRef.current = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = prev + progressStep;
+        return newProgress >= 1 ? 0 : newProgress;
+      });
+    }, 50);
+
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+      if (progressRef.current) {
+        clearInterval(progressRef.current);
+      }
+    };
+  }, [isPlaying, scrollNext, autoPlayInterval]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -143,13 +252,25 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
     };
   }, [emblaApi, onSelect]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+      if (progressRef.current) {
+        clearInterval(progressRef.current);
+      }
+    };
+  }, []);
+
   if (!sliders || sliders.length === 0 || sliders.some((slider) => !slider.img)) {
     return null;
   }
 
   return (
     <div className="w-full">
-      <div className="embla overflow-hidden" ref={emblaRef}>
+      <div className="embla relative overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex">
           {sliders.map((slider) => (
             <div key={slider.id} className="embla__slide min-w-0 flex-[0_0_100%]">
@@ -157,9 +278,18 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
             </div>
           ))}
         </div>
-      </div>
 
-      <CarouselDots scrollSnaps={scrollSnaps} selectedIndex={selectedIndex} onDotClick={scrollTo} />
+        <CarouselControls
+          scrollSnaps={scrollSnaps}
+          selectedIndex={selectedIndex}
+          onDotClick={scrollTo}
+          onNext={scrollNext}
+          onPrev={scrollPrev}
+          isPlaying={isPlaying}
+          onTogglePlay={togglePlay}
+          progress={progress}
+        />
+      </div>
     </div>
   );
 }

@@ -252,6 +252,13 @@ export interface ApiConfig {
   guestToken?: string;
   authToken?: string;
   timeout?: number; // Timeout in milliseconds
+  retry?: {
+    maxAttempts?: number; // Maximum number of retry attempts (default: 3)
+    delayMs?: number; // Base delay between retries in milliseconds (default: 1000)
+    backoffMultiplier?: number; // Exponential backoff multiplier (default: 2)
+    retryableStatusCodes?: number[]; // HTTP status codes to retry (default: [408, 429, 500, 502, 503, 504])
+    retryableErrors?: string[]; // Error messages to retry (default: ['Network error occurred', 'Request timeout'])
+  };
 }
 
 // Category types
