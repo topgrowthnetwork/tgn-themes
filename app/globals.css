@@ -54,40 +54,22 @@
   --theme-border-radius: 0.5rem;
 }
 
-/* Minimal Theme */
-[data-theme='minimal'] {
-  --theme-color-50: #f8fafc;
-  --theme-color-100: #f1f5f9;
-  --theme-color-200: #e2e8f0;
-  --theme-color-300: #cbd5e1;
-  --theme-color-400: #94a3b8;
-  --theme-color-500: #64748b;
-  --theme-color-600: #475569;
-  --theme-color-700: #334155;
-  --theme-color-800: #1e293b;
-  --theme-color-900: #0f172a;
-  --theme-color-950: #020617;
+/* Vela Theme - Fast & Energetic */
+[data-theme='vela'] {
+  --theme-color-50: #eff6ff;
+  --theme-color-100: #dbeafe;
+  --theme-color-200: #bfdbfe;
+  --theme-color-300: #93c5fd;
+  --theme-color-400: #60a5fa;
+  --theme-color-500: #3b82f6;
+  --theme-color-600: #2563eb;
+  --theme-color-700: #1d4ed8;
+  --theme-color-800: #1e40af;
+  --theme-color-900: #1e3a8a;
+  --theme-color-950: #172554;
   --theme-font-en: var(--font-inter), system-ui, sans-serif;
   --theme-font-ar: var(--font-noto-sans-arabic), system-ui, sans-serif;
-  --theme-border-radius: 0.375rem;
-}
-
-/* Classic Theme */
-[data-theme='classic'] {
-  --theme-color-50: #fef2f2;
-  --theme-color-100: #fee2e2;
-  --theme-color-200: #fecaca;
-  --theme-color-300: #fca5a5;
-  --theme-color-400: #f87171;
-  --theme-color-500: #ef4444;
-  --theme-color-600: #dc2626;
-  --theme-color-700: #b91c1c;
-  --theme-color-800: #991b1b;
-  --theme-color-900: #7f1d1d;
-  --theme-color-950: #450a0a;
-  --theme-font-en: var(--font-noto-serif), serif;
-  --theme-font-ar: var(--font-noto-sans-arabic), serif;
-  --theme-border-radius: 0.125rem;
+  --theme-border-radius: 0.25rem;
 }
 
 /* Theme-specific CSS variables will be injected by the theme loader */

@@ -16,8 +16,7 @@ const THEME_VARIANTS: Record<string, ThemeVariant[]> = {
     { id: 'velvet', name: 'Velvet', color: '#ec4899' },
     { id: 'emerald', name: 'Emerald', color: '#10b981' }
   ],
-  minimal: [{ id: '', name: 'Default', color: '#64748b' }],
-  classic: [{ id: '', name: 'Default', color: '#ef4444' }]
+  vela: [{ id: '', name: 'Default', color: '#3b82f6' }]
 };
 
 export function ThemeSwitcher() {
