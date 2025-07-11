@@ -16,8 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@theme": ["components/themes/vela"],
-      "@theme/*": ["components/themes/vela/*"],
+      "@theme": ["components/themes/active"],
+      "@theme/*": ["components/themes/active/*"],
       "@shared": ["components/shared"],
       "@shared/*": ["components/shared/*"]
     },
