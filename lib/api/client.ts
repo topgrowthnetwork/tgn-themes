@@ -226,16 +226,15 @@ export class ApiClient {
         finalError: error.message,
         statusCode: error.status_code
       });
-
-      // Log to Sentry only on final failure
-      logErrorToSentry(error, {
-        url: `${this.config.baseURL}${endpoint}`,
-        endpoint,
-        method: options.method || 'GET',
-        status: error.status_code,
-        statusText: error.message
-      });
     }
+    // Log to Sentry only on final failure
+    logErrorToSentry(error, {
+      url: `${this.config.baseURL}${endpoint}`,
+      endpoint,
+      method: options.method || 'GET',
+      status: error.status_code,
+      statusText: error.message
+    });
 
     return result;
   }
