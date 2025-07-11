@@ -4,8 +4,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "generate:tsconfig": "node generate-tsconfig.js",
+    "dev": "npm run generate:tsconfig && next dev",
+    "build": "npm run generate:tsconfig && next build",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write --ignore-unknown .",

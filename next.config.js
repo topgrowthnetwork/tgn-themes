@@ -25,11 +25,6 @@ const nextConfig = {
       { hostname: 'placehold.co' }
     ]
   },
-  webpack(config) {
-    config.resolve.alias['@theme'] = path.resolve(__dirname, `components/themes/${theme}`);
-    config.resolve.alias['@shared'] = path.resolve(__dirname, 'components/shared');
-    return config;
-  },
   async redirects() {
     return [
       {

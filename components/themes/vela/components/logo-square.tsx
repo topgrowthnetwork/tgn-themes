@@ -26,7 +26,7 @@ export default async function LogoSquare({ size = 'sm' }: { size?: string }) {
         alt={logoTitle}
         width={0}
         height={0}
-        className={clsx('h-16 w-auto object-contain')}
+        className={clsx('h-10 w-auto object-contain')}
         sizes="7rem"
         priority
       />
