@@ -1,3 +1,4 @@
+import GuestTokenProvider from '@shared/components/guest-token-provider';
 import NProgressProvider from '@shared/components/nprogress-provider';
 import ThemeContent from '@theme/layout';
 import { ThemeSwitcher, ToastContainerWrapper } from 'components/shared/components';
@@ -85,21 +86,21 @@ export default async function LocaleLayout({
           isRTL ? 'rtl' : 'ltr'
         }`}
       >
-        {/* <GuestTokenProvider> */}
-        <NProgressProvider>
-          <NuqsAdapter>
-            <NextIntlClientProvider>
-              <ThemeContent>
-                <Suspense>
-                  <main>{children}</main>
-                </Suspense>
-              </ThemeContent>
-              <ToastContainerWrapper />
-              <ThemeSwitcher />
-            </NextIntlClientProvider>
-          </NuqsAdapter>
-        </NProgressProvider>
-        {/* </GuestTokenProvider> */}
+        <GuestTokenProvider>
+          <NProgressProvider>
+            <NuqsAdapter>
+              <NextIntlClientProvider>
+                <ThemeContent>
+                  <Suspense>
+                    <main>{children}</main>
+                  </Suspense>
+                </ThemeContent>
+                <ToastContainerWrapper />
+                <ThemeSwitcher />
+              </NextIntlClientProvider>
+            </NuqsAdapter>
+          </NProgressProvider>
+        </GuestTokenProvider>
       </body>
     </html>
   );

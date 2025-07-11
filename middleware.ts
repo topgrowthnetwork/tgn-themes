@@ -137,7 +137,7 @@ export async function middleware(request: NextRequest) {
   const response = intlMiddleware(request);
 
   // Handle guest token
-  await handleGuestToken(request, response);
+  // await handleGuestToken(request, response);
 
   return response;
 }
