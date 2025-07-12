@@ -42,12 +42,18 @@ module.exports = {
           '0%': { opacity: 0.2 },
           '20%': { opacity: 1 },
           '100% ': { opacity: 0.2 }
+        },
+        sweep: {
+          '0%': { '--pie-progress': '0%', opacity: 0 },
+          '50%': { '--pie-progress': '50%', opacity: 0.5 },
+          '100%': { '--pie-progress': '100%', opacity: 0 }
         }
       },
       animation: {
         fadeIn: 'fadeIn .3s ease-in-out',
         carousel: 'marquee 60s linear infinite',
-        blink: 'blink 1.4s both infinite'
+        blink: 'blink 1.4s both infinite',
+        sweep: 'sweep 10s linear infinite'
       }
     }
   },

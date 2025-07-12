@@ -72,6 +72,12 @@
   --theme-border-radius: 0.25rem;
 }
 
+@property --pie-progress {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
 /* Theme-specific CSS variables will be injected by the theme loader */
 @layer base {
   * {

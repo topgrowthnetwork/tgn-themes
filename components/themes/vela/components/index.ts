@@ -30,3 +30,9 @@ export { GridTileImage } from './grid/tile';
 // Icon components
 export { default as GithubIcon } from './icons/github';
 export { default as LogoIcon } from './icons/logo';
+
+export { NavigationControls } from './carousel/navigation-controls';
+export { PlayPauseButton } from './carousel/play-pause-button';
+export { ProgressRing } from './carousel/progress-ring';
+export { SlideContent } from './carousel/slide-content';
+export { SliderCarousel } from './carousel/slider-carousel';
