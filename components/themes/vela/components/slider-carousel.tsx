@@ -3,11 +3,11 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { Slider } from 'lib/api/types';
 import { useCallback, useEffect, useState } from 'react';
-import { NavigationControls } from './navigation-controls';
-import { PlayPauseButton } from './play-pause-button';
-import { SlideContent } from './slide-content';
-import { useAutoPlay } from './use-auto-play';
-import { useCarouselControls } from './use-carousel-controls';
+import { NavigationControls } from './carousel/navigation-controls';
+import { PlayPauseButton } from './carousel/play-pause-button';
+import { SlideContent } from './carousel/slide-content';
+import { useAutoPlay } from './carousel/use-auto-play';
+import { useCarouselControls } from './carousel/use-carousel-controls';
 
 interface SliderCarouselProps {
   sliders: Slider[];

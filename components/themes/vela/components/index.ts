@@ -35,4 +35,4 @@ export { NavigationControls } from './carousel/navigation-controls';
 export { PlayPauseButton } from './carousel/play-pause-button';
 export { ProgressRing } from './carousel/progress-ring';
 export { SlideContent } from './carousel/slide-content';
-export { SliderCarousel } from './carousel/slider-carousel';
+export { SliderCarousel } from './slider-carousel';
