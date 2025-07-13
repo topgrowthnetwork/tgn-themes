@@ -76,7 +76,7 @@ export default function MobileMenu({
             leaveTo={isRTL ? 'translate-x-full' : 'translate-x-[-100%]'}
           >
             <Dialog.Panel
-              className={`fixed bottom-0 left-0 top-0 flex h-full w-full flex-col bg-white pb-6 md:w-96 rtl:right-0 dark:bg-black`}
+              className={`fixed bottom-0 left-0 top-0 flex h-full w-full flex-col bg-white dark:bg-black md:w-96 rtl:right-0`}
             >
               <div className="flex h-full flex-col">
                 {/* Header */}
@@ -94,7 +94,7 @@ export default function MobileMenu({
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto">
                   {/* Search - Hidden on desktop */}
-                  <div className="block border-b border-neutral-200 p-4 md:hidden dark:border-neutral-700">
+                  <div className="block border-b border-neutral-200 p-4 dark:border-neutral-700 md:hidden">
                     <Search />
                   </div>
 
