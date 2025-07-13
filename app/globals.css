@@ -78,6 +78,21 @@
   initial-value: 0%;
 }
 
+@keyframes sweep {
+  0% {
+    --pie-progress: 0%;
+    opacity: 0;
+  }
+  50% {
+    --pie-progress: 50%;
+    opacity: 0.5;
+  }
+  100% {
+    --pie-progress: 100%;
+    opacity: 0;
+  }
+}
+
 /* Theme-specific CSS variables will be injected by the theme loader */
 @layer base {
   * {
@@ -155,6 +170,12 @@
   [data-theme='vela'] .button-secondary {
     @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
     focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
+  }
+}
+
+@layer utilities {
+  .animate-sweep {
+    animation: sweep 10s linear infinite;
   }
 }
 
