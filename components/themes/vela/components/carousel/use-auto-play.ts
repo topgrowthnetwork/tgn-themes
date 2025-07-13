@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef } from 'react';
 interface UseAutoPlayProps {
   isPlaying: boolean;
   autoPlayInterval: number;
-  onNext: () => void;
+  onAdvance: () => void;
 }
 
-export function useAutoPlay({ isPlaying, autoPlayInterval, onNext }: UseAutoPlayProps) {
+export function useAutoPlay({ isPlaying, autoPlayInterval, onAdvance }: UseAutoPlayProps) {
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const resetAutoPlayTimer = useCallback(() => {
@@ -15,10 +15,10 @@ export function useAutoPlay({ isPlaying, autoPlayInterval, onNext }: UseAutoPlay
     }
     if (isPlaying) {
       autoPlayRef.current = setInterval(() => {
-        onNext();
+        onAdvance();
       }, autoPlayInterval);
     }
-  }, [isPlaying, autoPlayInterval, onNext]);
+  }, [isPlaying, autoPlayInterval, onAdvance]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -31,7 +31,7 @@ export function useAutoPlay({ isPlaying, autoPlayInterval, onNext }: UseAutoPlay
 
     // Auto-play timer
     autoPlayRef.current = setInterval(() => {
-      onNext();
+      onAdvance();
     }, autoPlayInterval);
 
     return () => {
@@ -39,7 +39,7 @@ export function useAutoPlay({ isPlaying, autoPlayInterval, onNext }: UseAutoPlay
         clearInterval(autoPlayRef.current);
       }
     };
-  }, [isPlaying, onNext, autoPlayInterval]);
+  }, [isPlaying, onAdvance, autoPlayInterval]);
 
   // Cleanup on unmount
   useEffect(() => {

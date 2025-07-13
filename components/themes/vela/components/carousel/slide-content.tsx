@@ -19,14 +19,14 @@ export function SlideContent({ slider }: SlideContentProps) {
   }
 
   return (
-    <div className="relative h-64 w-full md:h-96 lg:h-[500px]">
+    <div className="relative h-96 w-full md:h-96 lg:h-[500px]">
       {/* Mobile Image */}
       {slider.mob_img && (
         <Image
           src={getFullPath(slider.mob_img.path)}
           alt={slider.title}
           fill
-          className="rounded-xl object-cover md:hidden"
+          className="object-cover sm:hidden"
           priority
         />
       )}
@@ -36,22 +36,22 @@ export function SlideContent({ slider }: SlideContentProps) {
         src={getFullPath(slider.img.path)}
         alt={slider.title}
         fill
-        className={clsx('rounded-xl object-cover', slider.mob_img ? 'hidden md:block' : '')}
+        className={clsx('rounded-theme object-cover', slider.mob_img ? 'hidden sm:block' : '')}
         priority
       />
 
       {/* Gradient overlay for better text readability */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+      <div className="absolute inset-0 rounded-theme bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-      {/* Text content positioned at bottom for better UX */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-12">
-        <div className="max-w-4xl">
-          <h2 className="mb-3 text-xl font-bold leading-tight text-white drop-shadow-lg md:text-3xl lg:text-4xl">
+      {/* Text content - Mobile: centered at top, Desktop: bottom */}
+      <div className="absolute left-0 right-0 top-0 p-6 sm:bottom-0 sm:top-auto md:p-8 lg:p-12">
+        <div className="max-w-4xl text-center sm:text-left">
+          <h2 className="mb-2 text-3xl font-bold leading-tight text-white drop-shadow-lg lg:text-4xl">
             {slider.title}
           </h2>
           {slider.description && (
             <div
-              className="mb-4 max-w-2xl text-sm leading-relaxed text-gray-100 drop-shadow-md md:text-base lg:text-lg"
+              className="mb-3 max-w-2xl text-sm leading-relaxed text-gray-100 drop-shadow-md md:text-base lg:text-lg"
               dangerouslySetInnerHTML={{ __html: slider.description }}
             />
           )}

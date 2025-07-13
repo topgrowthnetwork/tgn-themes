@@ -21,10 +21,10 @@
     "baseUrl": ".",
     "paths": {
       "@theme": [
-        "components/themes/active"
+        "components/themes/vela"
       ],
       "@theme/*": [
-        "components/themes/active/*"
+        "components/themes/vela/*"
       ],
       "@shared": [
         "components/shared"

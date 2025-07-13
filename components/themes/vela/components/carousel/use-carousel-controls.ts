@@ -5,32 +5,37 @@ interface UseCarouselControlsProps {
   autoPlayInterval: number;
   isPlaying: boolean;
   resetAnimation: () => void;
+  resetAutoPlayTimer?: () => void;
 }
 
 export function useCarouselControls({
   emblaApi,
   autoPlayInterval,
   isPlaying,
-  resetAnimation
+  resetAnimation,
+  resetAutoPlayTimer
 }: UseCarouselControlsProps) {
   const scrollNext = useCallback(() => {
     if (!emblaApi) return;
     emblaApi.scrollNext();
     resetAnimation();
-  }, [emblaApi, resetAnimation]);
+    resetAutoPlayTimer?.();
+  }, [emblaApi, resetAnimation, resetAutoPlayTimer]);
 
   const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
     emblaApi.scrollPrev();
     resetAnimation();
-  }, [emblaApi, resetAnimation]);
+    resetAutoPlayTimer?.();
+  }, [emblaApi, resetAnimation, resetAutoPlayTimer]);
 
   const scrollTo = useCallback(
     (index: number) => {
       if (!emblaApi) return;
       emblaApi.scrollTo(index);
+      resetAutoPlayTimer?.();
     },
-    [emblaApi]
+    [emblaApi, resetAutoPlayTimer]
   );
 
   return {

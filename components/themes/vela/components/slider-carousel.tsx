@@ -19,7 +19,7 @@ export function SliderCarousel({ sliders, autoPlayInterval = 10000 }: SliderCaro
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false); // Start with false
   const [animationKey, setAnimationKey] = useState(0);
 
   // Animation reset function
@@ -36,11 +36,22 @@ export function SliderCarousel({ sliders, autoPlayInterval = 10000 }: SliderCaro
   });
 
   // Auto-play functionality
-  useAutoPlay({
+  const { resetAutoPlayTimer } = useAutoPlay({
     isPlaying,
     autoPlayInterval,
-    onNext: scrollNext
+    onAdvance: scrollNext
   });
+
+  // Navigation handlers with auto-play reset
+  const handleNext = useCallback(() => {
+    scrollNext();
+    resetAutoPlayTimer();
+  }, [scrollNext, resetAutoPlayTimer]);
+
+  const handlePrev = useCallback(() => {
+    scrollPrev();
+    resetAutoPlayTimer();
+  }, [scrollPrev, resetAutoPlayTimer]);
 
   // Play/pause toggle
   const togglePlay = useCallback(() => {
@@ -62,6 +73,9 @@ export function SliderCarousel({ sliders, autoPlayInterval = 10000 }: SliderCaro
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
 
+    // Start auto-play after carousel is initialized
+    setIsPlaying(true);
+
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
@@ -75,7 +89,7 @@ export function SliderCarousel({ sliders, autoPlayInterval = 10000 }: SliderCaro
 
   return (
     <div className="w-full">
-      <div className="embla relative overflow-hidden rounded-xl" ref={emblaRef}>
+      <div className="embla relative overflow-hidden sm:rounded-theme" ref={emblaRef}>
         <div className="embla__container flex">
           {sliders.map((slider) => (
             <div key={slider.id} className="embla__slide min-w-0 flex-[0_0_100%]">
@@ -84,12 +98,13 @@ export function SliderCarousel({ sliders, autoPlayInterval = 10000 }: SliderCaro
           ))}
         </div>
 
-        <div className="absolute bottom-6 right-6 flex items-center gap-3">
+        {/* Mobile: Centered controls at bottom */}
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-3 sm:bottom-6 sm:left-auto sm:right-6 sm:translate-x-0">
           <NavigationControls
             selectedIndex={selectedIndex}
             totalSlides={scrollSnaps.length}
-            onPrev={scrollPrev}
-            onNext={scrollNext}
+            onPrev={handlePrev}
+            onNext={handleNext}
           />
 
           <PlayPauseButton
