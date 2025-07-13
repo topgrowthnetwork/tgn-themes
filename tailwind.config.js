@@ -48,8 +48,8 @@ module.exports = {
           // '50%': { '--pie-progress': '50%', opacity: 0.5 },
           // '100%': { '--pie-progress': '100%', opacity: 0 }
           '0%': { opacity: 0 },
-          '50%': { opacity: 0.5 },
-          '100%': { opacity: 0 }
+          // '50%': { opacity: 0.5 },
+          '100%': { opacity: 1 }
         }
       },
       animation: {
