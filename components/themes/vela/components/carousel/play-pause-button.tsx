@@ -5,9 +5,15 @@ interface PlayPauseButtonProps {
   isPlaying: boolean;
   animationKey: number;
   onTogglePlay: () => void;
+  autoPlayInterval?: number;
 }
 
-export function PlayPauseButton({ isPlaying, animationKey, onTogglePlay }: PlayPauseButtonProps) {
+export function PlayPauseButton({
+  isPlaying,
+  animationKey,
+  onTogglePlay,
+  autoPlayInterval = 10000
+}: PlayPauseButtonProps) {
   return (
     <div className="relative">
       <button
@@ -15,7 +21,11 @@ export function PlayPauseButton({ isPlaying, animationKey, onTogglePlay }: PlayP
         className="group relative flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-lg"
         aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
       >
-        <ProgressRing isPlaying={isPlaying} animationKey={animationKey} />
+        <ProgressRing
+          isPlaying={isPlaying}
+          animationKey={animationKey}
+          duration={autoPlayInterval}
+        />
 
         {/* Play/Pause Icon */}
         <div className="absolute inset-0 flex items-center justify-center">

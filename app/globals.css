@@ -72,27 +72,6 @@
   --theme-border-radius: 0.25rem;
 }
 
-@property --pie-progress {
-  syntax: '<percentage>';
-  inherits: false;
-  initial-value: 0%;
-}
-
-@keyframes sweep {
-  0% {
-    --pie-progress: 0%;
-    opacity: 0;
-  }
-  50% {
-    --pie-progress: 50%;
-    opacity: 0.5;
-  }
-  100% {
-    --pie-progress: 100%;
-    opacity: 0;
-  }
-}
-
 /* Theme-specific CSS variables will be injected by the theme loader */
 @layer base {
   * {
@@ -119,11 +98,6 @@
 }
 
 @layer components {
-  .progress-ring {
-    background: conic-gradient(#787878 var(--pie-progress), white 0);
-    animation: sweep 10s infinite linear;
-  }
-
   /* Active Theme Input Styles */
   [data-theme='active'] .input {
     @apply mt-1 block w-full border border-gray-300 px-3 py-2 text-sm transition-colors duration-200 placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-white placeholder:dark:text-gray-400 dark:focus:border-primary-400 dark:focus:ring-primary-400;
@@ -175,12 +149,6 @@
   [data-theme='vela'] .button-secondary {
     @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
     focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
-  }
-}
-
-@layer utilities {
-  .animate-sweep {
-    animation: sweep 10s linear infinite;
   }
 }
 
