@@ -1,4 +1,5 @@
 // Individual components
+export { FakeScrollbar } from './fake-scrollbar';
 export { default as JsonViewer } from './json-viewer';
 export { default as Label } from './label';
 export { default as LoadingDots } from './loading-dots';

@@ -152,6 +152,18 @@
   }
 }
 
+@layer utilities {
+  /* Hide scrollbars */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
 /* Dark mode disabled - forcing light theme always */
 
 @supports (font: -apple-system-body) and (-webkit-appearance: none) {
