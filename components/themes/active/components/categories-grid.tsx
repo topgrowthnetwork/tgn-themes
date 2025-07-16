@@ -1,6 +1,5 @@
 'use client';
 
-import { ProductsGridSkeleton } from '@shared/components';
 import clsx from 'clsx';
 import { createApi } from 'lib/api';
 import { Category, GlobalSettings } from 'lib/api/types';
@@ -94,7 +93,7 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
       {selectedCategory && (
         <>
           {isLoading ? (
-            <ProductsGridSkeleton count={6} showTitle={true} />
+            <CategoryProductsSkeleton />
           ) : error ? (
             <div className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400">
@@ -119,6 +118,23 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
           )}
         </>
       )}
+    </div>
+  );
+}
+
+// Loading skeleton for category products
+function CategoryProductsSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="h-6 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="aspect-[5/4] w-full animate-pulse rounded-theme bg-gray-200 dark:bg-gray-700"
+          />
+        ))}
+      </div>
     </div>
   );
 }

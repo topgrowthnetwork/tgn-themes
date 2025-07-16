@@ -35,3 +35,6 @@ export { default as CartSummary } from './cart-summary';
 
 // Theme components
 export { ThemeSwitcher } from './theme-switcher';
+
+// Skeleton components
+export { ProductsGridSkeleton } from './products-grid-skeleton';

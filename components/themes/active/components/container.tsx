@@ -8,7 +8,7 @@ type Props = {
 };
 
 function Container({ children, className = '' }: Props) {
-  return <BaseContainer className={clsx('max-w-screen-xl', className)}>{children}</BaseContainer>;
+  return <BaseContainer className={clsx('max-w-screen-2xl', className)}>{children}</BaseContainer>;
 }
 
 export default Container;

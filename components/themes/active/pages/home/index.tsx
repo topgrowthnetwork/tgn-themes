@@ -1,9 +1,10 @@
-import { BestSellersList, BestSellersListSkeleton } from '@theme/components/best-sellers-list';
 import { CategoriesGrid } from '@theme/components/categories-grid';
 import Container from '@theme/components/container';
+import { ThreeItemGrid } from '@theme/components/grid/three-items';
+import { ProductsCarousel, ProductsCarouselSkeleton } from '@theme/components/products-carousel';
+import { SliderCarousel } from '@theme/components/slider-carousel';
 import { Category, GlobalSettings, Product, Slider } from 'lib/api/types';
 import { Suspense } from 'react';
-import { SliderCarousel } from '../../components/slider-carousel';
 
 interface HomePageProps {
   sliders: Slider[];
@@ -15,18 +16,17 @@ interface HomePageProps {
 export default function HomePage({ sliders, products, categories, settings }: HomePageProps) {
   return (
     <>
-      <div className="sm:hidden">
-        <SliderCarousel sliders={sliders} />
-      </div>
-      <Container className="hidden sm:block">
+      <Container>
         <SliderCarousel sliders={sliders} />
       </Container>
-      {/* <Container>
+      <Container>
         <ThreeItemGrid products={products} settings={settings} />
-      </Container> */}
-      <Suspense fallback={<BestSellersListSkeleton />}>
-        <BestSellersList settings={settings} />
-      </Suspense>
+      </Container>
+      <Container className="!max-w-max !px-0">
+        <Suspense fallback={<ProductsCarouselSkeleton />}>
+          <ProductsCarousel settings={settings} />
+        </Suspense>
+      </Container>
       <Container>
         <CategoriesGrid categories={categories} settings={settings} />
       </Container>
