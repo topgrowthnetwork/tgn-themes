@@ -8,6 +8,7 @@ import { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
@@ -81,6 +82,37 @@ export default async function LocaleLayout({
       data-theme={theme}
       data-theme-variant={themeVariant}
     >
+      <head>
+        {/* Meta Pixel Code */}
+        <Script
+          id="meta-pixel"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1507497897282072');
+              fbq('track', 'PageView');
+            `
+          }}
+        />
+        {/* Meta Pixel Noscript */}
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src="https://www.facebook.com/tr?id=1507497897282072&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
+      </head>
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${
           isRTL ? 'rtl' : 'ltr'
