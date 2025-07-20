@@ -75,6 +75,9 @@ export default async function LocaleLayout({
   const theme = process.env.NEXT_PUBLIC_THEME || 'active';
   const themeVariant = process.env.NEXT_PUBLIC_THEME_VARIANT || '';
 
+  // Get Meta Pixel ID from environment variable
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+
   return (
     <html
       lang={language}
@@ -84,34 +87,38 @@ export default async function LocaleLayout({
     >
       <head>
         {/* Meta Pixel Code */}
-        <Script
-          id="meta-pixel"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '1507497897282072');
-              fbq('track', 'PageView');
-            `
-          }}
-        />
-        {/* Meta Pixel Noscript */}
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=1507497897282072&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
+        {metaPixelId && (
+          <>
+            <Script
+              id="meta-pixel"
+              strategy="beforeInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  !function(f,b,e,v,n,t,s)
+                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                  n.queue=[];t=b.createElement(e);t.async=!0;
+                  t.src=v;s=b.getElementsByTagName(e)[0];
+                  s.parentNode.insertBefore(t,s)}(window, document,'script',
+                  'https://connect.facebook.net/en_US/fbevents.js');
+                  fbq('init', '${metaPixelId}');
+                  fbq('track', 'PageView');
+                `
+              }}
+            />
+            {/* Meta Pixel Noscript */}
+            <noscript>
+              <img
+                height="1"
+                width="1"
+                style={{ display: 'none' }}
+                src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+                alt=""
+              />
+            </noscript>
+          </>
+        )}
       </head>
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${
