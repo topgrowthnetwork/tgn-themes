@@ -91,7 +91,7 @@ export default async function LocaleLayout({
           <>
             <Script
               id="meta-pixel"
-              strategy="beforeInteractive"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `
                   !function(f,b,e,v,n,t,s)
