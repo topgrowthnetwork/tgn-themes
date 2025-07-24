@@ -16,31 +16,31 @@ function addPageParameterIfMissing(url: URL): URL | null {
   return null;
 }
 
-// Helper function to handle products page routing
-async function handleProductsPage(url: URL): Promise<URL | null> {
-  const pathname = url.pathname;
-  const productsMatch = pathname.match(/\/products$/);
+// // Helper function to handle products page routing
+// async function handleProductsPage(url: URL): Promise<URL | null> {
+//   const pathname = url.pathname;
+//   const productsMatch = pathname.match(/\/products$/);
 
-  if (!productsMatch) return null;
+//   if (!productsMatch) return null;
 
-  // If no category parameter, fetch categories and set first one
-  if (!url.searchParams.has('category')) {
-    try {
-      const api = createApi({ language: 'en', timeout: 1000 });
-      const categoriesResult = await api.getCategories();
+//   // If no category parameter, fetch categories and set first one
+//   if (!url.searchParams.has('category')) {
+//     try {
+//       const api = createApi({ language: 'en', timeout: 1000 });
+//       const categoriesResult = await api.getCategories();
 
-      if (categoriesResult.isOk() && categoriesResult.value.data.categories.length > 0) {
-        const firstCategoryId = categoriesResult.value.data.categories[0].id;
-        url.searchParams.set('category', firstCategoryId.toString());
-      }
-    } catch (error) {
-      console.error('Failed to fetch categories for products redirect:', error);
-    }
-  }
+//       if (categoriesResult.isOk() && categoriesResult.value.data.categories.length > 0) {
+//         const firstCategoryId = categoriesResult.value.data.categories[0].id;
+//         url.searchParams.set('category', firstCategoryId.toString());
+//       }
+//     } catch (error) {
+//       console.error('Failed to fetch categories for products redirect:', error);
+//     }
+//   }
 
-  // Add page parameter if missing
-  return addPageParameterIfMissing(url);
-}
+//   // Add page parameter if missing
+//   return addPageParameterIfMissing(url);
+// }
 
 // Helper function to handle product variant routing
 async function handleProductPage(url: URL): Promise<URL | null> {
@@ -84,29 +84,29 @@ async function handleProductPage(url: URL): Promise<URL | null> {
   return null;
 }
 
-// Helper function to handle guest token
-async function handleGuestToken(request: NextRequest, response: NextResponse): Promise<void> {
-  const guestToken = request.cookies.get('guest_token');
+// // Helper function to handle guest token
+// async function handleGuestToken(request: NextRequest, response: NextResponse): Promise<void> {
+//   const guestToken = request.cookies.get('guest_token');
 
-  if (!guestToken) {
-    try {
-      const api = createApi({ language: 'en', timeout: 1000 });
-      const apiResult = await api.generateGuestToken();
+//   if (!guestToken) {
+//     try {
+//       const api = createApi({ language: 'en', timeout: 1000 });
+//       const apiResult = await api.generateGuestToken();
 
-      if (apiResult.isOk() && apiResult.value.data.guest_token) {
-        response.cookies.set('guest_token', apiResult.value.data.guest_token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          maxAge: 30 * 24 * 60 * 60, // 30 days
-          path: '/'
-        });
-      }
-    } catch (error) {
-      console.error('Failed to generate guest token:', error);
-    }
-  }
-}
+//       if (apiResult.isOk() && apiResult.value.data.guest_token) {
+//         response.cookies.set('guest_token', apiResult.value.data.guest_token, {
+//           httpOnly: true,
+//           secure: process.env.NODE_ENV === 'production',
+//           sameSite: 'lax',
+//           maxAge: 30 * 24 * 60 * 60, // 30 days
+//           path: '/'
+//         });
+//       }
+//     } catch (error) {
+//       console.error('Failed to generate guest token:', error);
+//     }
+//   }
+// }
 
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
@@ -121,11 +121,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Handle products page routing
-  const productsRedirect = await handleProductsPage(url);
-  if (productsRedirect) {
-    return NextResponse.redirect(productsRedirect);
-  }
+  // // Handle products page routing
+  // const productsRedirect = await handleProductsPage(url);
+  // if (productsRedirect) {
+  //   return NextResponse.redirect(productsRedirect);
+  // }
 
   // Handle product page routing
   const productRedirect = await handleProductPage(url);

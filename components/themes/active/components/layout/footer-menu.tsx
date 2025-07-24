@@ -19,7 +19,7 @@ const FooterMenuItem = ({ item }: { item: Category }) => {
       <Link
         href={`/category/${item.id}`}
         className={clsx(
-          'block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300',
+          'block p-2 text-lg underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm',
           {
             'text-black dark:text-neutral-300': active
           }
@@ -41,8 +41,8 @@ export default function FooterMenu({ menu }: { menu: Category[] }) {
       <ul>
         <li>
           <Link
-            href={`/products?category=${menu[0]?.id}`}
-            className="block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
+            href={`/products`}
+            className="block p-2 text-lg underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
           >
             {t('all')}
           </Link>

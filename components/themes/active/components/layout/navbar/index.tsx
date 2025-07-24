@@ -51,14 +51,14 @@ export default async function Navbar() {
           </Link>
           <div className="ms-6 hidden items-center gap-4 lg:flex">
             <Link
-              href={`/products?category=${categories[0]?.id}`}
-              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
+              href={`/products`}
+              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
             >
               {t('shopAll')}
             </Link>
             <Link
               href="/contact-us"
-              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300"
+              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
             >
               {t('contactUs')}
             </Link>

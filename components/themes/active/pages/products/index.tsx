@@ -34,11 +34,14 @@ export default function ProductsPage({
   const [category, setCategory] = useQueryState('category', { shallow: false });
 
   // Get current category from server props (guaranteed to exist due to middleware)
-  const currentCategory =
-    categories.find((cat) => cat.id.toString() === selectedCategory) || categories[0];
+  const currentCategory = categories.find((cat) => cat.id.toString() === selectedCategory);
 
   const handleCategoryChange = (categoryId: number) => {
     setCategory(categoryId.toString());
+  };
+
+  const handleAllCategoriesClick = () => {
+    setCategory(null);
   };
 
   const sortingOptions = getSortingOptions(sortingT);
@@ -47,6 +50,19 @@ export default function ProductsPage({
     <div className="space-y-6">
       {/* Categories Row */}
       <div className="flex flex-wrap justify-start gap-3">
+        {/* All Categories Button */}
+        <button
+          onClick={handleAllCategoriesClick}
+          className={clsx(
+            'rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 hover:shadow-md',
+            !category || !selectedCategory
+              ? 'bg-primary-600 text-white shadow-lg'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+          )}
+        >
+          {commonT('all')}
+        </button>
+
         {categories.map((cat) => (
           <button
             key={cat.id}
@@ -64,34 +80,30 @@ export default function ProductsPage({
       </div>
 
       {/* Products Section */}
-      {currentCategory && (
-        <div className="space-y-6">
-          <SectionTitle title={currentCategory.name} />
+      <div className="space-y-6">
+        {currentCategory && <SectionTitle title={currentCategory.name} />}
 
-          <FilterList list={sortingOptions} title={commonT('sortBy')} />
+        <FilterList list={sortingOptions} title={commonT('sortBy')} />
 
-          <div className="text-start">
-            <p className="text-gray-600 dark:text-gray-400">
-              {t('resultsFound', { count: products.length })}
-            </p>
-          </div>
-
-          {products.length > 0 ? (
-            <Grid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <ProductGridItems products={products} currency={settings.site_global_currency} />
-            </Grid>
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-gray-500 dark:text-gray-400">{t('noProducts')}</p>
-            </div>
-          )}
-
-          {/* Pagination with URL state management */}
-          {totalPages > 1 && (
-            <PaginationWithUrl currentPage={currentPage} totalPages={totalPages} />
-          )}
+        <div className="text-start">
+          <p className="text-gray-600 dark:text-gray-400">
+            {t('resultsFound', { count: products.length })}
+          </p>
         </div>
-      )}
+
+        {products.length > 0 ? (
+          <Grid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ProductGridItems products={products} currency={settings.site_global_currency} />
+          </Grid>
+        ) : (
+          <div className="py-12 text-center">
+            <p className="text-gray-500 dark:text-gray-400">{t('noProducts')}</p>
+          </div>
+        )}
+
+        {/* Pagination with URL state management */}
+        {totalPages > 1 && <PaginationWithUrl currentPage={currentPage} totalPages={totalPages} />}
+      </div>
     </div>
   );
 }
