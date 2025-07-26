@@ -10,6 +10,7 @@ import { Category, GlobalSettings, ProductsResponse } from 'lib/api/types';
 import { getSortingOptions } from 'lib/constants';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
+import { useEffect, useState } from 'react';
 
 interface ProductsPageProps {
   productsResult: ProductsResponse;
@@ -32,51 +33,156 @@ export default function ProductsPage({
   const sortingT = useTranslations('Sorting');
 
   const [category, setCategory] = useQueryState('category', { shallow: false });
+  const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(null);
 
-  // Get current category from server props (guaranteed to exist due to middleware)
-  const currentCategory = categories.find((cat) => cat.id.toString() === selectedCategory);
+  // Get top-level categories (no parent)
+  const topLevelCategories = categories.filter((cat) => cat.parent_id === null);
 
-  const handleCategoryChange = (categoryId: number) => {
-    setCategory(categoryId.toString());
-  };
+  // Flatten all categories (including nested children) for easy searching
+  const allCategories = categories.reduce((acc: Category[], cat) => {
+    acc.push(cat);
+    if (cat.children) {
+      acc.push(...cat.children);
+    }
+    return acc;
+  }, []);
+
+  // Get current category from URL state (can be any category including subcategories)
+  const currentCategory = allCategories.find((cat) => cat.id.toString() === category);
+
+  // Get current parent category and its children
+  const currentParentCategory = allCategories.find((cat) => cat.id === selectedParentCategory);
+  const childCategories = currentParentCategory?.children || [];
+
+  // Build breadcrumb for selected category
+  const breadcrumb = [];
+  if (currentCategory) {
+    if (currentCategory.parent_id) {
+      const parent = allCategories.find((cat) => cat.id === currentCategory.parent_id);
+      if (parent) breadcrumb.push(parent);
+    }
+    breadcrumb.push(currentCategory);
+  }
+
+  // Set initial parent category based on selected category
+  useEffect(() => {
+    if (currentCategory) {
+      if (currentCategory.parent_id) {
+        setSelectedParentCategory(currentCategory.parent_id);
+      } else {
+        setSelectedParentCategory(currentCategory.id);
+      }
+    } else {
+      setSelectedParentCategory(null);
+    }
+  }, [currentCategory]);
 
   const handleAllCategoriesClick = () => {
     setCategory(null);
+    setSelectedParentCategory(null);
+  };
+
+  // Handle parent category selection
+  const handleParentCategoryChange = (categoryId: number) => {
+    setSelectedParentCategory(categoryId);
+    setCategory(categoryId.toString());
+  };
+
+  // Handle child category selection
+  const handleChildCategoryChange = (categoryId: number) => {
+    setCategory(categoryId.toString());
   };
 
   const sortingOptions = getSortingOptions(sortingT);
 
   return (
     <div className="space-y-6">
-      {/* Categories Row */}
-      <div className="flex flex-wrap justify-start gap-3">
-        {/* All Categories Button */}
-        <button
-          onClick={handleAllCategoriesClick}
-          className={clsx(
-            'rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 hover:shadow-md',
-            !category || !selectedCategory
-              ? 'bg-primary-600 text-white shadow-lg'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-          )}
-        >
-          {commonT('all')}
-        </button>
+      {/* Breadcrumb */}
+      {breadcrumb.length > 1 && (
+        <div className="flex items-center gap-x-2 text-sm text-gray-600 dark:text-gray-400">
+          {breadcrumb.map((cat, index) => (
+            <div key={cat.id} className="flex items-center">
+              {index > 0 && <span className="mx-2">/</span>}
+              <span
+                className={
+                  index === breadcrumb.length - 1
+                    ? 'font-medium text-gray-900 dark:text-gray-100'
+                    : ''
+                }
+              >
+                {cat.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
-        {categories.map((cat) => (
+      {/* Categories Section */}
+      <div className="space-y-4">
+        {/* Parent Categories Row */}
+        <div className="flex flex-wrap justify-start gap-3">
+          {/* All Categories Button */}
           <button
-            key={cat.id}
-            onClick={() => handleCategoryChange(cat.id)}
+            onClick={handleAllCategoriesClick}
             className={clsx(
-              'rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 hover:shadow-md',
-              category === cat.id.toString()
+              'rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 hover:shadow-md',
+              !category
                 ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             )}
           >
-            {cat.name}
+            {commonT('all')}
           </button>
-        ))}
+
+          {topLevelCategories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => handleParentCategoryChange(cat.id)}
+              className={clsx(
+                'rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 hover:shadow-md',
+                selectedParentCategory === cat.id
+                  ? 'bg-primary-600 text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              )}
+            >
+              {cat.name}
+              {cat.children?.length > 0 && (
+                <span className="ms-2 text-xs opacity-75">({cat.children.length})</span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Child Categories */}
+        {childCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleParentCategoryChange(selectedParentCategory!)}
+              className={clsx(
+                'rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 hover:shadow-sm',
+                category === selectedParentCategory?.toString()
+                  ? 'border-primary-300 bg-primary-100 text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                  : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              )}
+            >
+              All {currentParentCategory?.name}
+            </button>
+            {childCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => handleChildCategoryChange(cat.id)}
+                className={clsx(
+                  'rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 hover:shadow-sm',
+                  category === cat.id.toString()
+                    ? 'border-primary-300 bg-primary-100 text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                    : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                )}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Products Section */}

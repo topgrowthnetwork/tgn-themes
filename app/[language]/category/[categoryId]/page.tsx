@@ -49,19 +49,21 @@ export default async function Page({
   const [productsResult, settingsResult, categoryResult] = await Promise.all([
     api.getProducts({ ...productParams, page, per_page: '12' }),
     api.getGlobalSettings(),
-    api.getCategories({ categoryId })
+    api.getCategories({ category_id: categoryId })
   ]);
   if (productsResult.isErr() || settingsResult.isErr() || categoryResult.isErr()) {
     throw new Error('Failed to get products or settings or category');
   }
   const settings = settingsResult.value.data;
-  const category = categoryResult.value.data.categories.find((c) => c.id.toString() === categoryId);
+  const category = categoryResult.value.data.category;
+  const subcategories = categoryResult.value.data.categories;
 
   return (
     <CategoryPage
       productsResult={productsResult.value.data}
       settings={settings}
-      categoryName={category?.name || ''}
+      category={category}
+      subcategories={subcategories}
     />
   );
 }

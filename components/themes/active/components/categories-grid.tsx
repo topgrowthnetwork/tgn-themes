@@ -61,16 +61,25 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
   // Get top-level categories (no parent)
   const topLevelCategories = categories.filter((cat) => cat.parent_id === null);
 
+  // Flatten all categories (including nested children) for easy searching
+  const allCategories = categories.reduce((acc: Category[], cat) => {
+    acc.push(cat);
+    if (cat.children) {
+      acc.push(...cat.children);
+    }
+    return acc;
+  }, []);
+
   // Get current parent category and its children
-  const currentParentCategory = categories.find((cat) => cat.id === selectedParentCategory);
+  const currentParentCategory = allCategories.find((cat) => cat.id === selectedParentCategory);
   const childCategories = currentParentCategory?.children || [];
 
   // Get selected category data and build breadcrumb
-  const selectedCategoryData = categories.find((cat) => cat.id === selectedCategory);
+  const selectedCategoryData = allCategories.find((cat) => cat.id === selectedCategory);
   const breadcrumb = [];
   if (selectedCategoryData) {
     if (selectedCategoryData.parent_id) {
-      const parent = categories.find((cat) => cat.id === selectedCategoryData.parent_id);
+      const parent = allCategories.find((cat) => cat.id === selectedCategoryData.parent_id);
       if (parent) breadcrumb.push(parent);
     }
     breadcrumb.push(selectedCategoryData);

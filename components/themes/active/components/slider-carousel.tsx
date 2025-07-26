@@ -73,9 +73,9 @@ function SlideContent({ slider }: SlideContentProps) {
           {slider.link && (
             <a
               href={slider.link}
-              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg md:text-base dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+              className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 md:text-base"
             >
-              {t('learnMore')}
+              {slider.btn_text || t('learnMore')}
               {isRTL ? (
                 <ChevronLeft className="ms-2 h-4 w-4 md:h-5 md:w-5" />
               ) : (

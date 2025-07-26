@@ -284,7 +284,7 @@ export interface Category {
 }
 
 export interface CategoriesResponse {
-  category: Category[];
+  category: Category;
   categories: Category[];
 }
 
@@ -503,6 +503,7 @@ export interface Slider {
   title: string;
   description?: string;
   link?: string;
+  btn_text?: string;
   image: string;
   mobile_image: string;
   created_at: string;
