@@ -71,7 +71,8 @@
     "learnMore": "Learn More",
     "all": "All",
     "null": "null",
-    "undefined": "undefined"
+    "undefined": "undefined",
+    "products": "Products"
   },
   "Sorting": {
     "popularity": "Popularity",

@@ -71,7 +71,8 @@
     "learnMore": "اعرف المزيد",
     "all": "الكل",
     "null": "فارغ",
-    "undefined": "غير محدد"
+    "undefined": "غير محدد",
+    "products": "منتج"
   },
   "Sorting": {
     "popularity": "الشعبية",
