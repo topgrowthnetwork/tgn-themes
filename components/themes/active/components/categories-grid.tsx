@@ -44,6 +44,9 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
     categories?.[0]?.id || null
   );
+  const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(
+    categories?.[0]?.parent_id === null ? categories[0].id : categories[0].parent_id
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const t = useTranslations('Products');
 
@@ -55,13 +58,37 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
 
   if (!categories?.length) return null;
 
+  // Get top-level categories (no parent)
+  const topLevelCategories = categories.filter((cat) => cat.parent_id === null);
+
+  // Get current parent category and its children
+  const currentParentCategory = categories.find((cat) => cat.id === selectedParentCategory);
+  const childCategories = currentParentCategory?.children || [];
+
+  // Get selected category data and build breadcrumb
   const selectedCategoryData = categories.find((cat) => cat.id === selectedCategory);
+  const breadcrumb = [];
+  if (selectedCategoryData) {
+    if (selectedCategoryData.parent_id) {
+      const parent = categories.find((cat) => cat.id === selectedCategoryData.parent_id);
+      if (parent) breadcrumb.push(parent);
+    }
+    breadcrumb.push(selectedCategoryData);
+  }
+
   const products = data?.products || [];
   const totalProducts = data?.total || 0;
   const totalPages = data?.lastPage || 1;
 
-  // Reset page when category changes
-  const handleCategoryChange = (categoryId: number) => {
+  // Handle parent category selection
+  const handleParentCategoryChange = (categoryId: number) => {
+    setSelectedParentCategory(categoryId);
+    setSelectedCategory(categoryId);
+    setCurrentPage(1);
+  };
+
+  // Handle child category selection
+  const handleChildCategoryChange = (categoryId: number) => {
     setSelectedCategory(categoryId);
     setCurrentPage(1);
   };
@@ -71,22 +98,78 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
       {/* Title Section */}
       <SectionTitle title={t('categories')} />
 
-      {/* Categories Row */}
-      <div className="flex flex-wrap gap-3">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => handleCategoryChange(category.id)}
-            className={clsx(
-              'rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 hover:shadow-md',
-              selectedCategory === category.id
-                ? 'bg-primary-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            )}
-          >
-            {category.name}
-          </button>
-        ))}
+      {/* Breadcrumb */}
+      {breadcrumb.length > 1 && (
+        <div className="flex items-center gap-x-2 text-sm text-gray-600 dark:text-gray-400">
+          {breadcrumb.map((cat, index) => (
+            <div key={cat.id} className="flex items-center">
+              {index > 0 && <span className="mx-2">/</span>}
+              <span
+                className={
+                  index === breadcrumb.length - 1
+                    ? 'font-medium text-gray-900 dark:text-gray-100'
+                    : ''
+                }
+              >
+                {cat.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Parent Categories */}
+      <div className="space-y-4">
+        <div className="flex flex-wrap gap-3">
+          {topLevelCategories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => handleParentCategoryChange(category.id)}
+              className={clsx(
+                'rounded-full px-6 py-3 text-sm font-semibold transition-all duration-200 hover:shadow-md',
+                selectedParentCategory === category.id
+                  ? 'bg-primary-600 text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              )}
+            >
+              {category.name}
+              {category.children?.length > 0 && (
+                <span className="ms-2 text-xs opacity-75">({category.children.length})</span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Child Categories */}
+        {childCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleParentCategoryChange(selectedParentCategory!)}
+              className={clsx(
+                'rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 hover:shadow-sm',
+                selectedCategory === selectedParentCategory
+                  ? 'border-primary-300 bg-primary-100 text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                  : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              )}
+            >
+              All {currentParentCategory?.name}
+            </button>
+            {childCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleChildCategoryChange(category.id)}
+                className={clsx(
+                  'rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 hover:shadow-sm',
+                  selectedCategory === category.id
+                    ? 'border-primary-300 bg-primary-100 text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                    : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                )}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Products Section */}

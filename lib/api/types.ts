@@ -277,6 +277,9 @@ export interface Category {
   updated_at: string;
   products_count: string;
   name: string;
+  parent: Category | null;
+  children: Category[];
+  all_children: Category[];
   translations: CategoryTranslation[];
 }
 

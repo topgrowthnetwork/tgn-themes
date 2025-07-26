@@ -30,6 +30,9 @@ export default function MobileMenu({
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
+  // Get top-level categories (no parent)
+  const topLevelCategories = menu.filter((cat) => cat.parent_id === null);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
@@ -120,21 +123,41 @@ export default function MobileMenu({
                   )}
 
                   {/* Categories */}
-                  {menu.length > 0 && (
+                  {topLevelCategories.length > 0 && (
                     <div className="p-4">
                       <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
                         {commonT('categories')}
                       </h3>
                       <ul className="space-y-1">
-                        {menu.map((item) => (
-                          <li key={item.id}>
-                            <Link
-                              href={`/category/${item.id}`}
-                              onClick={closeMobileMenu}
-                              className="block rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
-                            >
-                              {item.name}
-                            </Link>
+                        {topLevelCategories.map((category) => (
+                          <li key={category.id}>
+                            {/* Parent Category */}
+                            <div className="space-y-1">
+                              <Link
+                                href={`/category/${category.id}`}
+                                onClick={closeMobileMenu}
+                                className="block rounded-theme px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                              >
+                                {category.name}
+                              </Link>
+
+                              {/* Child Categories - Always Visible */}
+                              {category.children && category.children.length > 0 && (
+                                <ul className="space-y-1 ps-6">
+                                  {category.children.map((childCategory) => (
+                                    <li key={childCategory.id}>
+                                      <Link
+                                        href={`/category/${childCategory.id}`}
+                                        onClick={closeMobileMenu}
+                                        className="block rounded-theme px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-50 hover:text-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+                                      >
+                                        {childCategory.name}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
                           </li>
                         ))}
                       </ul>
