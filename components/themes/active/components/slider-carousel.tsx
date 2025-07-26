@@ -58,7 +58,7 @@ function SlideContent({ slider }: SlideContentProps) {
       {/* Gradient overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-      {/* Text content positioned at bottom for better UX */}
+      {/* text content positioned at bottom for better UX */}
       <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 lg:p-12">
         <div className="max-w-4xl">
           <h2 className="mb-3 text-xl font-bold leading-tight text-white drop-shadow-lg md:text-3xl lg:text-4xl">
