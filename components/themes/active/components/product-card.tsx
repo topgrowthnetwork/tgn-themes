@@ -24,6 +24,16 @@ export function ProductCard({
   const currencyCode = currency || 'EGP';
   const cheapestVariant = getCheapestVariant(product);
 
+  // Gets the display price for the product
+  const getDisplayPrice = () => {
+    return cheapestVariant ? cheapestVariant.final_price : product.final_price;
+  };
+
+  // Gets the original price for the product
+  const getOriginalPrice = () => {
+    return cheapestVariant ? cheapestVariant.price : product.price;
+  };
+
   return (
     <Link
       href={buildProductUrlWithCheapestVariant(product)}
@@ -35,13 +45,9 @@ export function ProductCard({
         isInteractive={isInteractive}
         label={{
           title: product.title,
-          amount: cheapestVariant
-            ? cheapestVariant.final_price.toString()
-            : product.final_price.toString(),
+          amount: getDisplayPrice().toString(),
           currencyCode: currencyCode,
-          originalAmount: cheapestVariant
-            ? cheapestVariant.price.toString()
-            : product.price.toString()
+          originalAmount: getOriginalPrice().toString()
         }}
         src={getFullPath(product.thumbnail?.path)}
         fill
