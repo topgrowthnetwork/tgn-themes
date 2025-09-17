@@ -5,8 +5,7 @@ import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
 import { DEFAULT_OPTION } from 'lib/constants';
-import { Link } from 'lib/i18n/navigation';
-import { createUrl, getFullPath, getItemPrice } from 'lib/utils';
+import { getFullPath, getItemPrice } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Fragment, useEffect, useRef, useState } from 'react';
@@ -77,7 +76,7 @@ export default function CartModal({
           >
             <Dialog.Panel
               className={clsx(
-                'fixed bottom-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl md:w-[390px] dark:border-neutral-700 dark:bg-black/80 dark:text-white',
+                'fixed bottom-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl dark:border-neutral-700 dark:bg-black/80 dark:text-white md:w-[390px]',
                 isRTL ? 'left-0' : 'right-0'
               )}
             >
@@ -108,10 +107,10 @@ export default function CartModal({
                         }
                       });
 
-                      const merchandiseUrl = createUrl(
-                        `/product/${item.product.title}`,
-                        new URLSearchParams(merchandiseSearchParams)
-                      );
+                      // const merchandiseUrl = createUrl(
+                      //   `/product/${item.product.title}`,
+                      //   new URLSearchParams(merchandiseSearchParams)
+                      // );
 
                       // Get the correct price: variant price if available, otherwise product price
                       const itemPrice = getItemPrice(item.product, item.variant);
@@ -126,9 +125,9 @@ export default function CartModal({
                             <div className="absolute z-40 -mt-2 ms-[55px]">
                               <DeleteItemButton item={item} />
                             </div>
-                            <Link
-                              href={merchandiseUrl}
-                              onClick={closeCart}
+                            <div
+                              // href={merchandiseUrl}
+                              // onClick={closeCart}
                               className="z-30 flex flex-row gap-x-4"
                             >
                               <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-theme border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
@@ -151,7 +150,7 @@ export default function CartModal({
                                   </p>
                                 ) : null}
                               </div>
-                            </Link>
+                            </div>
                             <div className="flex h-16 flex-col justify-between">
                               <Price
                                 className="flex justify-end space-y-2 text-end text-sm"
