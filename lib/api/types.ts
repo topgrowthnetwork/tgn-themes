@@ -574,9 +574,10 @@ export interface CheckoutResponse {
 // Contact types
 export interface ContactRequest {
   name: string;
-  email: string;
+  email?: string;
   phone: string;
   message: string;
+  data?: { [key: string]: string };
 }
 
 export interface ContactResponse {

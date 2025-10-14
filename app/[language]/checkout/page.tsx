@@ -1,12 +1,26 @@
 import CheckoutPage from '@shared/pages/checkout';
 import { createApi } from 'lib/api';
-import { setRequestLocale } from 'next-intl/server';
+import { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cookies } from 'next/headers';
 
-export const metadata = {
-  title: 'Checkout',
-  description: 'Complete your purchase and place your order.'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ language: string }>;
+}): Promise<Metadata> {
+  const { language } = await params;
+
+  // Enable static rendering
+  setRequestLocale(language);
+
+  const t = await getTranslations({ locale: language, namespace: 'Metadata.checkout' });
+
+  return {
+    title: t('title'),
+    description: t('description')
+  };
+}
 
 export default async function Page({ params }: { params: Promise<{ language: string }> }) {
   const { language } = await params;

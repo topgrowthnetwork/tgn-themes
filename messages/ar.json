@@ -45,7 +45,8 @@
     "products": "المنتجات",
     "all": "الكل",
     "menu": "القائمة",
-    "recommendedProducts": "المنتجات الموصى بها"
+    "recommendedProducts": "المنتجات الموصى بها",
+    "repairRequest": "طلب إصلاح"
   },
   "Product": {
     "previousProductImage": "الصورة السابقة للمنتج",
@@ -100,6 +101,8 @@
     "sendReceipt": "إرسال الإيصال",
     "paymobCardGateway": "بوابة بايموب للبطاقات",
     "paymobWalletGateway": "بوابة بايموب للمحفظة",
+    "tabbyGateway": "بوابة تابي",
+    "tamaraGateway": "بوابة تمارا",
     "walletNumber": "رقم المحفظة",
     "receiptImage": "صورة الإيصال",
     "selectCountry": "اختر البلد",
@@ -108,7 +111,7 @@
   },
   "Contact": {
     "title": "اتصل بنا",
-    "description": "تواصل معنا. نود أن نسمع منك.",
+    "description": "يمكنك صيانته لدى مراكزنا المعتمدة من قبل أكبر العلامات التجارية، والإستفادة من خبرائنا في إصلاحه وصيانته وتوفير قطع الغيار الأصلية المضمونة.",
     "sendMessage": "إرسال رسالة",
     "contactInfo": "معلومات الاتصال",
     "name": "الاسم الكامل",
@@ -125,11 +128,59 @@
     "successMessage": "شكراً لك! تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.",
     "errorMessage": "عذراً، حدث خطأ في إرسال رسالتك. يرجى المحاولة مرة أخرى."
   },
+  "RepairRequest": {
+    "title": "طلب إصلاح",
+    "description": "قدم طلب إصلاح لجهازك. سنتواصل معك قريباً.",
+    "sendMessage": "تقديم طلب إصلاح",
+    "contactInfo": "معلومات الاتصال",
+    "name": "الاسم الكامل",
+    "email": "عنوان البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "state": "المنطقة",
+    "category": "فئة الإصلاح",
+    "product": "المنتج",
+    "message": "تفاصيل الإصلاح",
+    "followUs": "تابعنا",
+    "namePlaceholder": "أدخل اسمك الكامل",
+    "emailPlaceholder": "أدخل عنوان بريدك الإلكتروني",
+    "phonePlaceholder": "أدخل رقم هاتفك",
+    "optional": "اختياري",
+    "statePlaceholder": "اختر منطقتك",
+    "categoryPlaceholder": "اختر فئة الإصلاح",
+    "productPlaceholder": "اختر المنتج",
+    "messagePlaceholder": "اوصف المشكلة في جهازك...",
+    "sending": "جاري التقديم...",
+    "successMessage": "شكراً لك! تم تقديم طلب الإصلاح بنجاح. سنتواصل معك قريباً.",
+    "errorMessage": "عذراً، حدث خطأ في تقديم طلب الإصلاح. يرجى المحاولة مرة أخرى."
+  },
   "ThankYou": {
     "title": "شكراً لك!",
     "message": "تم تقديم طلبك بنجاح. سنرسل لك رسالة تأكيد بالبريد الإلكتروني مع تفاصيل طلبك قريباً.",
     "continueShopping": "مواصلة التسوق",
     "backToHome": "العودة إلى الصفحة الرئيسية",
     "additionalInfo": "ستتلقى رسالة تأكيد بالبريد الإلكتروني مع تفاصيل طلبك ومعلومات التتبع."
+  },
+  "Metadata": {
+    "search": {
+      "title": "بحث",
+      "description": "ابحث عن المنتجات في المتجر."
+    },
+    "products": {
+      "title": "المنتجات",
+      "description": "تصفح جميع المنتجات في المتجر."
+    },
+    "checkout": {
+      "title": "إتمام الطلب",
+      "description": "أكمل عملية الشراء وقم بتقديم طلبك."
+    },
+    "contact": {
+      "title": "اتصل بنا",
+      "description": "تواصل معنا. نود أن نسمع منك."
+    },
+    "repairRequest": {
+      "title": "طلب إصلاح",
+      "description": "قدم طلب إصلاح لجهازك. سنتواصل معك قريباً."
+    }
   }
 }

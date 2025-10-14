@@ -56,12 +56,21 @@ export default async function Navbar() {
             >
               {t('shopAll')}
             </Link>
-            <Link
-              href="/contact-us"
-              className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
-            >
-              {t('contactUs')}
-            </Link>
+            {process.env.NEXT_PUBLIC_REPAIR_REQUEST ? (
+              <Link
+                href="/repair-request"
+                className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
+              >
+                {t('repairRequest')}
+              </Link>
+            ) : (
+              <Link
+                href="/contact-us"
+                className="block p-2 text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm"
+              >
+                {t('contactUs')}
+              </Link>
+            )}
           </div>
         </div>
         <div className="hidden justify-center md:flex md:w-1/3">

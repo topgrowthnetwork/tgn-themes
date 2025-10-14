@@ -4,6 +4,7 @@ import LoadingDots from '@theme/components/loading-dots';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
 
 interface PaymentFormProps {
@@ -16,6 +17,7 @@ interface PaymentFormProps {
 interface PaymentGateway {
   key: string;
   label: string;
+  icon?: string;
 }
 
 export default function PaymentForm({
@@ -31,10 +33,24 @@ export default function PaymentForm({
   const getPaymentGateways = (): PaymentGateway[] => [
     { key: 'cash_on_delivery', label: t('cashOnDelivery') },
     { key: 'cash_on_site', label: t('cashOnSite') },
-    { key: 'fawaterk_gateway', label: t('fawaterkGateway') },
+    {
+      key: 'fawaterk_gateway',
+      label: t('fawaterkGateway'),
+      icon: '/images/gateways/fawaterk.jpeg'
+    },
     { key: 'send_receipt', label: t('sendReceipt') },
-    { key: 'paymob_card_gateway', label: t('paymobCardGateway') },
-    { key: 'paymob_wallet_gateway', label: t('paymobWalletGateway') }
+    {
+      key: 'paymob_card_gateway',
+      label: t('paymobCardGateway'),
+      icon: '/image/gateways/paymob.png'
+    },
+    {
+      key: 'paymob_wallet_gateway',
+      label: t('paymobWalletGateway'),
+      icon: '/image/gateways/paymob.png'
+    },
+    { key: 'tabby_gateway', label: t('tabbyGateway'), icon: '/image/gateways/tabby.png' },
+    { key: 'tamara_gateway', label: t('tamaraGateway'), icon: '/image/gateways/tamara.png' }
   ];
 
   const paymentGateways = getPaymentGateways().filter(
@@ -72,7 +88,20 @@ export default function PaymentForm({
             )}
             data-testid={`payment-form-radio-${gateway.key}`}
           />
-          <span className="text-sm font-medium dark:text-white">{gateway.label}</span>
+          <div className="flex items-center gap-x-2">
+            {gateway.icon && (
+              <div className="relative h-5 w-5 flex-shrink-0">
+                <Image
+                  src={gateway.icon}
+                  alt={gateway.label}
+                  fill
+                  className="object-contain"
+                  sizes="20px"
+                />
+              </div>
+            )}
+            <span className="text-sm font-medium dark:text-white">{gateway.label}</span>
+          </div>
         </label>
       ))}
     </div>

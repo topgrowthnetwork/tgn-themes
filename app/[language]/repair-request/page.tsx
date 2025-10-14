@@ -1,4 +1,4 @@
-import ContactPage from '@shared/pages/contact';
+import RepairRequestPage from '@shared/pages/repair-request';
 import { createApi } from 'lib/api';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -13,7 +13,7 @@ export async function generateMetadata({
   // Enable static rendering
   setRequestLocale(language);
 
-  const t = await getTranslations({ locale: language, namespace: 'Metadata.contact' });
+  const t = await getTranslations({ locale: language, namespace: 'Metadata.repairRequest' });
 
   return {
     title: t('title'),
@@ -27,13 +27,21 @@ export default async function Page({ params }: { params: Promise<{ language: str
   // Enable static rendering
   setRequestLocale(language);
 
-  // Fetch settings data
+  // Fetch settings and categories data
   const api = createApi({ language });
-  const settingsResult = await api.getGlobalSettings();
+  const [settingsResult, categoriesResult] = await Promise.all([
+    api.getGlobalSettings(),
+    api.getCategories()
+  ]);
 
-  if (settingsResult.isErr()) {
-    throw new Error('Failed to get settings');
+  if (settingsResult.isErr() || categoriesResult.isErr()) {
+    throw new Error('Failed to get settings or categories');
   }
 
-  return <ContactPage settings={settingsResult.value.data} />;
+  return (
+    <RepairRequestPage
+      settings={settingsResult.value.data}
+      categories={categoriesResult.value.data.categories}
+    />
+  );
 }

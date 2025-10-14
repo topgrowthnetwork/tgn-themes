@@ -45,7 +45,8 @@
     "products": "Products",
     "all": "All",
     "menu": "Menu",
-    "recommendedProducts": "Recommended Products"
+    "recommendedProducts": "Recommended Products",
+    "repairRequest": "Repair Request"
   },
   "Product": {
     "previousProductImage": "Previous product image",
@@ -100,6 +101,8 @@
     "sendReceipt": "Send Receipt",
     "paymobCardGateway": "Paymob Card Gateway",
     "paymobWalletGateway": "Paymob Wallet Gateway",
+    "tabbyGateway": "Tabby Gateway",
+    "tamaraGateway": "Tamara Gateway",
     "walletNumber": "Wallet Number",
     "receiptImage": "Receipt Image",
     "selectCountry": "Select a country",
@@ -125,11 +128,59 @@
     "successMessage": "Thank you! Your message has been sent successfully. We'll get back to you soon.",
     "errorMessage": "Sorry, there was an error sending your message. Please try again."
   },
+  "RepairRequest": {
+    "title": "Repair Request",
+    "description": "You can repair when needed it at our centers authorized by the largest brands, and benefit from expert repair service and original spare parts.",
+    "sendMessage": "Submit Repair Request",
+    "contactInfo": "Contact Information",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "address": "Address",
+    "state": "State",
+    "category": "Repair Category",
+    "product": "Product",
+    "message": "Repair Details",
+    "followUs": "Follow Us",
+    "namePlaceholder": "Enter your full name",
+    "emailPlaceholder": "Enter your email address",
+    "phonePlaceholder": "Enter your phone number",
+    "optional": "Optional",
+    "statePlaceholder": "Select your state",
+    "categoryPlaceholder": "Select repair category",
+    "productPlaceholder": "Select product",
+    "messagePlaceholder": "Describe the issue with your device...",
+    "sending": "Submitting...",
+    "successMessage": "Thank you! Your repair request has been submitted successfully. We'll get back to you soon.",
+    "errorMessage": "Sorry, there was an error submitting your repair request. Please try again."
+  },
   "ThankYou": {
     "title": "Thank You!",
     "message": "Your order has been placed successfully. We'll send you a confirmation email with your order details shortly.",
     "continueShopping": "Continue Shopping",
     "backToHome": "Back to Home",
     "additionalInfo": "You'll receive an email confirmation with your order details and tracking information."
+  },
+  "Metadata": {
+    "search": {
+      "title": "Search",
+      "description": "Search for products in the store."
+    },
+    "products": {
+      "title": "Products",
+      "description": "Browse all products in the store."
+    },
+    "checkout": {
+      "title": "Checkout",
+      "description": "Complete your purchase and place your order."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "Get in touch with us. We'd love to hear from you."
+    },
+    "repairRequest": {
+      "title": "Repair Request",
+      "description": "Submit a repair request for your device. We'll get back to you soon."
+    }
   }
 }

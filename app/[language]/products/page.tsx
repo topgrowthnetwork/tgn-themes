@@ -1,12 +1,26 @@
 import ProductsPage from '@theme/pages/products';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
-import { setRequestLocale } from 'next-intl/server';
+import { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Products',
-  description: 'Browse all products in the store.'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ language: string }>;
+}): Promise<Metadata> {
+  const { language } = await params;
+
+  // Enable static rendering
+  setRequestLocale(language);
+
+  const t = await getTranslations({ locale: language, namespace: 'Metadata.products' });
+
+  return {
+    title: t('title'),
+    description: t('description')
+  };
+}
 
 export default async function Page({
   searchParams,

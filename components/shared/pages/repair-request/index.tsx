@@ -1,15 +1,16 @@
 import { Container } from '@shared/components';
 import ContactInformation from '@shared/components/contact-information';
-import { GlobalSettings } from 'lib/api/types';
+import { Category, GlobalSettings } from 'lib/api/types';
 import { useTranslations } from 'next-intl';
-import ContactForm from '../../components/contact-form';
+import RepairRequestForm from '../../components/repair-request-form';
 
-interface ContactPageProps {
+interface RepairRequestPageProps {
   settings: GlobalSettings;
+  categories: Category[];
 }
 
-export default function ContactPage({ settings }: ContactPageProps) {
-  const t = useTranslations('Contact');
+export default function RepairRequestPage({ settings, categories }: RepairRequestPageProps) {
+  const t = useTranslations('RepairRequest');
 
   return (
     <Container>
@@ -22,7 +23,7 @@ export default function ContactPage({ settings }: ContactPageProps) {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Contact Form */}
         <div className="lg:col-span-1">
-          <ContactForm />
+          <RepairRequestForm categories={categories} />
         </div>
 
         {/* Contact Information */}
