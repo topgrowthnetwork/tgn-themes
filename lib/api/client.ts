@@ -350,26 +350,26 @@ export class ApiClient {
     const queryString = filteredParams
       ? '?' + new URLSearchParams(filteredParams as Record<string, string>).toString()
       : '';
-    return this.fetch<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
+    return this.fetchWithRetry<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
   }
 
   async post<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
     const body = data instanceof FormData ? data : JSON.stringify(data);
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'POST',
       body
     });
   }
 
   async put<T>(endpoint: string, data?: any): Promise<Result<ApiResponse<T>, ApiError>> {
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data)
     });
   }
 
   async delete<T>(endpoint: string): Promise<Result<ApiResponse<T>, ApiError>> {
-    return this.fetch<T>(endpoint, {
+    return this.fetchWithRetry<T>(endpoint, {
       method: 'DELETE'
     });
   }
