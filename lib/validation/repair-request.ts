@@ -3,7 +3,7 @@ import { z } from 'zod';
 // Check if email is optional
 const isEmailOptional = process.env.NEXT_PUBLIC_CONTACT_EMAIL_OPTIONAL === 'true';
 
-// Repair request form schema
+// Repair request form schema.
 export const repairRequestFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: isEmailOptional
