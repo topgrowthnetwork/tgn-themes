@@ -212,7 +212,7 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
             <label htmlFor="contact-email" className="form-label">
               {t('email')}
               {isEmailOptional && (
-                <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
+                <span className="ms-1 text-sm text-gray-500 dark:text-gray-400">
                   ({t('optional')})
                 </span>
               )}
