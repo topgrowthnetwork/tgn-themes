@@ -213,6 +213,23 @@ export function getSelectedVariant(
   return selectedVariant || product.variants[0];
 }
 
+/**
+ * Client-safe helper to get the selected variant from URLSearchParams
+ * Works with useSearchParams() in client components
+ */
+export function getSelectedVariantFromUrlParams(
+  product: Product,
+  urlParams: URLSearchParams | ReadonlyURLSearchParams
+): ProductVariant | null {
+  // Convert URLSearchParams to the format expected by getSelectedVariant
+  const searchParams: { [key: string]: string | string[] | undefined } = {};
+  urlParams.forEach((value, key) => {
+    searchParams[key] = value;
+  });
+
+  return getSelectedVariant(product, searchParams);
+}
+
 // Variant selection utilities
 export type VariantCombination = {
   id: string;
