@@ -14,7 +14,7 @@ import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
 import '../globals.css';
 
-export const revalidate = 1 * 60; // 1 minute
+export const revalidate = 60;
 
 export async function generateMetadata({
   params
