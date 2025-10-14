@@ -8,6 +8,7 @@ import { DEFAULT_OPTION } from 'lib/constants';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Price from '../price';
 import CloseCart from './close-cart';
@@ -28,24 +29,34 @@ export default function CartModal({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cartResponse?.total_items);
-  const openCart = () => setIsOpen(true);
+  const pathname = usePathname();
+  const openCart = () => {
+    if (!isCheckoutOrThankYouPage) {
+      setIsOpen(true);
+    }
+  };
   const closeCart = () => setIsOpen(false);
   const t = useTranslations('Cart');
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
+  // Check if we're on checkout or thank-you pages
+  const isCheckoutOrThankYouPage =
+    pathname.includes('/checkout') || pathname.includes('/thank-you');
+
   useEffect(() => {
     // Open cart modal when quantity changes.
     if (cartResponse?.total_items !== quantityRef.current) {
       // But only if it's not already open (quantity also changes when editing items in cart).
-      if (!isOpen) {
+      // And only if we're not on checkout or thank-you pages
+      if (!isOpen && !isCheckoutOrThankYouPage) {
         setIsOpen(true);
       }
 
       // Always update the quantity reference
       quantityRef.current = cartResponse?.total_items;
     }
-  }, [isOpen, cartResponse?.total_items, quantityRef]);
+  }, [isOpen, cartResponse?.total_items, quantityRef, isCheckoutOrThankYouPage]);
 
   return (
     <>

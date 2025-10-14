@@ -3,9 +3,11 @@
 import { createApi } from 'lib/api';
 import { ActionResponse, CheckoutRequest } from 'lib/api/types';
 import { TAGS } from 'lib/constants';
+import { redirect as redirectLocale } from 'lib/i18n/navigation';
 import { transformServerActionData, validateServerActionData } from 'lib/validation/checkout';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 interface CheckoutActionResponse extends ActionResponse {
   redirectUrl?: string;
@@ -14,10 +16,11 @@ interface CheckoutActionResponse extends ActionResponse {
 
 export async function processCheckout(
   prevState: any,
-  formData: FormData
+  formData: FormData,
+  locale: string = 'en'
 ): Promise<CheckoutActionResponse> {
   const guestToken = cookies().get('guest_token')?.value;
-  const api = createApi({ language: 'en', guestToken });
+  const api = createApi({ language: locale, guestToken });
 
   // Extract data from FormData
   const rawData = {
@@ -65,20 +68,22 @@ export async function processCheckout(
     case 'cash_on_site':
     case 'cash_on_delivery':
       // Redirect with language parameter since thank-you is under [language] route
-      return {
-        message: 'Redirecting to thank you page...',
-        internalRedirect: true,
-        success: true
-      };
-    case 'fawaterk_gateway':
-    case 'paymob_card_gateway':
-    case 'paymob_wallet_gateway':
+      redirectLocale({ href: '/thank-you', locale });
+    // return {
+    //   message: 'Redirecting to thank you page...',
+    //   internalRedirect: true,
+    //   success: true
+    // };
+    case 'fawaterk':
+    case 'paymob_card':
+    case 'paymob_wallet':
       // Return the external payment URL for client-side redirect
-      return {
-        message: 'Redirecting to payment gateway...',
-        redirectUrl: response,
-        success: true
-      };
+      redirect(response);
+    // return {
+    //   message: 'Redirecting to payment gateway...',
+    //   redirectUrl: response,
+    //   success: true
+    // };
     default:
       return {
         message: 'Unsupported payment method.',

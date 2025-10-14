@@ -4,21 +4,18 @@ import { Link } from 'lib/i18n/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import LogoSquare from '../logo-square';
+import FooterGateways from './footer-gateways';
 import FooterMenu from './footer-menu';
 import LanguageSwitcher from './language-switcher';
 
 export default async function Footer() {
   const locale = await getLocale();
   const api = createApi({ language: locale });
-  const [settingsResult, categoriesResult] = await Promise.all([
-    api.getGlobalSettings(),
-    api.getCategories()
-  ]);
-  if (settingsResult.isErr() || categoriesResult.isErr()) {
-    throw new Error('Failed to get settings or categories');
+  const settingsResult = await api.getGlobalSettings();
+  if (settingsResult.isErr()) {
+    throw new Error('Failed to get settings');
   }
   const settings = settingsResult.value.data;
-  const categories = categoriesResult.value.data.categories;
   const t = await getTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
@@ -47,13 +44,16 @@ export default async function Footer() {
             </div>
           }
         >
-          <FooterMenu menu={categories} />
+          <FooterMenu />
         </Suspense>
         <div className="md:ms-auto">
           <div className="flex flex-col items-end gap-3">
             <SocialMediaLinks settings={settings} />
           </div>
         </div>
+      </div>
+      <div className="mx-auto max-w-7xl px-4 pb-4">
+        <FooterGateways />
       </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-4 px-4 md:flex-row md:justify-between md:gap-0 md:px-4 min-[1320px]:px-0">

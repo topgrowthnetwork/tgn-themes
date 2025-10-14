@@ -473,9 +473,9 @@ export interface GlobalSettings {
 }
 
 export interface PaymentSettings {
-  fawaterk_gateway: string;
-  paymob_card_gateway: string;
-  paymob_wallet_gateway: string;
+  fawaterk: string;
+  paymob_card: string;
+  paymob_wallet: string;
   cash_on_delivery: string;
   cash_on_site: string;
   send_receipt: string;
@@ -532,10 +532,10 @@ export interface CheckoutRequest {
   payment_gateway:
     | 'cash_on_site'
     | 'cash_on_delivery'
-    | 'fawaterk_gateway'
+    | 'fawaterk'
     | 'send_receipt'
-    | 'paymob_card_gateway'
-    | 'paymob_wallet_gateway';
+    | 'paymob_card'
+    | 'paymob_wallet';
   coupon_code?: string;
   receipt_image?: string;
   wallet_number?: string;

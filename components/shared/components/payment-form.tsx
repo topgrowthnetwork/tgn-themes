@@ -3,6 +3,7 @@
 import LoadingDots from '@theme/components/loading-dots';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
+import { getAllPaymentGateways } from 'lib/payment-gateways';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
@@ -14,12 +15,6 @@ interface PaymentFormProps {
   onBack: () => void;
 }
 
-interface PaymentGateway {
-  key: string;
-  label: string;
-  icon?: string;
-}
-
 export default function PaymentForm({
   formData,
   onFormDataChange,
@@ -29,33 +24,16 @@ export default function PaymentForm({
   const t = useTranslations('Checkout');
   const { pending } = useFormStatus();
 
-  // Extract payment gateways configuration
-  const getPaymentGateways = (): PaymentGateway[] => [
-    { key: 'cash_on_delivery', label: t('cashOnDelivery') },
-    { key: 'cash_on_site', label: t('cashOnSite') },
-    {
-      key: 'fawaterk_gateway',
-      label: t('fawaterkGateway'),
-      icon: '/images/gateways/fawaterk.jpeg'
-    },
-    { key: 'send_receipt', label: t('sendReceipt') },
-    {
-      key: 'paymob_card_gateway',
-      label: t('paymobCardGateway'),
-      icon: '/image/gateways/paymob.png'
-    },
-    {
-      key: 'paymob_wallet_gateway',
-      label: t('paymobWalletGateway'),
-      icon: '/image/gateways/paymob.png'
-    },
-    { key: 'tabby_gateway', label: t('tabbyGateway'), icon: '/image/gateways/tabby.png' },
-    { key: 'tamara_gateway', label: t('tamaraGateway'), icon: '/image/gateways/tamara.png' }
-  ];
+  // Get payment gateways configuration from shared config
+  const gatewayConfigs = getAllPaymentGateways();
 
-  const paymentGateways = getPaymentGateways().filter(
-    (gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1'
-  );
+  const paymentGateways = gatewayConfigs
+    .filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1')
+    .map((gateway) => ({
+      key: gateway.key,
+      label: t(gateway.key as any),
+      icon: gateway.faviconPath
+    }));
 
   const handlePaymentGatewayChange = (gateway: string) => {
     onFormDataChange('payment_gateway', gateway);
@@ -108,7 +86,7 @@ export default function PaymentForm({
   );
 
   const renderWalletNumberField = () => {
-    if (formData.payment_gateway !== 'paymob_wallet_gateway') return null;
+    if (formData.payment_gateway !== 'paymob_wallet') return null;
 
     return (
       <div>

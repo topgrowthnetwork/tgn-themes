@@ -29,7 +29,8 @@
   },
   "Footer": {
     "allRightsReserved": "جميع الحقوق محفوظة.",
-    "githubRepository": "مستودع جيثب"
+    "githubRepository": "مستودع جيثب",
+    "supportedPaymentMethods": "طرق الدفع المدعومة"
   },
   "Search": {
     "placeholder": "البحث عن المنتجات...",
@@ -46,7 +47,7 @@
     "all": "الكل",
     "menu": "القائمة",
     "recommendedProducts": "المنتجات الموصى بها",
-    "repairRequest": "طلب إصلاح"
+    "repairRequest": "طلب صيانة"
   },
   "Product": {
     "previousProductImage": "الصورة السابقة للمنتج",
@@ -129,9 +130,9 @@
     "errorMessage": "عذراً، حدث خطأ في إرسال رسالتك. يرجى المحاولة مرة أخرى."
   },
   "RepairRequest": {
-    "title": "طلب إصلاح",
-    "description": "قدم طلب إصلاح لجهازك. سنتواصل معك قريباً.",
-    "sendMessage": "تقديم طلب إصلاح",
+    "title": "طلب صيانة",
+    "description": "قدم طلب صيانة لجهازك. سنتواصل معك قريباً.",
+    "sendMessage": "تقديم طلب صيانة",
     "contactInfo": "معلومات الاتصال",
     "name": "الاسم الكامل",
     "email": "عنوان البريد الإلكتروني",
@@ -179,8 +180,8 @@
       "description": "تواصل معنا. نود أن نسمع منك."
     },
     "repairRequest": {
-      "title": "طلب إصلاح",
-      "description": "قدم طلب إصلاح لجهازك. سنتواصل معك قريباً."
+      "title": "طلب صيانة",
+      "description": "قدم طلب صيانة لجهازك. سنتواصل معك قريباً."
     }
   }
 }

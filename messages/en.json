@@ -29,7 +29,8 @@
   },
   "Footer": {
     "allRightsReserved": "All rights reserved.",
-    "githubRepository": "Github Repository"
+    "githubRepository": "Github Repository",
+    "supportedPaymentMethods": "Supported Payment Methods"
   },
   "Search": {
     "placeholder": "Search for products...",

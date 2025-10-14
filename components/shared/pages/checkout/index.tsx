@@ -17,10 +17,9 @@ import {
 } from 'lib/api/types';
 import { useFormPersistence } from 'lib/hooks/use-form-persistence';
 import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
-import { useRouter } from 'lib/i18n/navigation';
 
-import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { useFormState } from 'react-dom';
 
 interface CheckoutPageProps {
@@ -56,15 +55,20 @@ export default function CheckoutPage({
   cities
 }: CheckoutPageProps) {
   const t = useTranslations('Checkout');
-  const router = useRouter();
+  const locale = useLocale();
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const { isLoaded } = useShippingStorage();
 
   const [formData, setFormData] = useState<Partial<CheckoutRequest>>(INITIAL_FORM_DATA);
-  const [state, formAction] = useFormState(processCheckout, {
-    message: '',
-    success: false
-  });
+  const [state, formAction] = useFormState(
+    async (prevState: any, formData: FormData) => {
+      return await processCheckout(prevState, formData, locale);
+    },
+    {
+      message: '',
+      success: false
+    }
+  );
 
   // Use form persistence hook
   const { saveStoredData } = useFormPersistence({
@@ -74,17 +78,17 @@ export default function CheckoutPage({
     isLoaded
   });
 
-  // Handle external payment gateway redirect
-  useEffect(() => {
-    if (state?.success) {
-      if (state.internalRedirect) {
-        router.push('/thank-you');
-      }
-      if (state.redirectUrl) {
-        window.location.href = state.redirectUrl;
-      }
-    }
-  }, [state, router]);
+  // // Handle external payment gateway redirect
+  // useEffect(() => {
+  //   if (state?.success) {
+  //     if (state.internalRedirect) {
+  //       router.push('/thank-you');
+  //     }
+  //     if (state.redirectUrl) {
+  //       window.location.href = state.redirectUrl;
+  //     }
+  //   }
+  // }, [state, router]);
 
   const updateFormData = (field: keyof CheckoutRequest, value: any) => {
     setFormData((prev) => ({
