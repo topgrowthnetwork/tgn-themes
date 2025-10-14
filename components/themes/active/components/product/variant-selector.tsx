@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { ProductAttributes, ProductVariant } from 'lib/api/types';
 import { createVariantCombinations, isOptionValueAvailable, VariantCombination } from 'lib/utils';
-import { useQueryState } from 'nuqs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function VariantSelector({
   options,
@@ -14,6 +14,10 @@ export function VariantSelector({
   variants: ProductVariant[];
   minStock?: number;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const hasNoOptionsOrJustOneOption =
     !Object.keys(options).length ||
     (Object.keys(options).length === 1 && Object.values(options)[0]?.length === 1);
@@ -26,13 +30,13 @@ export function VariantSelector({
 
   return Object.keys(options).map((option) => {
     const optionNameLowerCase = option.toLowerCase();
-    const [attributeValue, setAttributeValue] = useQueryState(optionNameLowerCase);
+    const attributeValue = searchParams.get(optionNameLowerCase) || '';
 
     // Get all currently selected attributes (except the current one)
     const selectedAttributes: Record<string, string> = {};
     Object.keys(options).forEach((attr) => {
       if (attr.toLowerCase() !== optionNameLowerCase) {
-        const [value] = useQueryState(attr.toLowerCase());
+        const value = searchParams.get(attr.toLowerCase());
         if (value) {
           selectedAttributes[attr.toLowerCase()] = value;
         }
@@ -61,7 +65,9 @@ export function VariantSelector({
                 disabled={!wouldBeAvailable}
                 onClick={() => {
                   if (wouldBeAvailable) {
-                    setAttributeValue(value.value, { shallow: false });
+                    const nextParams = new URLSearchParams(searchParams?.toString());
+                    nextParams.set(optionNameLowerCase, value.value);
+                    router.push(`${pathname}?${nextParams.toString()}`);
                   }
                 }}
                 title={`${option} ${value.value}${!wouldBeAvailable ? ' (Out of Stock)' : ''}`}

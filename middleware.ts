@@ -128,10 +128,10 @@ export async function middleware(request: NextRequest) {
   // }
 
   // Handle product page routing
-  const productRedirect = await handleProductPage(url);
-  if (productRedirect) {
-    return NextResponse.redirect(productRedirect);
-  }
+  // const productRedirect = await handleProductPage(url);
+  // if (productRedirect) {
+  //   return NextResponse.redirect(productRedirect);
+  // }
 
   // Handle locale routing with next-intl
   const response = intlMiddleware(request);

@@ -159,7 +159,7 @@ export function buildVariantQueryParams(variant: ProductVariant | null): string 
   const params = new URLSearchParams();
 
   // Add variant ID
-  params.set('variant', variant.id.toString());
+  // params.set('variant', variant.id.toString());
 
   // Add attribute values as query params
   variant.attribute_values.forEach((attrValue) => {
