@@ -1,3 +1,4 @@
+import Container from '@theme/components/container';
 import FontProvider from '@theme/components/font-provider';
 import Footer from '@theme/components/layout/footer';
 import Navbar from '@theme/components/layout/navbar';
@@ -23,7 +24,9 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
       <Navbar />
       {children}
       <Suspense>
-        <Footer />
+        <Container>
+          <Footer />
+        </Container>
       </Suspense>
     </FontProvider>
   );

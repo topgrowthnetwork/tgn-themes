@@ -24,7 +24,7 @@ export default function FooterGateways() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col items-center gap-3 md:flex-row">
       <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
         {t('supportedPaymentMethods')}
       </h3>
