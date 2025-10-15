@@ -52,7 +52,7 @@ export default async function Footer() {
           </div>
         </div>
       </div>
-      <div className="mx-auto max-w-7xl px-4 pb-4">
+      <div className="mx-auto max-w-7xl px-6 pb-4 md:px-4 min-[1320px]:px-0">
         <FooterGateways />
       </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
