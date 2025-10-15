@@ -22,7 +22,7 @@ export default function HomePage({ sliders, products, categories, settings }: Ho
       <Container>
         <ThreeItemGrid products={products} settings={settings} />
       </Container>
-      <Container className="!max-w-max !px-0">
+      <Container className="!max-w-none !px-0">
         <Suspense fallback={<ProductsCarouselSkeleton />}>
           <ProductsCarousel settings={settings} />
         </Suspense>
