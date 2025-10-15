@@ -31,7 +31,8 @@
   "Footer": {
     "allRightsReserved": "جميع الحقوق محفوظة.",
     "githubRepository": "مستودع جيثب",
-    "supportedPaymentMethods": "طرق الدفع المدعومة"
+    "supportedPaymentMethods": "طرق الدفع المدعومة",
+    "privacyPolicy": "سياسة الخصوصية"
   },
   "Search": {
     "placeholder": "البحث عن المنتجات...",
@@ -183,6 +184,10 @@
     "repairRequest": {
       "title": "طلب صيانة",
       "description": "قدم طلب صيانة لجهازك. سنتواصل معك قريباً."
+    },
+    "privacyPolicy": {
+      "title": "سياسة الخصوصية",
+      "description": "شروط البيع وسياسة الاسترجاع لعملائنا."
     }
   }
 }

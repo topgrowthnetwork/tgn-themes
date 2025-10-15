@@ -7,16 +7,19 @@ import { useEffect, useState } from 'react';
 const FooterMenuItem = ({
   href,
   children,
-  isActive
+  isActive,
+  onClick
 }: {
   href: string;
   children: React.ReactNode;
   isActive: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => {
   return (
     <li>
       <Link
         href={href}
+        onClick={onClick}
         className={`block p-2 text-sm font-medium underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block ${
           isActive ? 'text-black dark:text-neutral-300' : 'text-neutral-500'
         }`}
@@ -29,6 +32,7 @@ const FooterMenuItem = ({
 
 export default function FooterMenu() {
   const t = useTranslations('Navigation');
+  const tFooter = useTranslations('Footer');
   const pathname = usePathname();
   const [activePath, setActivePath] = useState(pathname);
 
@@ -49,6 +53,11 @@ export default function FooterMenu() {
         ) : (
           <FooterMenuItem href="/contact-us" isActive={activePath === '/contact-us'}>
             {t('contactUs')}
+          </FooterMenuItem>
+        )}
+        {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
+          <FooterMenuItem href="/privacy-policy" isActive={activePath === '/privacy-policy'}>
+            {tFooter('privacyPolicy')}
           </FooterMenuItem>
         )}
       </ul>

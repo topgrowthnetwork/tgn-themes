@@ -31,7 +31,8 @@
   "Footer": {
     "allRightsReserved": "All rights reserved.",
     "githubRepository": "Github Repository",
-    "supportedPaymentMethods": "Supported Payment Methods"
+    "supportedPaymentMethods": "Supported Payment Methods",
+    "privacyPolicy": "Privacy Policy"
   },
   "Search": {
     "placeholder": "Search for products...",
@@ -183,6 +184,10 @@
     "repairRequest": {
       "title": "Repair Request",
       "description": "Submit a repair request for your device. We'll get back to you soon."
+    },
+    "privacyPolicy": {
+      "title": "Privacy Policy",
+      "description": "Terms of sale and return policy for our customers."
     }
   }
 }
