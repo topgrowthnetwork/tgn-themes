@@ -6,17 +6,17 @@
  *
  * Environment Variable Usage:
  * - NEXT_PUBLIC_FOOTER_GATEWAYS: Comma-separated list of gateway keys to display in footer
- *   Example: "tabby,tamara"
+ *   Example: "tabby_gateway,tamara_gateway"
  *
  * Available gateway keys:
  * - cash_on_delivery
  * - cash_on_site
- * - fawaterk
+ * - fawaterk_gateway
  * - send_receipt
- * - paymob_card
- * - paymob_wallet
- * - tabby
- * - tamara
+ * - paymob_card_gateway
+ * - paymob_wallet_gateway
+ * - tabby_gateway
+ * - tamara_gateway
  */
 
 /**
@@ -43,8 +43,8 @@ export const PAYMENT_GATEWAYS: Record<string, PaymentGatewayConfig> = {
     key: 'cash_on_site',
     name: 'Cash on Site'
   },
-  fawaterk: {
-    key: 'fawaterk',
+  fawaterk_gateway: {
+    key: 'fawaterk_gateway',
     name: 'Fawaterak',
     faviconPath: '/image/gateways/favicons/fawaterak.jpeg',
     imagePath: '/image/gateways/favicons/fawaterak.jpeg'
@@ -53,26 +53,26 @@ export const PAYMENT_GATEWAYS: Record<string, PaymentGatewayConfig> = {
     key: 'send_receipt',
     name: 'Send Receipt'
   },
-  paymob_card: {
-    key: 'paymob_card',
+  paymob_card_gateway: {
+    key: 'paymob_card_gateway',
     name: 'Paymob Card',
     faviconPath: '/image/gateways/favicons/paymob.png',
     imagePath: '/image/gateways/favicons/paymob.png'
   },
-  paymob_wallet: {
-    key: 'paymob_wallet',
+  paymob_wallet_gateway: {
+    key: 'paymob_wallet_gateway',
     name: 'Paymob Wallet',
     faviconPath: '/image/gateways/favicons/paymob.png',
     imagePath: '/image/gateways/favicons/paymob.png'
   },
-  tabby: {
-    key: 'tabby',
+  tabby_gateway: {
+    key: 'tabby_gateway',
     name: 'Tabby',
     faviconPath: '/image/gateways/favicons/tabby.png',
     imagePath: '/image/gateways/favicons/tabby.png'
   },
-  tamara: {
-    key: 'tamara',
+  tamara_gateway: {
+    key: 'tamara_gateway',
     name: 'Tamara',
     faviconPath: '/image/gateways/favicons/tamara.png',
     imagePath: '/image/gateways/favicons/tamara.png'

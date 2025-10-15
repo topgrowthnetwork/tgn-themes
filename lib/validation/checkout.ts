@@ -4,10 +4,10 @@ import { z } from 'zod';
 const paymentGatewayEnum = z.enum([
   'cash_on_site',
   'cash_on_delivery',
-  'fawaterk',
+  'fawaterk_gateway',
   'send_receipt',
-  'paymob_card',
-  'paymob_wallet'
+  'paymob_card_gateway',
+  'paymob_wallet_gateway'
 ]);
 
 // Shipping address schema - matching CheckoutRequest.shipping_address

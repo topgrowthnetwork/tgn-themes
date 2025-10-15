@@ -137,7 +137,8 @@ export class ApiEndpoints {
   }
 
   async getPaymentSettings() {
-    return this.client.get<PaymentSettings>('/api/payment-settings');
+    const response = await this.client.get<PaymentSettings>('/api/payment-settings');
+    return response;
   }
 
   async getLanguageSettings() {

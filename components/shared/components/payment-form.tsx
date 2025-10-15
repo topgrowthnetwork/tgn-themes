@@ -86,7 +86,7 @@ export default function PaymentForm({
   );
 
   const renderWalletNumberField = () => {
-    if (formData.payment_gateway !== 'paymob_wallet') return null;
+    if (formData.payment_gateway !== 'paymob_wallet_gateway') return null;
 
     return (
       <div>

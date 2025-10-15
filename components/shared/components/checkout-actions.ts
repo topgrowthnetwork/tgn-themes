@@ -74,9 +74,9 @@ export async function processCheckout(
     //   internalRedirect: true,
     //   success: true
     // };
-    case 'fawaterk':
-    case 'paymob_card':
-    case 'paymob_wallet':
+    case 'fawaterk_gateway':
+    case 'paymob_card_gateway':
+    case 'paymob_wallet_gateway':
       // Return the external payment URL for client-side redirect
       redirect(response);
     // return {
