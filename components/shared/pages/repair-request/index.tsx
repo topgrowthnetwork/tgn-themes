@@ -17,7 +17,11 @@ export default function RepairRequestPage({ settings, categories }: RepairReques
       {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">{t('description')}</p>
+        {process.env.NEXT_PUBLIC_CLIENT === 'arkan' ? (
+          <p className="text-lg text-gray-600 dark:text-gray-300">{t('description_arkan')}</p>
+        ) : (
+          <p className="text-lg text-gray-600 dark:text-gray-300">{t('description')}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
