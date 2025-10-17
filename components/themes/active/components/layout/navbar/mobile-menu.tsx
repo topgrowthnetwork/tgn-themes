@@ -4,7 +4,12 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 
-import { Bars3Icon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import {
+  Bars3Icon,
+  EnvelopeIcon,
+  WrenchScrewdriverIcon,
+  XMarkIcon
+} from '@heroicons/react/24/outline';
 import { Category, GlobalSettings, Product } from 'lib/api/types';
 import { Link, usePathname } from 'lib/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -164,16 +169,27 @@ export default function MobileMenu({
                     </div>
                   )}
 
-                  {/* Contact Us */}
+                  {/* Contact Us / Repair Request */}
                   <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
-                    <Link
-                      href="/contact-us"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-3 rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
-                    >
-                      <EnvelopeIcon className="h-5 w-5" />
-                      {t('contactUs')}
-                    </Link>
+                    {process.env.NEXT_PUBLIC_REPAIR_REQUEST ? (
+                      <Link
+                        href="/repair-request"
+                        onClick={closeMobileMenu}
+                        className="flex items-center gap-3 rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                      >
+                        <WrenchScrewdriverIcon className="h-5 w-5" />
+                        {t('repairRequest')}
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/contact-us"
+                        onClick={closeMobileMenu}
+                        className="flex items-center gap-3 rounded-theme px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                      >
+                        <EnvelopeIcon className="h-5 w-5" />
+                        {t('contactUs')}
+                      </Link>
+                    )}
                   </div>
                 </div>
 
