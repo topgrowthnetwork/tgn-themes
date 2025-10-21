@@ -19,13 +19,13 @@ export function ProductsList({ products, settings, title }: ProductsListProps) {
   return (
     <div className="space-y-6">
       {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h3>}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {products.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
             currency={settings.site_global_currency}
-            className="aspect-[5/4] w-full"
+            className="aspect-[3/4] w-full sm:aspect-[5/4]"
           />
         ))}
       </div>

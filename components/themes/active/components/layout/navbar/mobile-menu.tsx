@@ -36,7 +36,14 @@ export default function MobileMenu({
   const isRTL = locale === 'ar';
 
   // Get top-level categories (no parent)
-  const topLevelCategories = menu.filter((cat) => cat.parent_id === null);
+  let filteredMenu = menu;
+
+  // Exclude category ID 44 if NEXT_PUBLIC_CLIENT=arkan
+  if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
+    filteredMenu = menu.filter((cat) => cat.id !== 44);
+  }
+
+  const topLevelCategories = filteredMenu.filter((cat) => cat.parent_id === null);
 
   useEffect(() => {
     const handleResize = () => {

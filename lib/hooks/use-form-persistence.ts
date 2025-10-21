@@ -5,13 +5,15 @@ interface FormPersistenceOptions<T> {
   formData: Partial<T>;
   reset: (data: T) => void;
   isLoaded: boolean;
+  validateData?: (data: Partial<T>) => Partial<T>;
 }
 
 export function useFormPersistence<T>({
   storageKey,
   formData,
   reset,
-  isLoaded
+  isLoaded,
+  validateData
 }: FormPersistenceOptions<T>) {
   // Load data from localStorage
   const loadStoredData = (): Partial<T> => {
@@ -52,8 +54,13 @@ export function useFormPersistence<T>({
   const prefillForm = () => {
     if (!isLoaded) return;
 
-    const storedData = loadStoredData();
+    let storedData = loadStoredData();
     if (Object.keys(storedData).length === 0) return;
+
+    // Validate/sanitize stored data if validator is provided
+    if (validateData) {
+      storedData = validateData(storedData);
+    }
 
     // Merge stored data with existing form data
     const mergedData = { ...formData, ...storedData };

@@ -17,6 +17,7 @@ import {
 } from 'lib/api/types';
 import { useFormPersistence } from 'lib/hooks/use-form-persistence';
 import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
+import { getAllPaymentGateways } from 'lib/payment-gateways';
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -43,7 +44,7 @@ const INITIAL_FORM_DATA: Partial<CheckoutRequest> = {
   name: '',
   email: '',
   phone: '',
-  payment_gateway: 'cash_on_delivery'
+  payment_gateway: ''
 };
 
 export default function CheckoutPage({
@@ -70,12 +71,28 @@ export default function CheckoutPage({
     }
   );
 
+  // Get available payment gateways
+  const availableGateways = getAllPaymentGateways()
+    .filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1')
+    .map((gateway) => gateway.key);
+
+  // Validate stored data to ensure payment_gateway is available
+  const validateStoredData = (data: Partial<CheckoutRequest>): Partial<CheckoutRequest> => {
+    // If payment_gateway exists in stored data but is not available, remove it
+    if (data.payment_gateway && !availableGateways.includes(data.payment_gateway)) {
+      const { payment_gateway, wallet_number, receipt_image, ...rest } = data;
+      return rest;
+    }
+    return data;
+  };
+
   // Use form persistence hook
   const { saveStoredData } = useFormPersistence({
     storageKey: STORAGE_KEY,
     formData,
     reset: setFormData,
-    isLoaded
+    isLoaded,
+    validateData: validateStoredData
   });
 
   // // Handle external payment gateway redirect

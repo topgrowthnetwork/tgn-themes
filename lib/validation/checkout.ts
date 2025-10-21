@@ -1,15 +1,5 @@
 import { z } from 'zod';
 
-// Payment gateway options - matching CheckoutRequest exactly
-const paymentGatewayEnum = z.enum([
-  'cash_on_site',
-  'cash_on_delivery',
-  'fawaterk_gateway',
-  'send_receipt',
-  'paymob_card_gateway',
-  'paymob_wallet_gateway'
-]);
-
 // Shipping address schema - matching CheckoutRequest.shipping_address
 export const shippingAddressSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -27,10 +17,18 @@ export const personalInfoSchema = z.object({
 
 // Payment information schema - matching CheckoutRequest exactly
 export const paymentInfoSchema = z.object({
-  payment_gateway: paymentGatewayEnum,
+  payment_gateway: z.string().min(1, 'Payment gateway is required'),
   coupon_code: z.string().optional(),
   receipt_image: z.string().optional(),
   wallet_number: z.string().optional()
+});
+
+// Shipping step schema - only validates shipping info (no payment fields)
+export const shippingStepSchema = z.object({
+  shipping_address: shippingAddressSchema,
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(6, 'Phone number must be at least 6 characters')
 });
 
 // Complete checkout form schema - matching CheckoutRequest exactly
@@ -39,7 +37,7 @@ export const checkoutFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(6, 'Phone number must be at least 6 characters'),
-  payment_gateway: paymentGatewayEnum,
+  payment_gateway: z.string().min(1, 'Payment gateway is required'),
   coupon_code: z.string().optional(),
   receipt_image: z.string().optional(),
   wallet_number: z.string().optional()
@@ -56,7 +54,7 @@ export const serverActionSchema = z.object({
   shipping_address_state: z.string().min(1, 'State is required'),
   shipping_address_city: z.string().min(1, 'City is required'),
   shipping_address_address: z.string().min(1, 'Address is required'),
-  payment_gateway: paymentGatewayEnum,
+  payment_gateway: z.string().min(1, 'Payment gateway is required'),
   coupon_code: z
     .string()
     .nullable()

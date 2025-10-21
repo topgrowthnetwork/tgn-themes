@@ -4,9 +4,13 @@ import LoadingDots from '@theme/components/loading-dots';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
 import { getAllPaymentGateways } from 'lib/payment-gateways';
+import { paymentInfoSchema } from 'lib/validation/checkout';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { z } from 'zod';
+import FieldError from './field-error';
 
 interface PaymentFormProps {
   formData: Partial<CheckoutRequest>;
@@ -23,6 +27,7 @@ export default function PaymentForm({
 }: PaymentFormProps) {
   const t = useTranslations('Checkout');
   const { pending } = useFormStatus();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Get payment gateways configuration from shared config
   const gatewayConfigs = getAllPaymentGateways();
@@ -34,6 +39,32 @@ export default function PaymentForm({
       label: t(gateway.key as any),
       icon: gateway.faviconPath
     }));
+
+  // Validation using Zod - validates payment step fields
+  const validateForm = (): boolean => {
+    try {
+      const dataToValidate = {
+        payment_gateway: formData.payment_gateway || '',
+        coupon_code: formData.coupon_code,
+        receipt_image: formData.receipt_image,
+        wallet_number: formData.wallet_number
+      };
+
+      paymentInfoSchema.parse(dataToValidate);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const field = err.path.join('.');
+          newErrors[field] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
 
   const handlePaymentGatewayChange = (gateway: string) => {
     onFormDataChange('payment_gateway', gateway);
@@ -48,41 +79,44 @@ export default function PaymentForm({
   };
 
   const renderPaymentGatewayOptions = () => (
-    <div className="space-y-3">
-      {paymentGateways.map((gateway) => (
-        <label
-          key={gateway.key}
-          className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
-        >
-          <input
-            type="radio"
-            name="payment_gateway"
-            value={gateway.key}
-            checked={formData.payment_gateway === gateway.key}
-            onChange={() => handlePaymentGatewayChange(gateway.key)}
-            className={clsx(
-              `paymentForm__radio ${gateway.key}`,
-              'h-4 w-4 text-primary-600 focus:ring-primary-500'
-            )}
-            data-testid={`payment-form-radio-${gateway.key}`}
-          />
-          <div className="flex items-center gap-x-2">
-            {gateway.icon && (
-              <div className="relative h-5 w-5 flex-shrink-0">
-                <Image
-                  src={gateway.icon}
-                  alt={gateway.label}
-                  fill
-                  className="object-contain"
-                  sizes="20px"
-                />
-              </div>
-            )}
-            <span className="text-sm font-medium dark:text-white">{gateway.label}</span>
-          </div>
-        </label>
-      ))}
-    </div>
+    <>
+      <div className="space-y-3">
+        {paymentGateways.map((gateway) => (
+          <label
+            key={gateway.key}
+            className="flex cursor-pointer items-center gap-x-3 rounded-theme border border-gray-200 p-4 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
+          >
+            <input
+              type="radio"
+              name="payment_gateway"
+              value={gateway.key}
+              checked={formData.payment_gateway === gateway.key}
+              onChange={() => handlePaymentGatewayChange(gateway.key)}
+              className={clsx(
+                `paymentForm__radio ${gateway.key}`,
+                'h-4 w-4 text-primary-600 focus:ring-primary-500'
+              )}
+              data-testid={`payment-form-radio-${gateway.key}`}
+            />
+            <div className="flex items-center gap-x-2">
+              {gateway.icon && (
+                <div className="relative h-5 w-5 flex-shrink-0">
+                  <Image
+                    src={gateway.icon}
+                    alt={gateway.label}
+                    fill
+                    className="object-contain"
+                    sizes="20px"
+                  />
+                </div>
+              )}
+              <span className="text-sm font-medium dark:text-white">{gateway.label}</span>
+            </div>
+          </label>
+        ))}
+      </div>
+      {errors.payment_gateway && <FieldError message={errors.payment_gateway} />}
+    </>
   );
 
   const renderWalletNumberField = () => {
@@ -130,6 +164,12 @@ export default function PaymentForm({
     );
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    if (!validateForm()) {
+      e.preventDefault();
+    }
+  };
+
   const renderActionButtons = () => (
     <div className="flex gap-x-4">
       <button type="button" onClick={onBack} className="button-secondary flex-1">
@@ -138,6 +178,7 @@ export default function PaymentForm({
       <button
         type="submit"
         disabled={pending}
+        onClick={handleSubmit}
         className="button flex flex-1 items-center justify-center gap-2"
         data-testid="payment-form-submit"
       >

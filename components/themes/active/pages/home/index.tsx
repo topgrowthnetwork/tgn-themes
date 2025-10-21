@@ -17,7 +17,7 @@ export default function HomePage({ sliders, products, categories, settings }: Ho
   return (
     <>
       <Container>
-        <SliderCarousel sliders={sliders} />
+        <SliderCarousel sliders={[...sliders, ...sliders]} />
       </Container>
       <Container>
         <ThreeItemGrid products={products} settings={settings} />

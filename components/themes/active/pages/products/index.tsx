@@ -35,11 +35,17 @@ export default function ProductsPage({
   const [category, setCategory] = useQueryState('category', { shallow: false });
   const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(null);
 
+  // Filter categories based on client
+  let filteredCategories = categories;
+  if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
+    filteredCategories = categories.filter((cat) => cat.id !== 44);
+  }
+
   // Get top-level categories (no parent)
-  const topLevelCategories = categories.filter((cat) => cat.parent_id === null);
+  const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);
 
   // Flatten all categories (including nested children) for easy searching
-  const allCategories = categories.reduce((acc: Category[], cat) => {
+  const allCategories = filteredCategories.reduce((acc: Category[], cat) => {
     acc.push(cat);
     if (cat.children) {
       acc.push(...cat.children);
@@ -198,7 +204,7 @@ export default function ProductsPage({
         </div>
 
         {products.length > 0 ? (
-          <Grid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Grid className="grid grid-cols-2 gap-4 lg:grid-cols-3">
             <ProductGridItems products={products} currency={settings.site_global_currency} />
           </Grid>
         ) : (

@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { CheckoutRequest, City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
-import { checkoutFormSchema } from 'lib/validation/checkout';
+import { shippingStepSchema } from 'lib/validation/checkout';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -43,10 +43,10 @@ export default function ShippingForm({
     selectedState: formData.shipping_address?.state || ''
   });
 
-  // Validation using Zod
+  // Validation using Zod - only validates shipping step fields
   const validateForm = (): boolean => {
     try {
-      // Prepare data for validation - matching CheckoutRequest structure exactly
+      // Prepare data for validation - only shipping step fields
       const dataToValidate = {
         name: formData.name || '',
         email: formData.email || '',
@@ -56,15 +56,11 @@ export default function ShippingForm({
           state: formData.shipping_address?.state || '',
           city: formData.shipping_address?.city || '',
           address: formData.shipping_address?.address || ''
-        },
-        payment_gateway: formData.payment_gateway || 'cash_on_delivery',
-        coupon_code: formData.coupon_code,
-        receipt_image: formData.receipt_image,
-        wallet_number: formData.wallet_number
+        }
       };
 
       // Validate with Zod
-      checkoutFormSchema.parse(dataToValidate);
+      shippingStepSchema.parse(dataToValidate);
       setErrors({});
       return true;
     } catch (error) {

@@ -134,7 +134,7 @@
   "RepairRequest": {
     "title": "Repair Request",
     "description": "You can repair when needed it at our centers authorized by the largest brands, and benefit from expert repair service and original spare parts.",
-    "description_arkan": "We provide you with reliable and fast maintenance service for all types of devices, including a full diagnostic check. (Service visit and inspection fee: 100 SAR only).",
+    "description_arkan": "We provide you with reliable and fast maintenance service for all types of devices, including a full diagnostic check. (Service visit and inspection fee: 50 SAR only).",
     "sendMessage": "Submit Repair Request",
     "contactInfo": "Contact Information",
     "name": "Full Name",

@@ -65,7 +65,14 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
 
   // Convert categories to dropdown options
   const categoryOptions = useMemo(() => {
-    return categories.map((category) => ({
+    let filteredCategories = categories;
+
+    // Exclude category ID 44 if NEXT_PUBLIC_CLIENT=arkan
+    if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
+      filteredCategories = categories.filter((category) => category.id !== 44);
+    }
+
+    return filteredCategories.map((category) => ({
       id: category.id,
       name: category.name
     }));

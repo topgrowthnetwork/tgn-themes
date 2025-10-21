@@ -535,7 +535,8 @@ export interface CheckoutRequest {
     | 'fawaterk_gateway'
     | 'send_receipt'
     | 'paymob_card_gateway'
-    | 'paymob_wallet_gateway';
+    | 'paymob_wallet_gateway'
+    | '';
   coupon_code?: string;
   receipt_image?: string;
   wallet_number?: string;

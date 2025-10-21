@@ -2,7 +2,7 @@ import Grid from '@theme/components/grid';
 
 export default function SearchLoading() {
   return (
-    <Grid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Grid className="grid grid-cols-2 gap-4 lg:grid-cols-3">
       {Array(12)
         .fill(0)
         .map((_, index) => {

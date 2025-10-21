@@ -1,13 +1,14 @@
 'use client';
 
 import clsx from 'clsx';
+import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Slider } from 'lib/api/types';
 import { getFullPath } from 'lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface SliderCarouselProps {
   sliders: Slider[];
@@ -114,7 +115,19 @@ function CarouselDots({ scrollSnaps, selectedIndex, onDotClick }: CarouselDotsPr
 
 // Main Slider Carousel Component
 export function SliderCarousel({ sliders }: SliderCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  // Configure autoplay if environment variable is set
+  const autoplayInterval = process.env.NEXT_PUBLIC_CAROUSEL_AUTOPLAY_INTERVAL_SECONDS
+    ? parseInt(process.env.NEXT_PUBLIC_CAROUSEL_AUTOPLAY_INTERVAL_SECONDS) * 1000
+    : null;
+
+  const autoplay = useRef(
+    autoplayInterval ? Autoplay({ delay: autoplayInterval, stopOnInteraction: false }) : null
+  );
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    autoplayInterval ? [autoplay.current!] : []
+  );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
