@@ -49,7 +49,7 @@ export async function processCheckout(
   }
 
   // Transform validated data to CheckoutRequest format
-  const checkoutData: CheckoutRequest = transformServerActionData(validationResult.data);
+  const checkoutData = transformServerActionData(validationResult.data) as CheckoutRequest;
 
   const result = await api.checkout(checkoutData);
 
