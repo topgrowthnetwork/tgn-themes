@@ -39,9 +39,9 @@ export default function MobileMenu({
   let filteredMenu = menu;
 
   // Exclude category ID 44 if NEXT_PUBLIC_CLIENT=arkan
-  if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-    filteredMenu = menu.filter((cat) => cat.id !== 44);
-  }
+  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
+  //   filteredMenu = menu.filter((cat) => cat.id !== 44);
+  // }
 
   const topLevelCategories = filteredMenu.filter((cat) => cat.parent_id === null);
 
