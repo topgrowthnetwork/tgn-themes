@@ -1,8 +1,10 @@
 'use client';
 
+import { RadioGroup, RadioGroupItem } from '@theme/components/ui/radio-group';
 import clsx from 'clsx';
 import { ProductAttributes, ProductVariant } from 'lib/api/types';
 import { createVariantCombinations, isOptionValueAvailable, VariantCombination } from 'lib/utils';
+import { useLocale } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function VariantSelector({
@@ -17,6 +19,8 @@ export function VariantSelector({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   const hasNoOptionsOrJustOneOption =
     !Object.keys(options).length ||
@@ -44,12 +48,19 @@ export function VariantSelector({
     });
 
     return (
-      <dl className="mb-8" key={option}>
-        <dt className="mb-4 text-sm uppercase tracking-wide">{option}</dt>
-        <dd className="flex flex-wrap gap-3">
+      <div className="mb-8" key={option}>
+        <p className="mb-4 text-sm font-medium uppercase tracking-wide">{option}</p>
+        <RadioGroup
+          value={attributeValue}
+          onValueChange={(newValue) => {
+            const nextParams = new URLSearchParams(searchParams?.toString());
+            nextParams.set(optionNameLowerCase, newValue);
+            router.push(`${pathname}?${nextParams.toString()}`);
+          }}
+          className="flex flex-wrap gap-4"
+          dir={isRTL ? 'rtl' : 'ltr'}
+        >
           {options[option]?.map((value) => {
-            const isActive = attributeValue === value.value;
-
             // Check if this option value would result in an available variant
             const wouldBeAvailable = isOptionValueAvailable(
               option,
@@ -59,35 +70,33 @@ export function VariantSelector({
             );
 
             return (
-              <button
-                key={value.value}
-                aria-disabled={!wouldBeAvailable}
-                disabled={!wouldBeAvailable}
-                onClick={() => {
-                  if (wouldBeAvailable) {
-                    const nextParams = new URLSearchParams(searchParams?.toString());
-                    nextParams.set(optionNameLowerCase, value.value);
-                    router.push(`${pathname}?${nextParams.toString()}`);
-                  }
-                }}
-                title={`${option} ${value.value}${!wouldBeAvailable ? ' (Out of Stock)' : ''}`}
-                className={clsx(
-                  'relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border text-xs transition duration-300 ease-in-out hover:scale-110',
-                  {
-                    'cursor-default ring-2 ring-primary-600': isActive,
-                    'ring-1 ring-transparent transition duration-300 ease-in-out hover:scale-110 hover:ring-primary-600':
-                      !isActive && wouldBeAvailable,
-                    'relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform hover:!scale-100 dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700':
-                      !wouldBeAvailable
-                  }
-                )}
-              >
-                {value.value}
-              </button>
+              <div key={value.value} className="flex items-center gap-x-2">
+                <RadioGroupItem
+                  value={value.value}
+                  id={`${optionNameLowerCase}-${value.value}`}
+                  disabled={!wouldBeAvailable}
+                  className={clsx({
+                    'opacity-50': !wouldBeAvailable
+                  })}
+                />
+                <label
+                  htmlFor={`${optionNameLowerCase}-${value.value}`}
+                  className={clsx(
+                    'cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+                    {
+                      'cursor-not-allowed opacity-50': !wouldBeAvailable,
+                      'line-through': !wouldBeAvailable
+                    }
+                  )}
+                >
+                  {value.value}
+                  {!wouldBeAvailable && ' (Out of Stock)'}
+                </label>
+              </div>
             );
           })}
-        </dd>
-      </dl>
+        </RadioGroup>
+      </div>
     );
   });
 }

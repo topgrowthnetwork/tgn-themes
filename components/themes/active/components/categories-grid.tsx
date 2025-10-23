@@ -61,7 +61,7 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
   // Filter categories based on client
   let filteredCategories = categories;
   if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-    filteredCategories = categories.filter((cat) => cat.id !== );
+    filteredCategories = categories.filter((cat) => cat.id !== 44);
   }
 
   // Get top-level categories (no parent)
