@@ -124,8 +124,11 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
     autoplayInterval ? Autoplay({ delay: autoplayInterval, stopOnInteraction: false }) : null
   );
 
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true },
+    { loop: true, direction: isRTL ? 'rtl' : 'ltr' },
     autoplayInterval ? [autoplay.current!] : []
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -163,7 +166,7 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full" dir="rtl">
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex">
           {sliders.map((slider) => (
