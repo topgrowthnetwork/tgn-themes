@@ -75,7 +75,7 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
                 <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
                   {item.product.title}
                 </p>
-                {item.variant.attribute_values.length > 0 ? (
+                {item.variant && item.variant.attribute_values.length > 0 ? (
                   <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                     {item.variant.attribute_values.map(({ value }) => value).join(', ')}
                   </p>

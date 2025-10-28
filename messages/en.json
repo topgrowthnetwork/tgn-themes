@@ -11,6 +11,7 @@
     "taxInclusive": "Tax inclusive",
     "shipping": "Shipping",
     "calculatedAtCheckout": "Calculated at checkout",
+    "freeShipping": "Free shipping",
     "total": "Total",
     "proceedToCheckout": "Proceed to Checkout",
     "openCart": "Open cart",
@@ -65,7 +66,8 @@
     "noProducts": "No products found"
   },
   "Category": {
-    "noProducts": "No products found in this category."
+    "noProducts": "No products found in this category.",
+    "categories": "Categories"
   },
   "Common": {
     "categories": "Categories",

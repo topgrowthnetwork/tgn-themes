@@ -111,12 +111,14 @@ export default function CartModal({
                       const merchandiseSearchParams = {} as MerchandiseSearchParams;
                       let subTitleWithSelectedOptions = '';
 
-                      item.variant.attribute_values.forEach(({ attribute, value }) => {
-                        subTitleWithSelectedOptions += `${attribute.name}: ${value} `;
-                        if (value !== DEFAULT_OPTION) {
-                          merchandiseSearchParams[attribute.name.toLowerCase()] = value;
-                        }
-                      });
+                      if (item.variant) {
+                        item.variant.attribute_values.forEach(({ attribute, value }) => {
+                          subTitleWithSelectedOptions += `${attribute.name}: ${value} `;
+                          if (value !== DEFAULT_OPTION) {
+                            merchandiseSearchParams[attribute.name.toLowerCase()] = value;
+                          }
+                        });
+                      }
 
                       // const merchandiseUrl = createUrl(
                       //   `/product/${item.product.title}`,
@@ -153,7 +155,7 @@ export default function CartModal({
 
                               <div className="flex flex-1 flex-col text-base">
                                 <span className="leading-tight">{item.product.title}</span>
-                                {item.variant.attribute_values.length > 0 ? (
+                                {item.variant && item.variant.attribute_values.length > 0 ? (
                                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
                                     {item.variant.attribute_values
                                       .map(({ value }) => value)
@@ -196,7 +198,13 @@ export default function CartModal({
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>{t('shipping')}</p>
-                      <p className="text-end">{t('calculatedAtCheckout')}</p>
+                      {
+                        <p className="text-end">
+                          {process.env.NEXT_PUBLIC_FREE_SHIPPING == 'true'
+                            ? t('freeShipping')
+                            : t('calculatedAtCheckout')}
+                        </p>
+                      }
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>{t('total')}</p>

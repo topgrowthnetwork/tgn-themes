@@ -23,7 +23,7 @@ const fetcher = async (params: { categoryId: number; page: number; locale: strin
   const result = await api.getProducts({
     category_id: params.categoryId.toString(),
     order_by: 'selling_count',
-    per_page: '6',
+    per_page: '12',
     page: params.page.toString()
   });
 
@@ -225,8 +225,8 @@ function CategoryProductsSkeleton() {
   return (
     <div className="space-y-6">
       <div className="h-6 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        {[...Array(8)].map((_, i) => (
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
             className="aspect-[5/4] w-full animate-pulse rounded-theme bg-gray-200 dark:bg-gray-700"

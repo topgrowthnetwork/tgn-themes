@@ -11,6 +11,7 @@
     "taxInclusive": "شامل الضريبة",
     "shipping": "الشحن",
     "calculatedAtCheckout": "يتم حسابه عند الدفع",
+    "freeShipping": "الشحن مجاني",
     "total": "المجموع",
     "proceedToCheckout": "المتابعة إلى الدفع",
     "openCart": "فتح السلة",
@@ -65,7 +66,8 @@
     "noProducts": "لم يتم العثور على منتجات"
   },
   "Category": {
-    "noProducts": "لم يتم العثور على منتجات في هذه الفئة."
+    "noProducts": "لم يتم العثور على منتجات في هذه الفئة.",
+    "categories": "الفئات"
   },
   "Common": {
     "categories": "الفئات",

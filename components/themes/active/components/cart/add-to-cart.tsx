@@ -4,7 +4,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { addItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
-import { ProductVariant } from 'lib/api/types';
+import { Product, ProductVariant } from 'lib/api/types';
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useFormState, useFormStatus } from 'react-dom';
@@ -34,20 +34,20 @@ function SubmitButton({
     );
   }
 
-  if (!selectedVariantId) {
-    return (
-      <button
-        aria-label={t('pleaseSelectOption')}
-        aria-disabled
-        className={clsx(buttonClasses, disabledClasses)}
-      >
-        <div className="absolute left-0 ms-4 rtl:right-0">
-          <PlusIcon className="h-5" />
-        </div>
-        {t('addToCart')}
-      </button>
-    );
-  }
+  // if (!selectedVariantId) {
+  //   return (
+  //     <button
+  //       aria-label={t('pleaseSelectOption')}
+  //       aria-disabled
+  //       className={clsx(buttonClasses, disabledClasses)}
+  //     >
+  //       <div className="absolute left-0 ms-4 rtl:right-0">
+  //         <PlusIcon className="h-5" />
+  //       </div>
+  //       {t('addToCart')}
+  //     </button>
+  //   );
+  // }
 
   return (
     <button
@@ -76,8 +76,10 @@ function SubmitButton({
 
 export function AddToCart({
   selectedVariant,
-  availableForSale
+  availableForSale,
+  product
 }: {
+  product: Product;
   selectedVariant: ProductVariant | null;
   availableForSale: boolean;
 }) {
@@ -86,13 +88,12 @@ export function AddToCart({
     success: false
   });
   const selectedVariantId = selectedVariant?.id;
-  const selectedProductId = selectedVariant?.product_id;
 
   // Check if the selected variant is out of stock
   const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
 
   const actionWithVariant = formAction.bind(null, {
-    selectedProductId: selectedProductId || NaN,
+    selectedProductId: product.id,
     selectedVariantId: selectedVariantId || NaN
   });
 

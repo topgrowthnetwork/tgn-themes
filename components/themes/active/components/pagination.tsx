@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocale } from 'next-intl';
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +10,9 @@ interface PaginationProps {
 
 export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   if (totalPages <= 1) return null;
+
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   // Generate page numbers to display
   const getPageNumbers = () => {
@@ -69,7 +73,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         )}
         aria-label="Previous page"
       >
-        <ChevronLeft className="h-4 w-4" />
+        {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>
 
       {/* Page Numbers */}
@@ -111,7 +115,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         )}
         aria-label="Next page"
       >
-        <ChevronRight className="h-4 w-4" />
+        {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
       </button>
     </div>
   );

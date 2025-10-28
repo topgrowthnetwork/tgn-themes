@@ -312,6 +312,7 @@ export class ApiClient {
         const apiError = await parseErrorResponse(response);
 
         console.error('API Error Response:', {
+          body: options.body,
           status: response.status,
           statusText: response.statusText,
           error: apiError

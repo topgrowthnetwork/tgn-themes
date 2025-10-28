@@ -148,7 +148,7 @@ export interface CartItemDetail {
     thumbnail: ProductImage | null;
     translations: ProductTranslation[];
   };
-  variant: {
+  variant?: {
     id: number;
     product_id: number;
     sku: string;
@@ -278,6 +278,7 @@ export interface Category {
   products_count: string;
   name: string;
   parent: Category | null;
+  thumbnail: ProductImage | null;
   children: Category[];
   all_children: Category[];
   translations: CategoryTranslation[];

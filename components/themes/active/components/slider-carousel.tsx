@@ -131,6 +131,14 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
     { loop: true, direction: isRTL ? 'rtl' : 'ltr' },
     autoplayInterval ? [autoplay.current!] : []
   );
+
+  useEffect(
+    function handleRtlChange() {
+      emblaApi?.reInit({ loop: true, direction: isRTL ? 'rtl' : 'ltr' });
+    },
+    [isRTL]
+  );
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
@@ -166,7 +174,7 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
   }
 
   return (
-    <div className="w-full" dir="rtl">
+    <div className="w-full">
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex">
           {sliders.map((slider) => (

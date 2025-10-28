@@ -47,7 +47,7 @@ export default async function Page({
   const productParams = getProductParams(sort, undefined, categoryId);
 
   const [productsResult, settingsResult, categoryResult] = await Promise.all([
-    api.getProducts({ ...productParams, page, per_page: '12' }),
+    api.getProducts({ ...productParams, page, per_page: '16' }),
     api.getGlobalSettings(),
     api.getCategories({ category_id: categoryId })
   ]);

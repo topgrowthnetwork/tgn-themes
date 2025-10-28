@@ -15,7 +15,7 @@ export function ProductsGridSkeleton({
   return (
     <div className={`space-y-6 ${className}`}>
       {showTitle && <div className="h-6 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}

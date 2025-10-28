@@ -63,7 +63,11 @@ export function ProductDescription({
         </ExpandableContent>
       ) : null}
 
-      <AddToCart selectedVariant={selectedVariant} availableForSale={availableForSale} />
+      <AddToCart
+        product={product}
+        selectedVariant={selectedVariant}
+        availableForSale={availableForSale}
+      />
     </>
   );
 }
