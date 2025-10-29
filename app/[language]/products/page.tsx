@@ -38,7 +38,7 @@ export default async function Page({
 
   const api = createApi({ language });
   const [productsResult, categoriesResult, settingsResult] = await Promise.all([
-    api.getProducts({ ...productParams, page, per_page: '12' }),
+    api.getProducts({ ...productParams, page, per_page: '20' }),
     api.getCategories(),
     api.getGlobalSettings()
   ]);

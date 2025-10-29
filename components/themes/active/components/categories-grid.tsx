@@ -23,7 +23,7 @@ const fetcher = async (params: { categoryId: number; page: number; locale: strin
   const result = await api.getProducts({
     category_id: params.categoryId.toString(),
     order_by: 'selling_count',
-    per_page: '12',
+    per_page: '18',
     page: params.page.toString()
   });
 
@@ -60,9 +60,9 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
 
   // Filter categories based on client
   let filteredCategories = categories;
-  if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-    filteredCategories = categories.filter((cat) => cat.id !== 44);
-  }
+  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
+  //   filteredCategories = categories.filter((cat) => cat.id !== 44);
+  // }
 
   // Get top-level categories (no parent)
   const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);

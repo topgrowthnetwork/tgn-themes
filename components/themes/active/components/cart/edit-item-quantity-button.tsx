@@ -72,10 +72,12 @@ export function EditItemQuantityButton({
     success: false
   });
 
+  console.log('✨', {item})
+
   const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
   const canIncrease = (function canIncrease() {
-    const availableStock = item.variant?.stock;
+    const availableStock = item.variant ? item.variant.stock: item.product.;
 
     return availableStock > quantity + minStock;
   })();
