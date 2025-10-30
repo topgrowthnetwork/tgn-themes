@@ -12,7 +12,7 @@ export const repairRequestFormSchema = z.object({
   phone: z.string().min(6, 'Phone number must be at least 6 characters'),
   state: z.string().min(1, 'State is required'),
   category: z.string().min(1, 'Category is required'),
-  product: z.string().optional(),
+  // product: z.string().optional(),
   message: z.string().min(10, 'Message must be at least 10 characters')
 });
 
@@ -25,7 +25,7 @@ export const repairRequestServerActionSchema = z.object({
   phone: z.string().min(6, 'Phone number must be at least 6 characters'),
   state: z.string().min(1, 'State is required'),
   category: z.string().min(1, 'Category is required'),
-  product: z.string().optional(),
+  // product: z.string().optional(),
   message: z.string().min(10, 'Message must be at least 10 characters')
 });
 

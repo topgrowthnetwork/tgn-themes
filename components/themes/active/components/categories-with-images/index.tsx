@@ -3,7 +3,6 @@ import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
 import { filter } from 'lodash';
 import { getLocale, getTranslations } from 'next-intl/server';
-import JsonViewer from '../json-viewer';
 import { SectionTitle } from '../section-title';
 import { TileNoPrice } from '../tile-no-price';
 
@@ -23,7 +22,7 @@ async function CategoriesWithImages({}: Props) {
 
   return (
     <div className="space-y-8">
-      <JsonViewer data={categoriesWithImages} />
+      {/* <JsonViewer data={categoriesWithImages} /> */}
 
       <SectionTitle title={t('categories')} />
 

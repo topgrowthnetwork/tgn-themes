@@ -1,7 +1,10 @@
 import SocialMediaLinks from '@shared/components/social-media-links';
 import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
+import { getFullPath } from 'lib/utils';
+import { filter } from 'lodash';
 import { getLocale, getTranslations } from 'next-intl/server';
+import Image from 'next/image';
 import LogoSquare from '../logo-square';
 import FooterGateways from './footer-gateways';
 import FooterMenu from './footer-menu';
@@ -10,11 +13,15 @@ import LanguageSwitcher from './language-switcher';
 export default async function Footer() {
   const locale = await getLocale();
   const api = createApi({ language: locale });
-  const settingsResult = await api.getGlobalSettings();
-  if (settingsResult.isErr()) {
-    throw new Error('Failed to get settings');
+  const [settingsResult, partnersResult] = await Promise.all([
+    api.getGlobalSettings(),
+    api.getPartners()
+  ]);
+  if (settingsResult.isErr() || partnersResult.isErr()) {
+    return null;
   }
   const settings = settingsResult.value.data;
+  const partners = filter(partnersResult.value.data.partners, 'logo');
   const t = await getTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
@@ -40,9 +47,38 @@ export default async function Footer() {
           </div>
         </div>
       </div>
-      <div className="mx-auto pb-4 ">
+
+      <div className="flex flex-col gap-4 pb-4 xl:flex-row xl:gap-10">
         <FooterGateways />
+
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold">{t('outPartners')}</h3>
+          <div className="flex flex-wrap items-center gap-3">
+            {partners.map((partner) => (
+              <div
+                key={partner.id}
+                className="flex items-center gap-2 rounded-theme border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"
+              >
+                {partner.logo && (
+                  <div className="relative h-6 w-20 flex-shrink-0">
+                    <Image
+                      src={getFullPath(partner.logo.path)}
+                      alt={''}
+                      fill
+                      className="object-contain"
+                      sizes="20rem"
+                    />
+                  </div>
+                )}
+                {/* <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                  {partner.name}
+                </span> */}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
         <div className="mx-auto flex w-full flex-col items-center gap-4 md:flex-row md:justify-between md:gap-0 ">
           <p>

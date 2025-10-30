@@ -24,7 +24,7 @@ export async function submitRepairRequest(
       phone: formData.get('phone') as string,
       state: formData.get('state') as string,
       category: formData.get('category') as string,
-      product: formData.get('product') as string,
+      // product: formData.get('product') as string,
       message: formData.get('message') as string
     };
 
@@ -37,25 +37,16 @@ export async function submitRepairRequest(
       };
     }
 
-    // Prepare contact message with state, category, and product
-    const messageWithDetails = `
-State: ${dataToValidate.state}
-${dataToValidate.category ? `Category: ${dataToValidate.category}` : ''}
-${dataToValidate.product ? `Product: ${dataToValidate.product}` : ''}
-
-${dataToValidate.message}
-    `.trim();
-
     // Submit contact form using the API
     const result = await api.submitContact({
       name: validationResult.data.name,
       email: validationResult.data.email,
       phone: validationResult.data.phone,
-      message: messageWithDetails,
+      message: dataToValidate.message,
       data: {
         city: validationResult.data.state,
-        category: validationResult.data.category,
-        product: validationResult.data.product || ''
+        category: validationResult.data.category
+        // product: validationResult.data.product || ''
       }
     });
 

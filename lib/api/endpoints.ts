@@ -19,6 +19,7 @@ import {
   GuestTokenResponse,
   LanguageSettings,
   LoginRequest,
+  PartnersResponse,
   PaymentSettings,
   ProductListParams,
   ProductResponse,
@@ -152,5 +153,10 @@ export class ApiEndpoints {
   // Contact
   async submitContact(data: ContactRequest) {
     return this.client.post<ContactResponse>('/api/contacts', data);
+  }
+
+  // Partners
+  async getPartners() {
+    return this.client.get<PartnersResponse>('/api/partners');
   }
 }

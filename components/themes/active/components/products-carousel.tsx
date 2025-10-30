@@ -42,7 +42,7 @@ export async function ProductsCarousel({ settings }: { settings: GlobalSettings 
   });
   // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
 
-  if (productsResult.isErr()) {
+  if (productsResult.isErr() || productsResult.value.data.products.data.length == 0) {
     return null;
   }
 

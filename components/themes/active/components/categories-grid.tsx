@@ -148,9 +148,6 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
               )}
             >
               {category.name}
-              {category.children?.length > 0 && (
-                <span className="ms-2 text-xs opacity-75">({category.children.length})</span>
-              )}
             </button>
           ))}
         </div>

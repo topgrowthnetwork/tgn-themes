@@ -231,9 +231,11 @@ button {
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-50 dark:focus-visible:ring-primary-600 dark:focus-visible:ring-offset-primary-900;
 }
 
-
-
 @layer base {
+  :root {
+    /* Override the primary color in light mode */
+    --primary: var(--theme-color-600);
+  }
   * {
     @apply border-border;
   }

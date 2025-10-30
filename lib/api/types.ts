@@ -233,6 +233,22 @@ export interface CategoryListParams {
   [key: string]: string | undefined;
 }
 
+// Partners
+export interface PartnersResponse {
+  partners: Partner[];
+}
+
+export interface Partner {
+  id: number;
+  name: string;
+  logo_id: number;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  logo: ProductImage;
+}
+
 // Product types
 export interface ProductImage {
   id: number;

@@ -125,7 +125,7 @@ export default function MobileMenu({
                             key={product.id}
                             product={product}
                             currency={settings.site_global_currency}
-                            className="aspect-[4/2]"
+                            className="aspect-[6/4]"
                             sizes="(min-width: 768px) 50vw, 50vw"
                             isInteractive={false}
                           />

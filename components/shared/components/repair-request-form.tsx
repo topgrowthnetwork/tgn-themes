@@ -5,13 +5,11 @@ import FormDropdown from '@shared/components/form-dropdown';
 import { submitRepairRequest } from '@shared/components/repair-request-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import LoadingDots from '@theme/components/loading-dots';
-import { createApi } from 'lib/api';
 import { Category } from 'lib/api/types';
 import { repairRequestFormSchema } from 'lib/validation/repair-request';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
-import useSWR from 'swr';
 import { z } from 'zod';
 
 function SubmitButton() {
@@ -36,7 +34,7 @@ interface RepairRequestFormProps {
 
 export default function RepairRequestForm({ categories }: RepairRequestFormProps) {
   const t = useTranslations('RepairRequest');
-  const locale = useLocale();
+  // const locale = useLocale();
   const [state, formAction] = useFormState(submitRepairRequest, {
     message: '',
     success: false
@@ -48,11 +46,11 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedState, setSelectedState] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState('');
+  // const [selectedProduct, setSelectedProduct] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   const stateInputRef = useRef<HTMLInputElement>(null);
   const categoryInputRef = useRef<HTMLInputElement>(null);
-  const productInputRef = useRef<HTMLInputElement>(null);
+  // const productInputRef = useRef<HTMLInputElement>(null);
 
   // Parse states from environment variables
   const states = useMemo(() => {
@@ -78,46 +76,46 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
     }));
   }, [categories]);
 
-  // Get selected category object
-  const selectedCategoryObj = useMemo(() => {
-    return categories.find((cat) => cat.name === selectedCategory);
-  }, [selectedCategory, categories]);
+  // // Get selected category object
+  // const selectedCategoryObj = useMemo(() => {
+  //   return categories.find((cat) => cat.name === selectedCategory);
+  // }, [selectedCategory, categories]);
 
-  // SWR fetcher function
-  const fetcher = async (url: string) => {
-    const api = createApi({ language: locale });
-    const result = await api.getProducts({ category: url });
-    if (result.isOk()) {
-      return result.value.data.products.data;
-    }
-    throw new Error('Failed to fetch products');
-  };
+  // // SWR fetcher function
+  // const fetcher = async (url: string) => {
+  //   const api = createApi({ language: locale });
+  //   const result = await api.getProducts({ category: url });
+  //   if (result.isOk()) {
+  //     return result.value.data.products.data;
+  //   }
+  //   throw new Error('Failed to fetch products');
+  // };
 
-  // Use SWR to fetch products
-  const {
-    data: products = [],
-    error: productsError,
-    isLoading: loadingProducts
-  } = useSWR(selectedCategoryObj ? selectedCategoryObj.id.toString() : null, fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000 // Cache for 1 minute
-  });
+  // // Use SWR to fetch products
+  // const {
+  //   data: products = [],
+  //   error: productsError,
+  //   isLoading: loadingProducts
+  // } = useSWR(selectedCategoryObj ? selectedCategoryObj.id.toString() : null, fetcher, {
+  //   revalidateOnFocus: false,
+  //   revalidateOnReconnect: false,
+  //   dedupingInterval: 60000 // Cache for 1 minute
+  // });
 
   // Convert products to dropdown options
-  const productOptions = useMemo(() => {
-    return products.map((product) => ({
-      id: product.id,
-      name: product.title
-    }));
-  }, [products]);
+  // const productOptions = useMemo(() => {
+  //   return products.map((product) => ({
+  //     id: product.id,
+  //     name: product.title
+  //   }));
+  // }, [products]);
 
   // Reset product selection when category changes
-  useEffect(() => {
-    if (!selectedCategory) {
-      setSelectedProduct('');
-    }
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   if (!selectedCategory) {
+  //     setSelectedProduct('');
+  //   }
+  // }, [selectedCategory]);
 
   // Reset form when successful
   useEffect(() => {
@@ -125,7 +123,7 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
       setErrors({});
       setSelectedState('');
       setSelectedCategory('');
-      setSelectedProduct('');
+      // setSelectedProduct('');
       formRef.current?.reset();
     }
   }, [state?.success]);
@@ -143,11 +141,11 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
     }
   }, [selectedCategory]);
 
-  useEffect(() => {
-    if (productInputRef.current) {
-      productInputRef.current.value = selectedProduct;
-    }
-  }, [selectedProduct]);
+  // useEffect(() => {
+  //   if (productInputRef.current) {
+  //     productInputRef.current.value = selectedProduct;
+  //   }
+  // }, [selectedProduct]);
 
   // Client-side validation using Zod
   const validateForm = (formData: FormData): boolean => {
@@ -159,7 +157,7 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
         phone: formData.get('phone') as string,
         state: formData.get('state') as string,
         category: formData.get('category') as string,
-        product: formData.get('product') as string,
+        // product: formData.get('product') as string,
         message: formData.get('message') as string
       };
 
@@ -277,7 +275,7 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
           <input ref={categoryInputRef} type="hidden" name="category" value={selectedCategory} />
         </div>
 
-        {selectedCategory && (
+        {/* {selectedCategory && (
           <div>
             <FormDropdown
               id="repair-product"
@@ -300,7 +298,7 @@ export default function RepairRequestForm({ categories }: RepairRequestFormProps
             />
             <input ref={productInputRef} type="hidden" name="product" value={selectedProduct} />
           </div>
-        )}
+        )} */}
 
         <div>
           <label htmlFor="contact-message" className="form-label">

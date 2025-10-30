@@ -1,5 +1,6 @@
 'use client';
 
+import ConditionlWrap from '@shared/components/conditional-wrapper';
 import clsx from 'clsx';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -74,8 +75,8 @@ function SlideContent({ slider }: SlideContentProps) {
             />
           )}
           {slider.link && (
-            <a
-              href={slider.link}
+            <div
+              // href={slider.link}
               className="inline-flex items-center rounded-theme bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-100 hover:shadow-lg dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 md:text-base"
             >
               {slider.btn_text || t('learnMore')}
@@ -84,7 +85,7 @@ function SlideContent({ slider }: SlideContentProps) {
               ) : (
                 <ChevronRight className="ms-2 h-4 w-4 md:h-5 md:w-5" />
               )}
-            </a>
+            </div>
           )}
         </div>
       </div>
@@ -179,7 +180,12 @@ export function SliderCarousel({ sliders }: SliderCarouselProps) {
         <div className="embla__container flex">
           {sliders.map((slider) => (
             <div key={slider.id} className="embla__slide min-w-0 flex-[0_0_100%]">
-              <SlideContent slider={slider} />
+              <ConditionlWrap
+                condition={Boolean(slider.link)}
+                wrap={(children) => <a href={slider.link}>{children}</a>}
+              >
+                <SlideContent slider={slider} />
+              </ConditionlWrap>
             </div>
           ))}
         </div>
