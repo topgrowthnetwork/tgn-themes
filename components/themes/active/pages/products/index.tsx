@@ -152,9 +152,6 @@ export default function ProductsPage({
               )}
             >
               {cat.name}
-              {cat.children?.length > 0 && (
-                <span className="ms-2 text-xs opacity-75">({cat.children.length})</span>
-              )}
             </button>
           ))}
         </div>
