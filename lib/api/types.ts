@@ -135,49 +135,8 @@ export interface CartItemDetail {
   product_id: number;
   product_variant_id: number;
   qyt: number;
-  product: {
-    id: number;
-    price: number;
-    discount: number;
-    discount_type: 'fixed' | 'percentage';
-    thumbnail_img: string;
-    final_price: number;
-    title: string;
-    description: string;
-    product_attributes: Record<string, any>;
-    thumbnail: ProductImage | null;
-    translations: ProductTranslation[];
-  };
-  variant?: {
-    id: number;
-    product_id: number;
-    sku: string;
-    price: number;
-    final_price: number;
-    stock: number;
-    images: number[];
-    created_at: string;
-    updated_at: string;
-    images_url: string[];
-    attribute_values: Array<{
-      id: number;
-      attribute_id: number;
-      value: string;
-      hex: string | null;
-      created_at: string;
-      updated_at: string;
-      pivot: {
-        product_variant_id: string;
-        attribute_value_id: string;
-      };
-      attribute: {
-        id: number;
-        name: string;
-        created_at: string;
-        updated_at: string;
-      };
-    }>;
-  };
+  product: Product;
+  variant?: ProductVariant;
 }
 
 export interface AddToCartRequest {
@@ -198,30 +157,8 @@ export interface CartItemResponse {
     product_id: number;
     product_variant_id: number;
     qyt: number;
-    product: {
-      id: number;
-      price: number;
-      discount: number;
-      discount_type: 'fixed' | 'percentage';
-      thumbnail_img: string;
-      final_price: number;
-      title: string;
-      description: string;
-      product_attributes: Record<string, any>;
-      thumbnail: ProductImage | null;
-      translations: ProductTranslation[];
-    };
-    variant: {
-      id: number;
-      product_id: number;
-      sku: string;
-      price: number;
-      stock: number;
-      images: number[];
-      created_at: string;
-      updated_at: string;
-      images_url: string[];
-    };
+    product: Product;
+    variant: ProductVariant;
   };
   message: string;
 }
