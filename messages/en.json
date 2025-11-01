@@ -34,7 +34,9 @@
     "githubRepository": "Github Repository",
     "supportedPaymentMethods": "Supported Payment Methods",
     "outPartners": "Out Partners",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "aboutUs": "About Us",
+    "returnAndExchange": "Return & Exchange Policies"
   },
   "Search": {
     "placeholder": "Search for products...",
@@ -192,6 +194,14 @@
     "privacyPolicy": {
       "title": "Privacy Policy",
       "description": "Terms of sale and return policy for our customers."
+    },
+    "aboutUs": {
+      "title": "About Arkan",
+      "description": "Arkan is a store specialized in Electronics"
+    },
+    "returnAndExchange": {
+      "title": "Return & Exchange",
+      "description": "Return and Exchange policies of Arkan"
     }
   }
 }

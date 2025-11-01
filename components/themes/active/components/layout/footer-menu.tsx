@@ -42,10 +42,15 @@ export default function FooterMenu() {
 
   return (
     <nav>
-      <ul className="space-y-1">
+      <ul className="grid grid-cols-2 gap-1">
         <FooterMenuItem href="/products" isActive={activePath === '/products'}>
           {t('shopAll')}
         </FooterMenuItem>
+        {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
+          <FooterMenuItem href="/privacy-policy" isActive={activePath === '/privacy-policy'}>
+            {tFooter('privacyPolicy')}
+          </FooterMenuItem>
+        )}
         {process.env.NEXT_PUBLIC_REPAIR_REQUEST ? (
           <FooterMenuItem href="/repair-request" isActive={activePath === '/repair-request'}>
             {t('repairRequest')}
@@ -56,8 +61,13 @@ export default function FooterMenu() {
           </FooterMenuItem>
         )}
         {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
-          <FooterMenuItem href="/privacy-policy" isActive={activePath === '/privacy-policy'}>
-            {tFooter('privacyPolicy')}
+          <FooterMenuItem href="/return-exchange" isActive={activePath === '/return-exchange'}>
+            {tFooter('returnAndExchange')}
+          </FooterMenuItem>
+        )}
+        {process.env.NEXT_PUBLIC_CLIENT == 'arkan' && (
+          <FooterMenuItem href="/about-us" isActive={activePath === '/about-us'}>
+            {tFooter('aboutUs')}
           </FooterMenuItem>
         )}
       </ul>

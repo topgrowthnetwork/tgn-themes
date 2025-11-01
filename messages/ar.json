@@ -34,7 +34,9 @@
     "githubRepository": "مستودع جيثب",
     "supportedPaymentMethods": "طرق الدفع المدعومة",
     "outPartners": "شركاؤنا",
-    "privacyPolicy": "سياسة الخصوصية"
+    "privacyPolicy": "سياسة الخصوصية",
+    "aboutUs": "عن أركان",
+    "returnAndExchange": "سياسة الاستبدال والاسترجاع"
   },
   "Search": {
     "placeholder": "البحث عن المنتجات...",
@@ -192,6 +194,14 @@
     "privacyPolicy": {
       "title": "سياسة الخصوصية",
       "description": "شروط البيع وسياسة الاسترجاع لعملائنا."
+    },
+    "aboutUs": {
+      "title": "عن أركان",
+      "description": "أركان ستور متخصصة في بيع الأجهزة الكهربائية والمنزلية بأفضل الأسعار وأعلى جودة"
+    },
+    "returnAndExchange": {
+      "title": "الإرجاع والاستبدال",
+      "description": "سياسات الإرجاع والاستبدال في أركان ستور لضمان رضاك الكامل"
     }
   }
 }
