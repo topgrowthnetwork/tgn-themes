@@ -312,6 +312,8 @@ export class ApiClient {
         const apiError = await parseErrorResponse(response);
 
         console.error('API Error Response:', {
+          url,
+          method,
           body: options.body,
           status: response.status,
           statusText: response.statusText,

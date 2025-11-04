@@ -28,7 +28,7 @@ export default async function Navbar() {
   const productsResult = await api.getProducts({
     recomended: '1',
     per_page: '3',
-    order_by: 'selling_count'
+    sort: 'selling_count'
   });
   const products = productsResult.isOk() ? productsResult.value.data.products.data : [];
 

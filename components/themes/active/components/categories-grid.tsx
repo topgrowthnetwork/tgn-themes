@@ -22,7 +22,7 @@ const fetcher = async (params: { categoryId: number; page: number; locale: strin
   const api = createApi({ language: params.locale });
   const result = await api.getProducts({
     category_id: params.categoryId.toString(),
-    order_by: 'selling_count',
+    sort: 'selling_count',
     per_page: '18',
     page: params.page.toString()
   });

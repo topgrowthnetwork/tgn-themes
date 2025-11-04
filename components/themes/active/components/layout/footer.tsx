@@ -2,7 +2,6 @@ import SocialMediaLinks from '@shared/components/social-media-links';
 import { createApi } from 'lib/api';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
-import { filter } from 'lodash';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import LogoSquare from '../logo-square';
@@ -13,15 +12,15 @@ import LanguageSwitcher from './language-switcher';
 export default async function Footer() {
   const locale = await getLocale();
   const api = createApi({ language: locale });
-  const [settingsResult, partnersResult] = await Promise.all([
-    api.getGlobalSettings(),
-    api.getPartners()
+  const [settingsResult] = await Promise.all([
+    api.getGlobalSettings()
+    // api.getPartners()
   ]);
-  if (settingsResult.isErr() || partnersResult.isErr()) {
+  if (settingsResult.isErr()) {
     return null;
   }
   const settings = settingsResult.value.data;
-  const partners = filter(partnersResult.value.data.partners, 'logo');
+  const partners = [] as any;
   const t = await getTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
@@ -54,7 +53,7 @@ export default async function Footer() {
         <div className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold">{t('outPartners')}</h3>
           <div className="flex flex-wrap items-center gap-3">
-            {partners.map((partner) => (
+            {partners.map((partner: any) => (
               <div
                 key={partner.id}
                 className="flex items-center gap-2 rounded-theme border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-800"

@@ -68,7 +68,7 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
   const api = createApi({ language: locale });
   const relatedProductsResult = await api.getProducts({
     category_id: product.category_id.toString(),
-    order_by: 'selling_count'
+    sort: 'selling_count'
   });
   if (relatedProductsResult.isErr()) {
     return null;

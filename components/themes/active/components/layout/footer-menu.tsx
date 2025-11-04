@@ -46,9 +46,9 @@ export default function FooterMenu() {
         <FooterMenuItem href="/products" isActive={activePath === '/products'}>
           {t('shopAll')}
         </FooterMenuItem>
-        {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
-          <FooterMenuItem href="/privacy-policy" isActive={activePath === '/privacy-policy'}>
-            {tFooter('privacyPolicy')}
+        {process.env.NEXT_PUBLIC_CLIENT == 'arkan' && (
+          <FooterMenuItem href="/about-us" isActive={activePath === '/about-us'}>
+            {tFooter('aboutUs')}
           </FooterMenuItem>
         )}
         {process.env.NEXT_PUBLIC_REPAIR_REQUEST ? (
@@ -61,13 +61,14 @@ export default function FooterMenu() {
           </FooterMenuItem>
         )}
         {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
-          <FooterMenuItem href="/return-exchange" isActive={activePath === '/return-exchange'}>
-            {tFooter('returnAndExchange')}
+          <FooterMenuItem href="/privacy-policy" isActive={activePath === '/privacy-policy'}>
+            {tFooter('privacyPolicy')}
           </FooterMenuItem>
         )}
-        {process.env.NEXT_PUBLIC_CLIENT == 'arkan' && (
-          <FooterMenuItem href="/about-us" isActive={activePath === '/about-us'}>
-            {tFooter('aboutUs')}
+        <div></div>
+        {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
+          <FooterMenuItem href="/return-exchange" isActive={activePath === '/return-exchange'}>
+            {tFooter('returnAndExchange')}
           </FooterMenuItem>
         )}
       </ul>

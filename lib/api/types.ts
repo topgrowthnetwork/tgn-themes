@@ -349,6 +349,15 @@ export interface ProductListParams {
   page?: string;
   recomended?: string;
   order_by?: 'selling_count' | 'created_at';
+  sort?:
+    | 'name'
+    | 'selling_count'
+    | 'best_selling'
+    | 'recommended'
+    | 'newest'
+    | 'oldest'
+    | 'price_asc'
+    | 'price_desc';
   per_page?: string;
   [key: string]: string | undefined;
 }

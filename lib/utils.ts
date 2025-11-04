@@ -1,5 +1,5 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
-import { Product, ProductVariant } from './api/types';
+import { Product, ProductListParams, ProductVariant } from './api/types';
 
 export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyURLSearchParams) => {
   const paramsString = params.toString();
@@ -76,15 +76,15 @@ export function getItemPrice(
  * @param sort The sort parameter from URL (e.g., 'latest-desc', 'popular')
  * @param search The search query parameter
  * @param categoryId Optional category ID for filtering
- * @returns Object with order_by, search, and category_id for API calls
+ * @returns Object with sort, search, and category_id for API calls
  */
 export function getProductParams(
   sort?: string,
   search?: string,
   categoryId?: string
-): { order_by?: 'selling_count' | 'created_at'; search?: string; category_id?: string } {
+): { sort?: ProductListParams['sort']; search?: string; category_id?: string } {
   const params: {
-    order_by?: 'selling_count' | 'created_at';
+    sort?: ProductListParams['sort'];
     search?: string;
     category_id?: string;
   } = {};
@@ -102,14 +102,14 @@ export function getProductParams(
   // Handle sorting logic
   switch (sort) {
     case 'latest-desc':
-      params.order_by = 'created_at';
+      params.sort = 'newest';
       break;
     case 'popular':
-      params.order_by = 'selling_count';
+      params.sort = 'selling_count';
       break;
     default:
       // Default to latest products
-      params.order_by = 'created_at';
+      params.sort = 'newest';
       break;
   }
 
