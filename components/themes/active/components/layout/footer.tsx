@@ -12,15 +12,15 @@ import LanguageSwitcher from './language-switcher';
 export default async function Footer() {
   const locale = await getLocale();
   const api = createApi({ language: locale });
-  const [settingsResult] = await Promise.all([
-    api.getGlobalSettings()
-    // api.getPartners()
+  const [settingsResult, partnersResult] = await Promise.all([
+    api.getGlobalSettings(),
+    api.getPartners()
   ]);
-  if (settingsResult.isErr()) {
+  if (settingsResult.isErr() || partnersResult.isErr()) {
     return null;
   }
   const settings = settingsResult.value.data;
-  const partners = [] as any;
+  const partners = partnersResult.value.data.partners;
   const t = await getTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
