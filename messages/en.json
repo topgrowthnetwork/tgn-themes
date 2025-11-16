@@ -11,7 +11,7 @@
     "taxInclusive": "Tax inclusive",
     "shipping": "Shipping",
     "calculatedAtCheckout": "Calculated at checkout",
-    "freeShipping": "Free shipping",
+    "freeShipping": "Calculated at checkout",
     "total": "Total",
     "proceedToCheckout": "Proceed to Checkout",
     "openCart": "Open cart",
