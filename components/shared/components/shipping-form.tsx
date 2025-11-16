@@ -5,7 +5,7 @@ import { CheckoutRequest, City, Country, State } from 'lib/api/types';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
 import { shippingStepSchema } from 'lib/validation/checkout';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import FieldError from './field-error';
 import FormDropdown from './form-dropdown';
@@ -42,6 +42,21 @@ export default function ShippingForm({
     selectedCountry: formData.shipping_address?.country || '',
     selectedState: formData.shipping_address?.state || ''
   });
+
+  // Auto-set country to first in array if not already set
+  useEffect(() => {
+    if (!formData.shipping_address?.country && countries.length > 0) {
+      onFormDataChange({
+        ...formData,
+        shipping_address: {
+          country: countries[0].name,
+          state: '',
+          city: '',
+          address: formData.shipping_address?.address || ''
+        }
+      });
+    }
+  }, [countries]);
 
   // Validation using Zod - only validates shipping step fields
   const validateForm = (): boolean => {
@@ -199,18 +214,7 @@ export default function ShippingForm({
 
   const renderAddressFields = () => (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <FormDropdown
-          id="shipping-country"
-          label={`${t('country')} *`}
-          options={countries}
-          value={formData.shipping_address?.country || ''}
-          onChange={handleCountryChange}
-          error={getFieldError('shipping_address.country')}
-          placeholder={t('selectCountry')}
-          dataTestId="shipping-form-country"
-        />
-
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormDropdown
           id="shipping-state"
           label={`${t('state')} *`}

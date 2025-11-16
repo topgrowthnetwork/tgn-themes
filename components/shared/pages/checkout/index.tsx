@@ -182,8 +182,8 @@ export default function CheckoutPage({
           />
         )}
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-11">
+          <div className="lg:col-span-6">
             <form action={formAction}>
               {renderHiddenFields()}
 
@@ -209,7 +209,7 @@ export default function CheckoutPage({
             </form>
           </div>
 
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-5">
             <CartSummary cartResponse={cartResponse} currency={settings.site_global_currency} />
           </div>
         </div>
