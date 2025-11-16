@@ -72,8 +72,6 @@ export function EditItemQuantityButton({
     success: false
   });
 
-  console.log('✨', { item });
-
   const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
 
   const canIncrease = (function canIncrease() {

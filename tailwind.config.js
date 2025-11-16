@@ -117,13 +117,31 @@ module.exports = {
   					'--pie-progress': '100%',
   					opacity: 0
   				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
   			}
   		},
   		animation: {
   			fadeIn: 'fadeIn .3s ease-in-out',
   			carousel: 'marquee 60s linear infinite',
   			blink: 'blink 1.4s both infinite',
-  			sweep: 'sweep 10s linear infinite'
+  			sweep: 'sweep 10s linear infinite',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
   		}
   	}
   },

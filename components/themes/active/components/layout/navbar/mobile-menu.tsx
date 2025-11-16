@@ -10,6 +10,12 @@ import {
   WrenchScrewdriverIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@theme/components/ui/accordion';
 import { Category, GlobalSettings, Product } from 'lib/api/types';
 import { Link, usePathname } from 'lib/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -140,22 +146,47 @@ export default function MobileMenu({
                       <h3 className="mb-3 text-sm font-medium text-neutral-900 dark:text-neutral-100">
                         {commonT('categories')}
                       </h3>
-                      <ul className="space-y-1">
-                        {topLevelCategories.map((category) => (
-                          <li key={category.id}>
-                            {/* Parent Category */}
-                            <div className="space-y-1">
-                              <Link
-                                href={`/category/${category.id}`}
-                                onClick={closeMobileMenu}
-                                className="block rounded-theme px-3 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                      <Accordion type="multiple" className="w-full">
+                        {topLevelCategories.map((category) => {
+                          // If category has no children, render as a simple link
+                          if (!category.children || category.children.length === 0) {
+                            return (
+                              <div
+                                key={category.id}
+                                className="border-b border-neutral-200 dark:border-neutral-700"
                               >
-                                {category.name}
-                              </Link>
+                                <Link
+                                  href={`/category/${category.id}`}
+                                  onClick={closeMobileMenu}
+                                  className="block py-4 text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
+                                >
+                                  {category.name}
+                                </Link>
+                              </div>
+                            );
+                          }
 
-                              {/* Child Categories - Always Visible */}
-                              {category.children && category.children.length > 0 && (
-                                <ul className="space-y-1 ps-6">
+                          // If category has children, render as accordion
+                          return (
+                            <AccordionItem
+                              key={category.id}
+                              value={`category-${category.id}`}
+                              className="border-neutral-200 dark:border-neutral-700"
+                            >
+                              <AccordionTrigger className="text-neutral-700 hover:text-neutral-900 hover:no-underline dark:text-neutral-300 dark:hover:text-neutral-100">
+                                <Link
+                                  href={`/category/${category.id}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    closeMobileMenu();
+                                  }}
+                                  className="hover:underline"
+                                >
+                                  {category.name}
+                                </Link>
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <ul className="space-y-1 ps-4">
                                   {category.children.map((childCategory) => (
                                     <li key={childCategory.id}>
                                       <Link
@@ -168,11 +199,11 @@ export default function MobileMenu({
                                     </li>
                                   ))}
                                 </ul>
-                              )}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
+                              </AccordionContent>
+                            </AccordionItem>
+                          );
+                        })}
+                      </Accordion>
                     </div>
                   )}
 

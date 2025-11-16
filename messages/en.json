@@ -64,13 +64,13 @@
   "Products": {
     "bestSelling": "Best Selling Products",
     "bestsellers": "Bestsellers",
-    "categories": "Shop by Category",
+    "categories": "Selected Products",
     "resultsFound": "{count} results found",
     "noProducts": "No products found"
   },
   "Category": {
     "noProducts": "No products found in this category.",
-    "categories": "Categories"
+    "categories": "Shop by Categories"
   },
   "Common": {
     "categories": "Categories",

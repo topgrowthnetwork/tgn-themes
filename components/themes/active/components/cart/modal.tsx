@@ -170,7 +170,7 @@ export default function CartModal({
                                 amount={totalPrice.toString()}
                                 currencyCode={currency}
                               />
-                              <div className="ms-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
+                              <div className="ms-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 bg-white">
                                 <EditItemQuantityButton item={item} type="minus" minStock={0} />
                                 <p className="w-6 text-center">
                                   <span className="w-full text-sm">{item.qyt}</span>
