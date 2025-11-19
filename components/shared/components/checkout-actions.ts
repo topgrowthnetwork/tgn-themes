@@ -67,23 +67,14 @@ export async function processCheckout(
   switch (order.payment_gateway) {
     case 'cash_on_site':
     case 'cash_on_delivery':
-      // Redirect with language parameter since thank-you is under [language] route
       redirectLocale({ href: '/thank-you', locale });
-    // return {
-    //   message: 'Redirecting to thank you page...',
-    //   internalRedirect: true,
-    //   success: true
-    // };
+      return { message: '', success: true }; // Never reached, but satisfies TypeScript
     case 'fawaterk_gateway':
     case 'paymob_card_gateway':
     case 'paymob_wallet_gateway':
-      // Return the external payment URL for client-side redirect
-      redirect(response);
-    // return {
-    //   message: 'Redirecting to payment gateway...',
-    //   redirectUrl: response,
-    //   success: true
-    // };
+    case 'tabby_gateway':
+    case 'tamara_gateway':
+      redirect(response?.redirect_url || '');
     default:
       return {
         message: 'Unsupported payment method.',

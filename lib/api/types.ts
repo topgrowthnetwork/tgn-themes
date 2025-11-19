@@ -532,7 +532,11 @@ export interface Order {
 
 export interface CheckoutResponse {
   order: Order;
-  response: any | null;
+  response: {
+    redirect_url: string;
+    transaction_id: string;
+    reference_id: string;
+  } | null;
 }
 
 // Contact types
