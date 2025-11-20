@@ -2,6 +2,7 @@
 
 import clsx from 'clsx';
 import { CheckoutRequest, City, Country, State } from 'lib/api/types';
+import { useShipping } from 'lib/context/shipping-context';
 import { useAddressCascade } from 'lib/hooks/use-address-cascade';
 import { shippingStepSchema } from 'lib/validation/checkout';
 import { useTranslations } from 'next-intl';
@@ -33,6 +34,7 @@ export default function ShippingForm({
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { setShipping, clearShipping } = useShipping();
 
   // Use custom hook for address cascade logic
   const { availableStates, availableCities, clearState, clearCity } = useAddressCascade({
@@ -57,6 +59,25 @@ export default function ShippingForm({
       });
     }
   }, [countries]);
+
+  // Sync shipping context when state changes (including from localStorage)
+  useEffect(() => {
+    const currentState = formData.shipping_address?.state;
+
+    if (currentState && states.length > 0) {
+      // Find the matching state and update shipping context
+      const selectedState = states.find((s) => s.name === currentState);
+      if (selectedState) {
+        setShipping(selectedState.shipping_amount, selectedState.name);
+      } else {
+        // State not found in available states, clear shipping
+        clearShipping();
+      }
+    } else {
+      // No state selected, clear shipping
+      clearShipping();
+    }
+  }, [formData.shipping_address?.state, states, setShipping, clearShipping]);
 
   // Validation using Zod - only validates shipping step fields
   const validateForm = (): boolean => {
@@ -127,6 +148,14 @@ export default function ShippingForm({
 
     if (isStateChanged) {
       clearCity();
+    }
+
+    // Update shipping amount in context
+    const selectedState = states.find((s) => s.name === state);
+    if (selectedState) {
+      setShipping(selectedState.shipping_amount, selectedState.name);
+    } else {
+      clearShipping();
     }
   };
 

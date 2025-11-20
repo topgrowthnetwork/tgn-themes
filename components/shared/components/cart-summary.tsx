@@ -5,6 +5,7 @@ import { ToastNotification } from '@shared/components/toast-notification';
 import LoadingDots from '@theme/components/loading-dots';
 import Price from '@theme/components/price';
 import { CartResponse } from 'lib/api/types';
+import { useShipping } from 'lib/context/shipping-context';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -33,6 +34,7 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function CartSummary({ cartResponse, currency }: CartSummaryProps) {
   const t = useTranslations('Cart');
+  const { shippingAmount } = useShipping();
   const [state, formAction] = useFormState(applyCouponV2, {
     message: '',
     success: false
@@ -49,6 +51,9 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
     }
     return null;
   };
+
+  // Calculate total with shipping
+  const totalWithShipping = cartResponse.total_price + shippingAmount;
 
   return (
     <div className="rounded-theme border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
@@ -141,11 +146,18 @@ export default function CartSummary({ cartResponse, currency }: CartSummaryProps
           </div>
         )}
 
+        {shippingAmount > 0 && (
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600 dark:text-gray-300">{t('shipping')}</span>
+            <Price amount={shippingAmount.toString()} currencyCode={currency} />
+          </div>
+        )}
+
         <div className="flex justify-between border-t border-gray-200 pt-2 dark:border-gray-600">
           <span className="font-semibold text-gray-900 dark:text-white">{t('total')}</span>
           <Price
             className="font-semibold text-gray-900 dark:text-white"
-            amount={cartResponse.total_price.toString()}
+            amount={totalWithShipping.toString()}
             currencyCode={currency}
           />
         </div>

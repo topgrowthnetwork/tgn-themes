@@ -24,9 +24,11 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
       <Navbar />
       {children}
       <Suspense>
-        <Container>
-          <Footer />
-        </Container>
+        <div className="border-t bg-white">
+          <Container>
+            <Footer />
+          </Container>
+        </div>
       </Suspense>
     </FontProvider>
   );

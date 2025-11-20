@@ -5,6 +5,7 @@ import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { CartResponse } from 'lib/api/types';
 import { DEFAULT_OPTION } from 'lib/constants';
+import { useShipping } from 'lib/context/shipping-context';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -30,6 +31,7 @@ export default function CartModal({
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cartResponse?.total_items);
   const pathname = usePathname();
+  const { shippingAmount } = useShipping();
   const openCart = () => {
     if (!isCheckoutOrThankYouPage) {
       setIsOpen(true);
@@ -39,6 +41,9 @@ export default function CartModal({
   const t = useTranslations('Cart');
   const locale = useLocale();
   const isRTL = locale === 'ar';
+
+  // Calculate total with shipping
+  const totalWithShipping = cartResponse?.total_price + shippingAmount;
 
   // Check if we're on checkout or thank-you pages
   const isCheckoutOrThankYouPage =
@@ -198,19 +203,25 @@ export default function CartModal({
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>{t('shipping')}</p>
-                      {
+                      {shippingAmount > 0 ? (
+                        <Price
+                          className="text-end text-base text-black dark:text-white"
+                          amount={shippingAmount.toString()}
+                          currencyCode={currency}
+                        />
+                      ) : (
                         <p className="text-end">
                           {process.env.NEXT_PUBLIC_FREE_SHIPPING == 'true'
                             ? t('freeShipping')
                             : t('calculatedAtCheckout')}
                         </p>
-                      }
+                      )}
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>{t('total')}</p>
                       <Price
                         className="text-end text-base text-black dark:text-white"
-                        amount={cartResponse.total_price.toString()}
+                        amount={totalWithShipping.toString()}
                         currencyCode={currency}
                       />
                     </div>

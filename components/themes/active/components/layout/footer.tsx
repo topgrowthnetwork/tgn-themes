@@ -30,7 +30,7 @@ export default async function Footer() {
 
   return (
     <footer className="text-sm text-neutral-500">
-      <div className="mx-auto flex w-full flex-col gap-6 border-t border-neutral-200 py-12 text-sm md:flex-row md:gap-12">
+      <div className="mx-auto flex w-full flex-col gap-6 pb-12 text-sm md:flex-row md:gap-12">
         <div>
           <Link className="flex items-center gap-2 text-black md:pt-1" href="/">
             <LogoSquare size="sm" />

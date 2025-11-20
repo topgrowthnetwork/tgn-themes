@@ -38,7 +38,7 @@ export async function ProductsCarousel({ settings }: { settings: GlobalSettings 
   const api = createApi({ language });
   const productsResult = await api.getProducts({
     recomended: '1',
-    per_page: '5'
+    per_page: '15'
   });
   // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
 
