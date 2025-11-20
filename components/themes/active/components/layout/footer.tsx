@@ -29,10 +29,10 @@ export default async function Footer() {
   const copyrightName = settings.site_title;
 
   return (
-    <footer className="text-sm text-neutral-500">
+    <footer className="text-sm text-white">
       <div className="mx-auto flex w-full flex-col gap-6 pb-12 text-sm md:flex-row md:gap-12">
         <div>
-          <Link className="flex items-center gap-2 text-black md:pt-1" href="/">
+          <Link className="flex items-center gap-2 text-white md:pt-1" href="/">
             <LogoSquare size="sm" />
             <span className="uppercase">{settings.site_title}</span>
           </Link>
@@ -51,7 +51,7 @@ export default async function Footer() {
         <FooterGateways />
 
         <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold">{t('outPartners')}</h3>
+          <h3 className="text-sm font-semibold text-white">{t('outPartners')}</h3>
           <div className="flex flex-wrap items-center gap-3">
             {partners.map((partner: any) => (
               <div
@@ -78,7 +78,7 @@ export default async function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
+      <div className="border-t border-neutral-500 py-6 text-sm">
         <div className="mx-auto flex w-full flex-col items-center gap-4 md:flex-row md:justify-between md:gap-0 ">
           <p>
             &copy; {copyrightDate} {copyrightName}

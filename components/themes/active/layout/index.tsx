@@ -24,7 +24,7 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
       <Navbar />
       {children}
       <Suspense>
-        <div className="border-t bg-white">
+        <div className="border-t bg-[#0f2f3d] text-white">
           <Container>
             <Footer />
           </Container>

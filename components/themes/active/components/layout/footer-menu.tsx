@@ -20,8 +20,8 @@ const FooterMenuItem = ({
       <Link
         href={href}
         onClick={onClick}
-        className={`block p-2 text-sm font-medium underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block ${
-          isActive ? 'text-black dark:text-neutral-300' : 'text-neutral-500'
+        className={`block p-2 text-sm font-medium underline-offset-4 hover:text-white hover:underline md:inline-block ${
+          isActive ? 'text-white' : 'text-neutral-300'
         }`}
       >
         {children}

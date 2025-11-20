@@ -49,7 +49,7 @@ export default function SocialMediaLinks({ settings }: SocialMediaLinksProps) {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+          className="text-neutral-300 transition-colors hover:text-white"
           aria-label={`Follow us on ${link.name}`}
         >
           {link.icon}

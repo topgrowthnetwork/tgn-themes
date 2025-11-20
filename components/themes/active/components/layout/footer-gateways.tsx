@@ -25,7 +25,7 @@ export default function FooterGateways() {
 
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-sm font-semibold">{t('supportedPaymentMethods')}</h3>
+      <h3 className="text-sm font-semibold text-white">{t('supportedPaymentMethods')}</h3>
       <div className="flex flex-wrap items-center gap-3">
         {gateways.map((gateway) => (
           <div

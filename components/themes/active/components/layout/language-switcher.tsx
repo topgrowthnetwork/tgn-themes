@@ -21,8 +21,8 @@ export default function LanguageSwitcher() {
           locale={language.code}
           className={`flex items-center gap-1 rounded-theme px-2 py-1 text-xs font-medium transition-colors ${
             locale === language.code
-              ? 'bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-white'
-              : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-300'
+              ? 'bg-white text-[#0f2f3d]'
+              : 'text-neutral-300 hover:bg-neutral-600 hover:text-white'
           }`}
           aria-label={`Switch to ${language.name}`}
         >
