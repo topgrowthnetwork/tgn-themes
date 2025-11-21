@@ -2,8 +2,6 @@
 
 import { createApi } from 'lib/api';
 import { ActionResponse } from 'lib/api/types';
-import { TAGS } from 'lib/constants';
-import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export async function addItemV2(
@@ -33,12 +31,16 @@ export async function addItemV2(
       };
     }
 
-    revalidateTag(TAGS.cart);
     cookies().set('cartId', result.value.data.cart_item.cart_id.toString());
+
+    // Fetch updated cart data
+    const cartResult = await api.getCart();
+    const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
 
     return {
       message: result.value.message || 'Added to cart successfully',
-      success: true
+      success: true,
+      cartData
     };
   } catch (error: any) {
     return {
@@ -62,10 +64,14 @@ export async function removeItemV2(prevState: any, lineId: number): Promise<Acti
       };
     }
 
-    revalidateTag(TAGS.cart);
+    // Fetch updated cart data
+    const cartResult = await api.getCart();
+    const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
     return {
       message: result.value.message || 'Removed from cart successfully',
-      success: true
+      success: true,
+      cartData
     };
   } catch (error: any) {
     return {
@@ -104,10 +110,14 @@ export async function updateItemQuantityV2(
       };
     }
 
-    revalidateTag(TAGS.cart);
+    // Fetch updated cart data
+    const cartResult = await api.getCart();
+    const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
     return {
       message: 'Updated item quantity successfully',
-      success: true
+      success: true,
+      cartData
     };
   } catch (error: any) {
     return {
@@ -131,10 +141,14 @@ export async function applyCouponV2(prevState: any, couponCode: string): Promise
       };
     }
 
-    revalidateTag(TAGS.cart);
+    // Fetch updated cart data
+    const cartResult = await api.getCart();
+    const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
     return {
       message: result.value.message || 'Coupon applied successfully',
-      success: true
+      success: true,
+      cartData
     };
   } catch (error: any) {
     return {

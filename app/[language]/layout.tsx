@@ -3,6 +3,7 @@ import NProgressProvider from '@shared/components/nprogress-provider';
 import ThemeContent from '@theme/layout';
 import { ThemeSwitcher, ToastContainerWrapper } from 'components/shared/components';
 import { createApi } from 'lib/api';
+import CartProviderWrapper from 'lib/context/cart-provider-wrapper';
 import { ShippingProvider } from 'lib/context/shipping-context';
 import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
@@ -131,13 +132,15 @@ export default async function LocaleLayout({
             <NuqsAdapter>
               <NextIntlClientProvider>
                 <ShippingProvider>
-                  <ThemeContent>
-                    <Suspense>
-                      <main>{children}</main>
-                    </Suspense>
-                  </ThemeContent>
-                  <ToastContainerWrapper />
-                  <ThemeSwitcher />
+                  <CartProviderWrapper>
+                    <ThemeContent>
+                      <Suspense>
+                        <main>{children}</main>
+                      </Suspense>
+                    </ThemeContent>
+                    <ToastContainerWrapper />
+                    <ThemeSwitcher />
+                  </CartProviderWrapper>
                 </ShippingProvider>
               </NextIntlClientProvider>
             </NuqsAdapter>

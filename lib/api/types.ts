@@ -558,4 +558,5 @@ export interface ContactResponse {
 export interface ActionResponse {
   message: string;
   success: boolean;
+  cartData?: CartResponse;
 }

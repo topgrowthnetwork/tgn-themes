@@ -3,8 +3,8 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { CartResponse } from 'lib/api/types';
 import { DEFAULT_OPTION } from 'lib/constants';
+import { useCart } from 'lib/context/cart-context';
 import { useShipping } from 'lib/context/shipping-context';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
@@ -21,13 +21,8 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
-export default function CartModal({
-  cartResponse,
-  currency
-}: {
-  cartResponse: CartResponse;
-  currency: string;
-}) {
+export default function CartModal() {
+  const { cartResponse, currency } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cartResponse?.total_items);
   const pathname = usePathname();

@@ -3,8 +3,9 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { removeItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
-
+import { useCart } from 'lib/context/cart-context';
 import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 
@@ -31,10 +32,18 @@ function SubmitButton({ item }: { item: any }) {
 }
 
 export function DeleteItemButton({ item }: { item: any }) {
+  const { setCartResponse } = useCart();
   const [state, formAction] = useFormState(removeItemV2, {
     message: '',
     success: false
   });
+
+  // Update cart context when cart data is returned from server action
+  useEffect(() => {
+    if (state.success && state.cartData) {
+      setCartResponse(state.cartData);
+    }
+  }, [state.success, state.cartData, setCartResponse]);
 
   return (
     <>

@@ -5,8 +5,9 @@ import { addItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { Product, ProductVariant } from 'lib/api/types';
-
+import { useCart } from 'lib/context/cart-context';
 import { useLocale, useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 
@@ -83,6 +84,7 @@ export function AddToCart({
   selectedVariant: ProductVariant | null;
   availableForSale: boolean;
 }) {
+  const { setCartResponse } = useCart();
   const [state, formAction] = useFormState(addItemV2, {
     message: '',
     success: false
@@ -91,6 +93,13 @@ export function AddToCart({
 
   // Check if the selected variant is out of stock
   const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
+
+  // Update cart context when cart data is returned from server action
+  useEffect(() => {
+    if (state.success && state.cartData) {
+      setCartResponse(state.cartData);
+    }
+  }, [state.success, state.cartData, setCartResponse]);
 
   const actionWithVariant = formAction.bind(null, {
     selectedProductId: product.id,

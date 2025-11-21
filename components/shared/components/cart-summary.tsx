@@ -4,17 +4,15 @@ import { applyCouponV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import LoadingDots from '@theme/components/loading-dots';
 import Price from '@theme/components/price';
-import { CartResponse } from 'lib/api/types';
+import { useCart } from 'lib/context/cart-context';
 import { useShipping } from 'lib/context/shipping-context';
 import { getFullPath, getItemPrice } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
-interface CartSummaryProps {
-  cartResponse: CartResponse;
-  currency: string;
-}
+interface CartSummaryProps {}
 
 function CouponSubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
@@ -32,13 +30,21 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
   );
 }
 
-export default function CartSummary({ cartResponse, currency }: CartSummaryProps) {
+export default function CartSummary({}: CartSummaryProps) {
   const t = useTranslations('Cart');
+  const { cartResponse, currency, setCartResponse } = useCart();
   const { shippingAmount } = useShipping();
   const [state, formAction] = useFormState(applyCouponV2, {
     message: '',
     success: false
   });
+
+  // Update cart context when cart data is returned from server action
+  useEffect(() => {
+    if (state.success && state.cartData) {
+      setCartResponse(state.cartData);
+    }
+  }, [state.success, state.cartData, setCartResponse]);
 
   if (!cartResponse.cart || cartResponse.cart.cart_items.length === 0) {
     return null;

@@ -5,8 +5,9 @@ import { updateItemQuantityV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
 import { CartItemDetail } from 'lib/api/types';
-
+import { useCart } from 'lib/context/cart-context';
 import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import LoadingDots from '../loading-dots';
 
@@ -67,6 +68,7 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   minStock?: number;
 }) {
+  const { setCartResponse } = useCart();
   const [state, formAction] = useFormState(updateItemQuantityV2, {
     message: '',
     success: false
@@ -82,6 +84,13 @@ export function EditItemQuantityButton({
 
   // Disable plus button if no stock available or below min_stock
   const isDisabled = type === 'plus' && !canIncrease;
+
+  // Update cart context when cart data is returned from server action
+  useEffect(() => {
+    if (state.success && state.cartData) {
+      setCartResponse(state.cartData);
+    }
+  }, [state.success, state.cartData, setCartResponse]);
 
   return (
     <>

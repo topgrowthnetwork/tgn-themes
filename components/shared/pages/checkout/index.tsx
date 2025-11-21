@@ -210,7 +210,7 @@ export default function CheckoutPage({
           </div>
 
           <div className="lg:col-span-5">
-            <CartSummary cartResponse={cartResponse} currency={settings.site_global_currency} />
+            <CartSummary />
           </div>
         </div>
       </div>
