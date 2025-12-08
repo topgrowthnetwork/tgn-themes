@@ -7,6 +7,7 @@ export { default as OpengraphImage } from './opengraph-image';
 export { default as Price } from './price';
 export { ProductsCarousel } from './products-carousel';
 export { default as Prose } from './prose';
+export { TamaraSummaryWidget, TamaraWidgetScript } from './tamara-widget';
 
 // Product components
 export { Gallery } from './product/gallery';

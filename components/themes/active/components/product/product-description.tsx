@@ -5,6 +5,7 @@ import { Product, ProductAttributes, ProductVariant } from 'lib/api/types';
 import { AddToCart } from '../cart/add-to-cart';
 import Price from '../price';
 import Prose from '../prose';
+import { TamaraSummaryWidget } from '../tamara-widget';
 import { VariantSelector } from './variant-selector';
 
 export function ProductDescription({
@@ -46,6 +47,9 @@ export function ProductDescription({
               currencyCode={currency}
             />
           )}
+        </div>
+        <div className="mt-3">
+          <TamaraSummaryWidget amount={displayPrice} inlineType={2} />
         </div>
       </div>
       <VariantSelector

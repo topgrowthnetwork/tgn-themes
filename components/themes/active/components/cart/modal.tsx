@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Price from '../price';
+import { TamaraSummaryWidget } from '../tamara-widget';
 import CloseCart from './close-cart';
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
@@ -38,7 +39,9 @@ export default function CartModal() {
   const isRTL = locale === 'ar';
 
   // Calculate total with shipping
-  const totalWithShipping = cartResponse?.total_price + shippingAmount;
+  const totalWithShipping = (cartResponse?.total_price || 0) + shippingAmount;
+  const tamaraTotalAmount =
+    totalWithShipping || cartResponse?.total_price || cartResponse?.sub_total || 0;
 
   // Check if we're on checkout or thank-you pages
   const isCheckoutOrThankYouPage =
@@ -220,6 +223,9 @@ export default function CartModal() {
                         currencyCode={currency}
                       />
                     </div>
+                  </div>
+                  <div className="mb-4">
+                    <TamaraSummaryWidget amount={tamaraTotalAmount} inlineType={2} />
                   </div>
                   <a href="/checkout" className="button" data-testid="proceed-to-checkout">
                     {t('proceedToCheckout')}
