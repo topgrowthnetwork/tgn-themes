@@ -84,7 +84,7 @@ export function AddToCart({
   selectedVariant: ProductVariant | null;
   availableForSale: boolean;
 }) {
-  const { setCartResponse } = useCart();
+  const { mutate } = useCart();
   const [state, formAction] = useFormState(addItemV2, {
     message: '',
     success: false
@@ -94,12 +94,12 @@ export function AddToCart({
   // Check if the selected variant is out of stock
   const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
 
-  // Update cart context when cart data is returned from server action
+  // Refresh cart when item is added successfully
   useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
+    if (state.success) {
+      mutate();
     }
-  }, [state.success, state.cartData, setCartResponse]);
+  }, [state.success, mutate]);
 
   const actionWithVariant = formAction.bind(null, {
     selectedProductId: product.id,

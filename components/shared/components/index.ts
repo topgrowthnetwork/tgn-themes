@@ -41,3 +41,19 @@ export { ThemeSwitcher } from './theme-switcher';
 
 // Skeleton components
 export { ProductsGridSkeleton } from './products-grid-skeleton';
+export {
+  CategoryPageSkeleton,
+  CheckoutPageSkeleton,
+  FooterSkeleton,
+  HomePageSkeleton,
+  NavbarSkeleton,
+  ProductCardSkeleton,
+  ProductPageSkeleton,
+  ProductsCarouselSkeleton,
+  ProductsGridSkeleton as ProductsGridSkeletonNew,
+  SearchPageSkeleton,
+  Skeleton,
+  SliderSkeleton,
+  ThreeItemGridSkeleton,
+  CategoriesGridSkeleton
+} from './skeletons';

@@ -1,31 +1,32 @@
+'use client';
+
 import SocialMediaLinks from '@shared/components/social-media-links';
-import { createApi } from 'lib/api';
+import { FooterSkeleton } from '@shared/components/skeletons';
+import { useGlobalSettings, usePartners } from 'lib/hooks/api';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import LogoSquare from '../logo-square';
 import FooterGateways from './footer-gateways';
 import FooterMenu from './footer-menu';
 import LanguageSwitcher from './language-switcher';
 
-export default async function Footer() {
-  const locale = await getLocale();
-  const api = createApi({ language: locale });
-  const [settingsResult, partnersResult] = await Promise.all([
-    api.getGlobalSettings(),
-    api.getPartners()
-  ]);
-  if (settingsResult.isErr() || partnersResult.isErr()) {
-    return null;
+export default function Footer() {
+  const t = useTranslations('Footer');
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+  const { data: partnersData, isLoading: partnersLoading } = usePartners();
+
+  const isLoading = settingsLoading || partnersLoading;
+
+  if (isLoading || !settings) {
+    return <FooterSkeleton />;
   }
-  const settings = settingsResult.value.data;
-  const partners = partnersResult.value.data.partners;
-  const t = await getTranslations('Footer');
+
+  const partners = partnersData?.partners ?? [];
 
   const currentYear = new Date().getFullYear();
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
-  const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700';
   const copyrightName = settings.site_title;
 
   return (
@@ -69,9 +70,6 @@ export default async function Footer() {
                     />
                   </div>
                 )}
-                {/* <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
-                  {partner.name}
-                </span> */}
               </div>
             ))}
           </div>

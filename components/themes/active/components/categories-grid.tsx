@@ -1,11 +1,11 @@
 'use client';
 
+import { ProductsGridSkeleton } from '@shared/components/skeletons';
 import clsx from 'clsx';
-import { createApi } from 'lib/api';
 import { Category, GlobalSettings } from 'lib/api/types';
-import { useLocale, useTranslations } from 'next-intl';
+import { useProducts } from 'lib/hooks/api';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import useSWR from 'swr';
 import { Pagination } from './pagination';
 import { ProductsList } from './products-list';
 import { SectionTitle } from './section-title';
@@ -15,54 +15,32 @@ interface CategoriesGridProps {
   settings: GlobalSettings;
 }
 
-// SWR fetcher function using the API client
-const fetcher = async (params: { categoryId: number; page: number; locale: string }) => {
-  if (!params.categoryId) return { products: [], total: 0 };
-
-  const api = createApi({ language: params.locale });
-  const result = await api.getProducts({
-    category_id: params.categoryId.toString(),
-    sort: 'selling_count',
-    per_page: '18',
-    page: params.page.toString()
-  });
-
-  if (result.isErr()) {
-    throw new Error('Failed to fetch products');
-  }
-
-  return {
-    products: result.value.data.products.data,
-    total: result.value.data.products.total,
-    currentPage: result.value.data.products.current_page,
-    lastPage: result.value.data.products.last_page
-  };
-};
-
 export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
-  const locale = useLocale();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
     categories?.[0]?.id || null
   );
   const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(
-    categories?.[0]?.parent_id === null ? categories[0].id : categories[0].parent_id
+    categories?.[0]?.parent_id === null ? categories[0]?.id : categories[0]?.parent_id
   );
   const [currentPage, setCurrentPage] = useState(1);
   const t = useTranslations('Products');
 
-  // SWR hook for fetching products
-  const { data, error, isLoading } = useSWR(
-    selectedCategory ? `category-${selectedCategory}-page-${currentPage}-${locale}` : null,
-    () => fetcher({ categoryId: selectedCategory!, page: currentPage, locale })
+  // Use the useProducts hook for fetching products
+  const { data, isLoading, error } = useProducts(
+    selectedCategory
+      ? {
+          category_id: selectedCategory.toString(),
+          sort: 'selling_count',
+          per_page: '18',
+          page: currentPage.toString()
+        }
+      : undefined
   );
 
   if (!categories?.length) return null;
 
   // Filter categories based on client
   let filteredCategories = categories;
-  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-  //   filteredCategories = categories.filter((cat) => cat.id !== 44);
-  // }
 
   // Get top-level categories (no parent)
   const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);
@@ -91,9 +69,8 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
     breadcrumb.push(selectedCategoryData);
   }
 
-  const products = data?.products || [];
-  const totalProducts = data?.total || 0;
-  const totalPages = data?.lastPage || 1;
+  const products = data?.products.data || [];
+  const totalPages = data?.products.last_page || 1;
 
   // Handle parent category selection
   const handleParentCategoryChange = (categoryId: number) => {
@@ -188,7 +165,7 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
       {selectedCategory && (
         <>
           {isLoading ? (
-            <CategoryProductsSkeleton />
+            <ProductsGridSkeleton count={12} showTitle={false} />
           ) : error ? (
             <div className="py-12 text-center">
               <p className="text-gray-500 dark:text-gray-400">
@@ -213,23 +190,6 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
           )}
         </>
       )}
-    </div>
-  );
-}
-
-// Loading skeleton for category products
-function CategoryProductsSkeleton() {
-  return (
-    <div className="space-y-6">
-      <div className="h-6 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="aspect-[5/4] w-full animate-pulse rounded-theme bg-gray-200 dark:bg-gray-700"
-          />
-        ))}
-      </div>
     </div>
   );
 }

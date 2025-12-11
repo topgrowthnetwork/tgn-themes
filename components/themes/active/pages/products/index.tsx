@@ -1,45 +1,46 @@
 'use client';
 
+import { ProductsGridSkeleton } from '@shared/components/skeletons';
 import Grid from '@theme/components/grid';
 import ProductGridItems from '@theme/components/layout/product-grid-items';
 import FilterList from '@theme/components/layout/search/filter';
 import { PaginationWithUrl } from '@theme/components/pagination-with-url';
 import { SectionTitle } from '@theme/components/section-title';
 import clsx from 'clsx';
-import { Category, GlobalSettings, ProductsResponse } from 'lib/api/types';
+import { Category } from 'lib/api/types';
 import { getSortingOptions } from 'lib/constants';
+import { useCategories, useGlobalSettings, useProducts } from 'lib/hooks/api';
+import { getProductParams } from 'lib/utils';
 import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 
-interface ProductsPageProps {
-  productsResult: ProductsResponse;
-  categories: Category[];
-  settings: GlobalSettings;
-  selectedCategory?: string;
-}
-
-export default function ProductsPage({
-  productsResult,
-  categories,
-  settings,
-  selectedCategory
-}: ProductsPageProps) {
-  const products = productsResult.products.data;
-  const totalPages = productsResult.products.last_page;
-  const currentPage = productsResult.products.current_page;
+export default function ProductsPage() {
   const t = useTranslations('Products');
   const commonT = useTranslations('Common');
   const sortingT = useTranslations('Sorting');
 
   const [category, setCategory] = useQueryState('category', { shallow: false });
+  const [sort] = useQueryState('sort', { shallow: false });
+  const [page] = useQueryState('page', { shallow: false });
   const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(null);
+
+  const productParams = getProductParams(sort || undefined, undefined, category || undefined);
+
+  const { data: productsData, isLoading: productsLoading } = useProducts({
+    ...productParams,
+    page: page || '1',
+    per_page: '20'
+  });
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+
+  const isLoading = productsLoading || categoriesLoading || settingsLoading;
+
+  const categories = categoriesData?.categories ?? [];
 
   // Filter categories based on client
   let filteredCategories = categories;
-  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-  //   filteredCategories = categories.filter((cat) => cat.id !== 44);
-  // }
 
   // Get top-level categories (no parent)
   const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);
@@ -100,6 +101,26 @@ export default function ProductsPage({
   };
 
   const sortingOptions = getSortingOptions(sortingT);
+
+  if (isLoading || !productsData || !settings) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-wrap justify-start gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-12 w-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"
+            />
+          ))}
+        </div>
+        <ProductsGridSkeleton count={20} showTitle={false} />
+      </div>
+    );
+  }
+
+  const products = productsData.products.data;
+  const totalPages = productsData.products.last_page;
+  const currentPage = productsData.products.current_page;
 
   return (
     <div className="space-y-6">

@@ -1,16 +1,19 @@
+'use client';
+
 import { Container } from '@shared/components';
 import ContactInformation from '@shared/components/contact-information';
-import { Category, GlobalSettings } from 'lib/api/types';
+import { Skeleton } from '@shared/components/skeletons';
+import { useCategories, useGlobalSettings } from 'lib/hooks/api';
 import { useTranslations } from 'next-intl';
 import RepairRequestForm from '../../components/repair-request-form';
 
-interface RepairRequestPageProps {
-  settings: GlobalSettings;
-  categories: Category[];
-}
-
-export default function RepairRequestPage({ settings, categories }: RepairRequestPageProps) {
+export default function RepairRequestPage() {
   const t = useTranslations('RepairRequest');
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
+
+  const isLoading = settingsLoading || categoriesLoading;
+  const categories = categoriesData?.categories ?? [];
 
   return (
     <Container>
@@ -27,14 +30,53 @@ export default function RepairRequestPage({ settings, categories }: RepairReques
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Contact Form */}
         <div className="lg:col-span-1">
+          {categoriesLoading ? (
+            <RepairRequestFormSkeleton />
+          ) : (
           <RepairRequestForm categories={categories} />
+          )}
         </div>
 
         {/* Contact Information */}
         <div className="lg:col-span-1">
+          {isLoading || !settings ? (
+            <ContactInformationSkeleton />
+          ) : (
           <ContactInformation settings={settings} />
+          )}
         </div>
       </div>
     </Container>
+  );
+}
+
+function RepairRequestFormSkeleton() {
+  return (
+    <div className="space-y-6 rounded-theme border p-6">
+      <Skeleton className="h-8 w-48" />
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-12 w-full rounded" />
+        ))}
+        <Skeleton className="h-32 w-full rounded" />
+        <Skeleton className="h-12 w-full rounded-theme" />
+      </div>
+    </div>
+  );
+}
+
+function ContactInformationSkeleton() {
+  return (
+    <div className="space-y-6 rounded-theme border p-6">
+      <Skeleton className="h-8 w-48" />
+      <div className="space-y-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-5 w-48" />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -1,29 +1,40 @@
 'use client';
 
 import { CartResponse } from 'lib/api/types';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { useCart as useCartSWR } from 'lib/hooks/api';
+import { createContext, ReactNode, useContext } from 'react';
 
 interface CartContextType {
   cartResponse: CartResponse;
-  setCartResponse: (cart: CartResponse) => void;
   currency: string;
+  isLoading: boolean;
+  mutate: () => Promise<any>;
 }
+
+const emptyCart: CartResponse = {
+  cart: null,
+  total_items: 0,
+  sub_total: 0,
+  tax: 0,
+  total_price: 0,
+  discount: 0
+};
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({
   children,
-  initialCart,
   currency
 }: {
   children: ReactNode;
-  initialCart: CartResponse;
   currency: string;
 }) {
-  const [cartResponse, setCartResponse] = useState<CartResponse>(initialCart);
+  const { data, isLoading, mutate } = useCartSWR();
+
+  const cartResponse = data ?? emptyCart;
 
   return (
-    <CartContext.Provider value={{ cartResponse, setCartResponse, currency }}>
+    <CartContext.Provider value={{ cartResponse, currency, isLoading, mutate }}>
       {children}
     </CartContext.Provider>
   );

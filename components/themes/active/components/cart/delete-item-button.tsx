@@ -32,18 +32,18 @@ function SubmitButton({ item }: { item: any }) {
 }
 
 export function DeleteItemButton({ item }: { item: any }) {
-  const { setCartResponse } = useCart();
+  const { mutate } = useCart();
   const [state, formAction] = useFormState(removeItemV2, {
     message: '',
     success: false
   });
 
-  // Update cart context when cart data is returned from server action
+  // Refresh cart when item is removed
   useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
+    if (state.success) {
+      mutate();
     }
-  }, [state.success, state.cartData, setCartResponse]);
+  }, [state.success, mutate]);
 
   return (
     <>

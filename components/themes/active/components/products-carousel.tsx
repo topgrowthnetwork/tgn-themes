@@ -1,52 +1,34 @@
-import { createApi } from 'lib/api';
+'use client';
+
+import { ProductsCarouselSkeleton as CarouselSkeleton } from '@shared/components/skeletons';
+import { useProducts } from 'lib/hooks/api';
 import { GlobalSettings } from 'lib/api/types';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import ActiveContainer from './container';
 import { ProductCard } from './product-card';
 import { SectionTitle } from './section-title';
 
-// Skeleton component for loading state
-function ProductsCarouselSkeleton() {
-  return (
-    <div className="w-full space-y-6" dir="ltr">
-      {/* Title Section */}
-      <ActiveContainer className="!py-0">
-        <div className="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-      </ActiveContainer>
+// Re-export skeleton for backwards compatibility
+export { ProductsCarouselSkeleton } from '@shared/components/skeletons';
 
-      {/* Carousel Section */}
-      <div className="overflow-x-auto pb-6 pt-1">
-        <ul className="flex gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <li
-              key={i}
-              className="relative aspect-[5/4] w-2/3 min-w-[200px] max-w-[475px] flex-none md:w-1/3"
-            >
-              <div className="h-full w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
+export function ProductsCarousel({ settings }: { settings: GlobalSettings }) {
+  const t = useTranslations('Products');
 
-export async function ProductsCarousel({ settings }: { settings: GlobalSettings }) {
-  const t = await getTranslations('Products');
-  const language = await getLocale();
-
-  const api = createApi({ language });
-  const productsResult = await api.getProducts({
+  const { data: productsData, isLoading } = useProducts({
     recomended: '1',
     per_page: '15'
   });
-  // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
 
-  if (productsResult.isErr() || productsResult.value.data.products.data.length == 0) {
+  if (isLoading) {
+    return <CarouselSkeleton />;
+  }
+
+  if (!productsData || productsData.products.data.length === 0) {
     return null;
   }
 
-  const products = productsResult.value.data.products.data;
+  const products = productsData.products.data;
+  // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
   const carouselProducts = [...products, ...products, ...products];
 
   return (
@@ -76,6 +58,3 @@ export async function ProductsCarousel({ settings }: { settings: GlobalSettings 
     </div>
   );
 }
-
-// Export the skeleton for use in Suspense
-export { ProductsCarouselSkeleton };

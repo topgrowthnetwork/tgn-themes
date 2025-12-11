@@ -4,33 +4,22 @@ import CartSummary from '@shared/components/cart-summary';
 import { processCheckout } from '@shared/components/checkout-actions';
 import PaymentForm from '@shared/components/payment-form';
 import ShippingForm from '@shared/components/shipping-form';
+import { CheckoutPageSkeleton } from '@shared/components/skeletons';
 import { ToastNotification } from '@shared/components/toast-notification';
 import Container from '@theme/components/container';
+import { CheckoutRequest } from 'lib/api/types';
+import { useCart } from 'lib/context/cart-context';
 import {
-  CartResponse,
-  CheckoutRequest,
-  City,
-  Country,
-  GlobalSettings,
-  PaymentSettings,
-  State
-} from 'lib/api/types';
+  useAddressData,
+  useGlobalSettings,
+  usePaymentSettings
+} from 'lib/hooks/api';
 import { useFormPersistence } from 'lib/hooks/use-form-persistence';
 import { useShippingStorage } from 'lib/hooks/use-shipping-storage';
 import { getAllPaymentGateways } from 'lib/payment-gateways';
-
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
-
-interface CheckoutPageProps {
-  paymentSettings: PaymentSettings;
-  cartResponse: CartResponse;
-  settings: GlobalSettings;
-  countries: Country[];
-  states: State[];
-  cities: City[];
-}
 
 // Constants
 const STORAGE_KEY = 'checkout_shipping_data';
@@ -47,18 +36,19 @@ const INITIAL_FORM_DATA: Partial<CheckoutRequest> = {
   payment_gateway: ''
 };
 
-export default function CheckoutPage({
-  paymentSettings,
-  cartResponse,
-  settings,
-  countries,
-  states,
-  cities
-}: CheckoutPageProps) {
+export default function CheckoutPage() {
   const t = useTranslations('Checkout');
   const locale = useLocale();
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const { isLoaded } = useShippingStorage();
+
+  // Fetch all data using hooks
+  const { data: paymentSettings, isLoading: paymentLoading } = usePaymentSettings();
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+  const { countries, states, cities, isLoading: addressLoading } = useAddressData();
+  const { cartResponse, isLoading: cartLoading } = useCart();
+
+  const isLoading = paymentLoading || settingsLoading || addressLoading || cartLoading;
 
   const [formData, setFormData] = useState<Partial<CheckoutRequest>>(INITIAL_FORM_DATA);
   const [state, formAction] = useFormState(
@@ -72,9 +62,11 @@ export default function CheckoutPage({
   );
 
   // Get available payment gateways
-  const availableGateways = getAllPaymentGateways()
-    .filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1')
-    .map((gateway) => gateway.key);
+  const availableGateways = paymentSettings
+    ? getAllPaymentGateways()
+        .filter((gateway) => paymentSettings[gateway.key as keyof typeof paymentSettings] === '1')
+        .map((gateway) => gateway.key)
+    : [];
 
   // Validate stored data to ensure payment_gateway is available
   const validateStoredData = (data: Partial<CheckoutRequest>): Partial<CheckoutRequest> => {
@@ -94,18 +86,6 @@ export default function CheckoutPage({
     isLoaded,
     validateData: validateStoredData
   });
-
-  // // Handle external payment gateway redirect
-  // useEffect(() => {
-  //   if (state?.success) {
-  //     if (state.internalRedirect) {
-  //       router.push('/thank-you');
-  //     }
-  //     if (state.redirectUrl) {
-  //       window.location.href = state.redirectUrl;
-  //     }
-  //   }
-  // }, [state, router]);
 
   const updateFormData = (field: keyof CheckoutRequest, value: any) => {
     setFormData((prev) => ({
@@ -168,6 +148,10 @@ export default function CheckoutPage({
       )}
     </>
   );
+
+  if (isLoading || !paymentSettings || !settings) {
+    return <CheckoutPageSkeleton />;
+  }
 
   return (
     <Container>

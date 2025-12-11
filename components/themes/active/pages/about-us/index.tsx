@@ -7,7 +7,7 @@ export default function ArkanAboutPage() {
       <div className="container mx-auto max-w-6xl px-4 py-12">
         {/* Header Section */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">عن أركان</h1>
+          <h1 className="mb-4 text-4xl font-bold text-slate-900 md:text-3xl">عن أركان</h1>
           <div className="mx-auto mb-6 h-1 w-20 bg-blue-600"></div>
         </div>
 

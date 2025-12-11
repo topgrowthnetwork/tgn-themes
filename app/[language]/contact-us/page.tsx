@@ -1,5 +1,4 @@
 import ContactPage from '@shared/pages/contact';
-import { createApi } from 'lib/api';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -27,13 +26,5 @@ export default async function Page({ params }: { params: Promise<{ language: str
   // Enable static rendering
   setRequestLocale(language);
 
-  // Fetch settings data
-  const api = createApi({ language });
-  const settingsResult = await api.getGlobalSettings();
-
-  if (settingsResult.isErr()) {
-    throw new Error('Failed to get settings');
-  }
-
-  return <ContactPage settings={settingsResult.value.data} />;
+  return <ContactPage />;
 }

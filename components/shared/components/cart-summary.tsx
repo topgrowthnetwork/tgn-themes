@@ -32,19 +32,19 @@ function CouponSubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function CartSummary({}: CartSummaryProps) {
   const t = useTranslations('Cart');
-  const { cartResponse, currency, setCartResponse } = useCart();
+  const { cartResponse, currency, mutate } = useCart();
   const { shippingAmount } = useShipping();
   const [state, formAction] = useFormState(applyCouponV2, {
     message: '',
     success: false
   });
 
-  // Update cart context when cart data is returned from server action
+  // Refresh cart when coupon is applied successfully
   useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
+    if (state.success) {
+      mutate();
     }
-  }, [state.success, state.cartData, setCartResponse]);
+  }, [state.success, mutate]);
 
   if (!cartResponse.cart || cartResponse.cart.cart_items.length === 0) {
     return null;

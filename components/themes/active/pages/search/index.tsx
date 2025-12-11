@@ -1,20 +1,40 @@
+'use client';
+
+import { SearchPageSkeleton } from '@shared/components/skeletons';
 import Grid from '@theme/components/grid';
 import ProductGridItems from '@theme/components/layout/product-grid-items';
 import { PaginationWithUrl } from '@theme/components/pagination-with-url';
-import { GlobalSettings, ProductsResponse } from 'lib/api/types';
+import { useGlobalSettings, useProducts } from 'lib/hooks/api';
+import { getProductParams } from 'lib/utils';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 
-interface SearchPageProps {
-  productsResult: ProductsResponse;
-  searchValue?: string;
-  settings: GlobalSettings;
-}
-
-export default function SearchPage({ productsResult, searchValue, settings }: SearchPageProps) {
+export default function SearchPage() {
   const t = useTranslations('Search');
-  const products = productsResult.products.data;
-  const totalPages = productsResult.products.last_page;
-  const currentPage = productsResult.products.current_page;
+  const searchParams = useSearchParams();
+
+  const searchValue = searchParams.get('q') || undefined;
+  const sort = searchParams.get('sort') || undefined;
+  const page = searchParams.get('page') || '1';
+
+  const productParams = getProductParams(sort, searchValue);
+
+  const { data: productsData, isLoading: productsLoading } = useProducts({
+    ...productParams,
+    page,
+    per_page: '12'
+  });
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+
+  const isLoading = productsLoading || settingsLoading;
+
+  if (isLoading || !productsData || !settings) {
+    return <SearchPageSkeleton />;
+  }
+
+  const products = productsData.products.data;
+  const totalPages = productsData.products.last_page;
+  const currentPage = productsData.products.current_page;
 
   return (
     <div className="space-y-8">

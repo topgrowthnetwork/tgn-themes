@@ -1,23 +1,27 @@
+'use client';
+
 import clsx from 'clsx';
-import { createApi } from 'lib/api';
+import { useGlobalSettings } from 'lib/hooks/api';
 import { getFullPath } from 'lib/utils';
 import Image from 'next/image';
 
 // TODO: Add size prop
-export default async function LogoSquare({ size = 'sm' }: { size?: string }) {
-  const api = createApi({ language: 'en' });
-  const settingsResult = await api.getGlobalSettings();
+export default function LogoSquare({ size = 'sm' }: { size?: string }) {
+  const { data: settings, isLoading } = useGlobalSettings();
 
   const [logoPath, logoTitle] = (function getLogoData() {
-    if (settingsResult.isOk() && settingsResult.value.data.site_logo) {
-      return [
-        getFullPath(settingsResult.value.data.site_logo.path),
-        settingsResult.value.data.site_title
-      ];
+    if (settings?.site_logo) {
+      return [getFullPath(settings.site_logo.path), settings.site_title];
     }
 
     return ['https://placehold.co/600x400.png', 'Logo'];
   })();
+
+  if (isLoading) {
+    return (
+      <div className="h-16 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+    );
+  }
 
   return (
     <div>

@@ -1,8 +1,6 @@
 import CheckoutPage from '@shared/pages/checkout';
-import { createApi } from 'lib/api';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cookies } from 'next/headers';
 
 export async function generateMetadata({
   params
@@ -28,44 +26,5 @@ export default async function Page({ params }: { params: Promise<{ language: str
   // Enable static rendering
   setRequestLocale(language);
 
-  // Fetch payment settings and other data (cart is now handled in layout)
-  const guestToken = cookies().get('guest_token')?.value;
-  const api = createApi({ language, guestToken });
-  const [
-    paymentSettingsResult,
-    cartResult,
-    settingsResult,
-    countriesResult,
-    statesResult,
-    citiesResult
-  ] = await Promise.all([
-    api.getPaymentSettings(),
-    api.getCart(),
-    api.getGlobalSettings(),
-    api.getAllCountries(),
-    api.getAllStates(),
-    api.getAllCities()
-  ]);
-
-  if (
-    paymentSettingsResult.isErr() ||
-    cartResult.isErr() ||
-    settingsResult.isErr() ||
-    countriesResult.isErr() ||
-    statesResult.isErr() ||
-    citiesResult.isErr()
-  ) {
-    throw new Error('Failed to get data');
-  }
-
-  return (
-    <CheckoutPage
-      paymentSettings={paymentSettingsResult.value.data}
-      cartResponse={cartResult.value.data}
-      settings={settingsResult.value.data}
-      countries={countriesResult.value.data.countries}
-      states={statesResult.value.data.states}
-      cities={citiesResult.value.data.cities}
-    />
-  );
+  return <CheckoutPage />;
 }

@@ -1,29 +1,29 @@
+'use client';
+
+import { ProductCardSkeleton, ProductPageSkeleton } from '@shared/components/skeletons';
 import { ProductCard } from '@theme/components/product-card';
-import { createApi } from 'lib/api';
-import { GlobalSettings, Product, ProductVariant } from 'lib/api/types';
+import { Product } from 'lib/api/types';
+import { useGlobalSettings, useProduct, useProducts } from 'lib/hooks/api';
 import { getFullPath } from 'lib/utils';
 import { useTranslations } from 'next-intl';
-import { getLocale } from 'next-intl/server';
-import { Suspense } from 'react';
 import ProductClient from './ProductClient';
 
 interface ProductPageProps {
-  product: Product;
-  images: Array<{ path: string; title: string }>;
-  attributes: any;
-  combinations: any[];
-  settings: GlobalSettings;
-  selectedVariant?: ProductVariant | null;
+  handle: string;
 }
 
-export default function ProductPage({
-  product,
-  images,
-  attributes,
-  combinations,
-  settings,
-  selectedVariant
-}: ProductPageProps) {
+export default function ProductPage({ handle }: ProductPageProps) {
+  const { data: productData, isLoading: productLoading } = useProduct(handle);
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+
+  const isLoading = productLoading || settingsLoading;
+
+  if (isLoading || !productData || !settings) {
+    return <ProductPageSkeleton />;
+  }
+
+  const { product, images, attributes } = productData;
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -51,45 +51,59 @@ export default function ProductPage({
       <div className="mx-auto max-w-screen-2xl px-4">
         <ProductClient
           product={product}
-          images={images}
+          images={images || []}
           attributes={attributes}
           settings={settings}
         />
-        <Suspense>
-          <RelatedProducts product={product} currency={settings.site_global_currency} />
-        </Suspense>
+        <RelatedProducts product={product} currency={settings.site_global_currency} />
       </div>
     </>
   );
 }
 
-async function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
-  const locale = await getLocale();
-  const api = createApi({ language: locale });
-  const relatedProductsResult = await api.getProducts({
+function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
+  const t = useTranslations('Product');
+
+  const { data: relatedData, isLoading } = useProducts({
     category_id: product.category_id.toString(),
-    sort: 'selling_count'
+    sort: 'selling_count',
+    per_page: '10'
   });
-  if (relatedProductsResult.isErr()) {
-    return null;
+
+  if (isLoading) {
+    return (
+      <div className="py-8">
+        <h2 className="mb-4 text-2xl font-bold">{t('relatedProducts')}</h2>
+        <ul className="scrollbar-hide flex w-full gap-4 overflow-x-auto pb-2 pt-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <li
+              key={i}
+              className="aspect-square w-[75%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
+            >
+              <ProductCardSkeleton />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
-  const relatedProducts = relatedProductsResult.value.data.products.data;
+  const relatedProducts = relatedData?.products.data ?? [];
   if (!relatedProducts.length) return null;
 
   return (
     <div className="py-8">
-      <RelatedProductsTitle />
-      <ul className="scrollbar-hide flex w-full gap-4 overflow-x-auto pt-1">
+      <h2 className="mb-4 text-2xl font-bold">{t('relatedProducts')}</h2>
+      <ul className="scrollbar-hide flex w-full gap-4 overflow-x-auto pb-2 pt-1">
         {relatedProducts.map((relatedProduct: Product) => (
           <li
             key={relatedProduct.slug}
-            className="aspect-square w-full flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
+            className="aspect-square w-[75%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
           >
             <ProductCard
               product={relatedProduct}
               currency={currency}
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 75vw"
               className="h-full w-full"
             />
           </li>
@@ -97,10 +111,4 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
       </ul>
     </div>
   );
-}
-
-function RelatedProductsTitle() {
-  const t = useTranslations('Product');
-
-  return <h2 className="mb-4 text-2xl font-bold">{t('relatedProducts')}</h2>;
 }

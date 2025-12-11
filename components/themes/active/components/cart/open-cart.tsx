@@ -3,10 +3,12 @@ import clsx from 'clsx';
 
 export default function OpenCart({
   className,
-  quantity
+  quantity,
+  isLoading
 }: {
   className?: string;
   quantity?: number;
+  isLoading?: boolean;
 }) {
   return (
     <div className="relative flex h-11 w-11 items-center justify-center rounded-theme border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
@@ -14,7 +16,9 @@ export default function OpenCart({
         className={clsx('h-4 transition-all ease-in-out hover:scale-110 ', className)}
       />
 
-      {quantity ? (
+      {isLoading ? (
+        <div className="absolute right-0 top-0 -me-2 -mt-2 h-4 w-4 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+      ) : quantity ? (
         <div className="absolute right-0 top-0 -me-2 -mt-2 h-4 w-4 rounded bg-primary-600 text-[11px] font-medium text-white">
           {quantity}
         </div>

@@ -1,15 +1,15 @@
+'use client';
+
 import { Container } from '@shared/components';
 import ContactInformation from '@shared/components/contact-information';
-import { GlobalSettings } from 'lib/api/types';
+import { Skeleton } from '@shared/components/skeletons';
+import { useGlobalSettings } from 'lib/hooks/api';
 import { useTranslations } from 'next-intl';
 import ContactForm from '../../components/contact-form';
 
-interface ContactPageProps {
-  settings: GlobalSettings;
-}
-
-export default function ContactPage({ settings }: ContactPageProps) {
+export default function ContactPage() {
   const t = useTranslations('Contact');
+  const { data: settings, isLoading } = useGlobalSettings();
 
   return (
     <Container>
@@ -27,9 +27,29 @@ export default function ContactPage({ settings }: ContactPageProps) {
 
         {/* Contact Information */}
         <div className="lg:col-span-1">
-          <ContactInformation settings={settings} />
+          {isLoading || !settings ? (
+            <ContactInformationSkeleton />
+          ) : (
+            <ContactInformation settings={settings} />
+          )}
         </div>
       </div>
     </Container>
+  );
+}
+
+function ContactInformationSkeleton() {
+  return (
+    <div className="space-y-6 rounded-theme border p-6">
+      <Skeleton className="h-8 w-48" />
+      <div className="space-y-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-5 w-48" />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

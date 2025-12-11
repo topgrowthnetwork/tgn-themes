@@ -23,7 +23,7 @@ type MerchandiseSearchParams = {
 };
 
 export default function CartModal() {
-  const { cartResponse, currency } = useCart();
+  const { cartResponse, currency, isLoading } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cartResponse?.total_items);
   const pathname = usePathname();
@@ -64,7 +64,7 @@ export default function CartModal() {
   return (
     <>
       <button aria-label={t('openCart')} onClick={openCart}>
-        <OpenCart quantity={cartResponse?.total_items} />
+        <OpenCart quantity={cartResponse?.total_items} isLoading={isLoading} />
       </button>
       <Transition show={isOpen}>
         <Dialog onClose={closeCart} data-testid="cart-modal" className="relative z-50">
@@ -123,11 +123,6 @@ export default function CartModal() {
                         });
                       }
 
-                      // const merchandiseUrl = createUrl(
-                      //   `/product/${item.product.title}`,
-                      //   new URLSearchParams(merchandiseSearchParams)
-                      // );
-
                       // Get the correct price: variant price if available, otherwise product price
                       const itemPrice = getItemPrice(item.product, item.variant);
                       const totalPrice = itemPrice * item.qyt;
@@ -141,11 +136,7 @@ export default function CartModal() {
                             <div className="absolute z-40 -mt-2 ms-[55px]">
                               <DeleteItemButton item={item} />
                             </div>
-                            <div
-                              // href={merchandiseUrl}
-                              // onClick={closeCart}
-                              className="z-30 flex flex-row gap-x-4"
-                            >
+                            <div className="z-30 flex flex-row gap-x-4">
                               <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-theme border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                                 <Image
                                   className="h-full w-full object-cover"

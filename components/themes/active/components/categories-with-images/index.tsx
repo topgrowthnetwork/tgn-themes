@@ -1,34 +1,37 @@
-import { createApi } from 'lib/api';
+'use client';
+
+import { CategoriesGridSkeleton } from '@shared/components/skeletons';
+import { useCategories } from 'lib/hooks/api';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
 import { filter } from 'lodash';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { SectionTitle } from '../section-title';
 import { TileNoPrice } from '../tile-no-price';
 
 type Props = {};
 
-async function CategoriesWithImages({}: Props) {
-  const t = await getTranslations('Category');
-  const locale = await getLocale();
-  const api = createApi({ language: locale });
-  const categoriesResult = await api.getCategories({});
+function CategoriesWithImages({}: Props) {
+  const t = useTranslations('Category');
+  const { data: categoriesData, isLoading } = useCategories();
 
-  if (categoriesResult.isErr()) {
+  if (isLoading || !categoriesData) {
+    return <CategoriesGridSkeleton />;
+  }
+
+  const categoriesWithImages = filter(categoriesData.categories, 'thumbnail');
+
+  if (categoriesWithImages.length === 0) {
     return null;
   }
 
-  const categoriesWithImages = filter(categoriesResult.value.data.categories, 'thumbnail');
-
   return (
     <div className="space-y-8">
-      {/* <JsonViewer data={categoriesWithImages} /> */}
-
       <SectionTitle title={t('categories')} />
 
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {categoriesWithImages.map((category) => (
-          <li className="aspect-square">
+          <li key={category.id} className="aspect-square">
             <Link href={`/category/${category.id}`}>
               <TileNoPrice
                 src={getFullPath(category.thumbnail?.path)}

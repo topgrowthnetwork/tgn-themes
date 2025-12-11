@@ -68,7 +68,7 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   minStock?: number;
 }) {
-  const { setCartResponse } = useCart();
+  const { mutate } = useCart();
   const [state, formAction] = useFormState(updateItemQuantityV2, {
     message: '',
     success: false
@@ -85,12 +85,12 @@ export function EditItemQuantityButton({
   // Disable plus button if no stock available or below min_stock
   const isDisabled = type === 'plus' && !canIncrease;
 
-  // Update cart context when cart data is returned from server action
+  // Refresh cart when quantity is updated
   useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
+    if (state.success) {
+      mutate();
     }
-  }, [state.success, state.cartData, setCartResponse]);
+  }, [state.success, mutate]);
 
   return (
     <>

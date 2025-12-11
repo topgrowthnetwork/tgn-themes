@@ -3,10 +3,8 @@ import NProgressProvider from '@shared/components/nprogress-provider';
 import { TamaraWidgetScript } from '@theme/components/tamara-widget';
 import ThemeContent from '@theme/layout';
 import { ThemeSwitcher, ToastContainerWrapper } from 'components/shared/components';
-import { createApi } from 'lib/api';
 import CartProviderWrapper from 'lib/context/cart-provider-wrapper';
 import { ShippingProvider } from 'lib/context/shipping-context';
-import { getFullPath } from 'lib/utils';
 import { Metadata } from 'next';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -17,43 +15,13 @@ import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
 import '../globals.css';
 
-export const revalidate = 60;
-
-export async function generateMetadata({
-  params
-}: {
-  params: Promise<{ language: string }>;
-}): Promise<Metadata> {
-  const { language } = await params;
-
-  // Enable static rendering
-  setRequestLocale(language);
-
-  const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'http://localhost:3000';
-  const api = createApi({ language });
-  const globalSettingsResult = await api.getGlobalSettings();
-
-  if (globalSettingsResult.isErr()) {
-    throw new Error('Failed to get global settings');
-  }
-
-  const globalSettings = globalSettingsResult.value.data;
-  return {
-    metadataBase: new URL(baseUrl),
+// Dynamic metadata is handled client-side now
+export const metadata: Metadata = {
     title: {
-      default: globalSettings.site_title || '',
-      template: `%s | ${globalSettings.site_title}`
-    },
-    description: globalSettings.site_description || '',
-    icons: [
-      globalSettings.site_favicon?.path
-        ? { url: getFullPath(globalSettings.site_favicon?.path) }
-        : { url: '/favicon.ico' }
-    ]
-  };
-}
+    default: 'Loading...',
+    template: '%s'
+  }
+};
 
 export default async function LocaleLayout({
   children,
@@ -123,6 +91,8 @@ export default async function LocaleLayout({
           </>
         )}
         <TamaraWidgetScript language={language} country="SA" />
+        {/* Dynamic metadata will be set by client component */}
+        <DynamicMetadata />
       </head>
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${
@@ -152,6 +122,13 @@ export default async function LocaleLayout({
     </html>
   );
 }
+
+// Client component for dynamic metadata
+function DynamicMetadata() {
+  return <DynamicMetadataClient />;
+}
+
+import { DynamicMetadataClient } from './dynamic-metadata';
 
 export function generateStaticParams() {
   return routing.locales.map((locale: string) => ({ language: locale }));

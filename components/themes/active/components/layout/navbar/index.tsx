@@ -1,6 +1,9 @@
-import { createApi } from 'lib/api';
+'use client';
+
+import { NavbarSkeleton } from '@shared/components/skeletons';
+import { useCategories, useGlobalSettings, useProducts } from 'lib/hooks/api';
 import { Link } from 'lib/i18n/navigation';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 import Cart from '../../cart';
 import OpenCart from '../../cart/open-cart';
@@ -8,32 +11,27 @@ import LogoSquare from '../../logo-square';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 
-export default async function Navbar() {
-  const locale = await getLocale();
-  const t = await getTranslations('Navigation');
-  const api = createApi({ language: locale });
-  const settingsResult = await api.getGlobalSettings();
-  if (settingsResult.isErr()) {
-    return null;
-  }
-  const settings = settingsResult.value.data;
+function NavbarContent() {
+  const t = useTranslations('Navigation');
 
-  const categoriesResult = await api.getCategories();
-  if (categoriesResult.isErr()) {
-    return null;
-  }
-  const categories = categoriesResult.value.data.categories;
-
-  // Fetch recommended products for the menu
-  const productsResult = await api.getProducts({
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
+  const { data: productsData, isLoading: productsLoading } = useProducts({
     recomended: '1',
     per_page: '3',
     sort: 'selling_count'
   });
-  const products = productsResult.isOk() ? productsResult.value.data.products.data : [];
+
+  const isLoading = settingsLoading || categoriesLoading || productsLoading;
+
+  if (isLoading || !settings || !categoriesData) {
+    return <NavbarSkeleton />;
+  }
+
+  const categories = categoriesData.categories;
+  const products = productsData?.products.data ?? [];
 
   return (
-    // <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-neutral-200 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6 dark:border-neutral-700 dark:bg-black/80">
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="me-2 block flex-none">
         <Suspense
@@ -90,4 +88,8 @@ export default async function Navbar() {
       </div>
     </nav>
   );
+}
+
+export default function Navbar() {
+  return <NavbarContent />;
 }

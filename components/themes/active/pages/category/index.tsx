@@ -1,32 +1,53 @@
+'use client';
+
+import { CategoryPageSkeleton } from '@shared/components/skeletons';
 import Grid from '@theme/components/grid';
 import ProductGridItems from '@theme/components/layout/product-grid-items';
 import FilterList from '@theme/components/layout/search/filter';
 import { PaginationWithUrl } from '@theme/components/pagination-with-url';
 import { SectionTitle } from '@theme/components/section-title';
-import { Category, GlobalSettings, ProductsResponse } from 'lib/api/types';
+import { useCategories, useGlobalSettings, useProducts } from 'lib/hooks/api';
 import { getSortingOptions } from 'lib/constants';
 import { Link } from 'lib/i18n/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getProductParams } from 'lib/utils';
+import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 
 interface CategoryPageProps {
-  productsResult: ProductsResponse;
-  settings: GlobalSettings;
-  category: Category | null;
-  subcategories: Category[];
+  categoryId: string;
 }
 
-export default async function CategoryPage({
-  productsResult,
-  settings,
-  category,
-  subcategories
-}: CategoryPageProps) {
-  const t = await getTranslations('Category');
-  const sortingT = await getTranslations('Sorting');
-  const commonT = await getTranslations('Common');
-  const products = productsResult.products.data;
-  const totalPages = productsResult.products.last_page;
-  const currentPage = productsResult.products.current_page;
+export default function CategoryPage({ categoryId }: CategoryPageProps) {
+  const t = useTranslations('Category');
+  const sortingT = useTranslations('Sorting');
+  const commonT = useTranslations('Common');
+  const searchParams = useSearchParams();
+
+  const sort = searchParams.get('sort') || undefined;
+  const page = searchParams.get('page') || '1';
+  const productParams = getProductParams(sort, undefined, categoryId);
+
+  const { data: productsData, isLoading: productsLoading } = useProducts({
+    ...productParams,
+    page,
+    per_page: '16'
+  });
+  const { data: settings, isLoading: settingsLoading } = useGlobalSettings();
+  const { data: categoryData, isLoading: categoryLoading } = useCategories({
+    category_id: categoryId
+  });
+
+  const isLoading = productsLoading || settingsLoading || categoryLoading;
+
+  if (isLoading || !productsData || !settings || !categoryData) {
+    return <CategoryPageSkeleton />;
+  }
+
+  const products = productsData.products.data;
+  const totalPages = productsData.products.last_page;
+  const currentPage = productsData.products.current_page;
+  const category = categoryData.category;
+  const subcategories = categoryData.categories;
   const sortingOptions = getSortingOptions(sortingT);
 
   return (
