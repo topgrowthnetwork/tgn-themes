@@ -78,7 +78,7 @@ function RelatedProducts({ product, currency }: { product: Product; currency: st
           {Array.from({ length: 5 }).map((_, i) => (
             <li
               key={i}
-              className="aspect-square w-[75%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
+              className="aspect-square w-[46%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
             >
               <ProductCardSkeleton />
             </li>
@@ -98,12 +98,12 @@ function RelatedProducts({ product, currency }: { product: Product; currency: st
         {relatedProducts.map((relatedProduct: Product) => (
           <li
             key={relatedProduct.slug}
-            className="aspect-square w-[75%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
+            className="aspect-square w-[48%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
           >
             <ProductCard
               product={relatedProduct}
               currency={currency}
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 75vw"
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 46vw"
               className="h-full w-full"
             />
           </li>
