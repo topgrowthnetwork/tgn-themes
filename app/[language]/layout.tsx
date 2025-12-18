@@ -1,5 +1,6 @@
 import GuestTokenProvider from '@shared/components/guest-token-provider';
 import NProgressProvider from '@shared/components/nprogress-provider';
+import { TabbyWidgetScript } from '@theme/components/tabby-widget';
 import { TamaraWidgetScript } from '@theme/components/tamara-widget';
 import ThemeContent from '@theme/layout';
 import { ThemeSwitcher, ToastContainerWrapper } from 'components/shared/components';
@@ -123,6 +124,7 @@ export default async function LocaleLayout({
           </>
         )}
         <TamaraWidgetScript language={language} country="SA" />
+        <TabbyWidgetScript language={language} />
       </head>
       <body
         className={`bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white ${

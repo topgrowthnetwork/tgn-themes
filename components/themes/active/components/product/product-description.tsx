@@ -5,7 +5,7 @@ import { Product, ProductAttributes, ProductVariant } from 'lib/api/types';
 import { AddToCart } from '../cart/add-to-cart';
 import Price from '../price';
 import Prose from '../prose';
-import { TamaraSummaryWidget } from '../tamara-widget';
+import { SplitPaymentWidget } from '../split-payment-widget';
 import { VariantSelector } from './variant-selector';
 
 export function ProductDescription({
@@ -35,7 +35,7 @@ export function ProductDescription({
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
-        <h1 className="mb-2 text-5xl font-medium">{product.title}</h1>
+        <h1 className="mb-2 text-xl font-medium lg:text-3xl">{product.title}</h1>
         <div className="flex items-center">
           <div className=" flex w-auto flex-none items-center rounded-full bg-primary-600 p-2 text-sm text-white">
             <Price amount={displayPrice.toString()} currencyCode={currency} />
@@ -49,7 +49,7 @@ export function ProductDescription({
           )}
         </div>
         <div className="mt-3">
-          <TamaraSummaryWidget amount={displayPrice} inlineType={2} />
+          <SplitPaymentWidget price={displayPrice} currency={currency} />
         </div>
       </div>
       <VariantSelector

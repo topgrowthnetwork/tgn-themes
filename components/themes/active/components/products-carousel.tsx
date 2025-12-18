@@ -68,6 +68,7 @@ export async function ProductsCarousel({ settings }: { settings: GlobalSettings 
                 product={product}
                 className="h-full w-full"
                 currency={settings.site_global_currency}
+                settings={settings}
               />
             </li>
           ))}

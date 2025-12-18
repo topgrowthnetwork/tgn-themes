@@ -68,7 +68,7 @@ export default async function CategoryPage({
         <p className="py-3 text-lg">{t('noProducts')}</p>
       ) : (
         <Grid className="grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
-          <ProductGridItems products={products} currency={settings.site_global_currency} />
+          <ProductGridItems products={products} currency={settings.site_global_currency} settings={settings} />
         </Grid>
       )}
 

@@ -8,7 +8,7 @@ export default function ArkanPrivacyPolicy() {
       <div className="container mx-auto max-w-6xl px-4 py-12">
         {/* Header Section */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">سياسة الخصوصية</h1>
+          <h1 className="mb-4 text-4xl font-bold text-slate-900 md:text-3xl">سياسة الخصوصية</h1>
           <div className="mx-auto mb-6 h-1 w-20 bg-blue-600"></div>
           <h2 className="mt-6 text-2xl font-semibold text-slate-700">
             شروط البيع وسياسه الاسترجاع

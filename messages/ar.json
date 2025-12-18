@@ -61,6 +61,10 @@
     "enlargeProductImage": "تكبير صورة المنتج",
     "relatedProducts": "المنتجات ذات الصلة"
   },
+  "QuickView": {
+    "close": "إغلاق العرض السريع",
+    "viewDetails": "عرض التفاصيل الكاملة"
+  },
   "Products": {
     "bestSelling": "أفضل المنتجات مبيعاً",
     "bestsellers": "الأكثر مبيعاً",
@@ -169,6 +173,10 @@
     "continueShopping": "مواصلة التسوق",
     "backToHome": "العودة إلى الصفحة الرئيسية",
     "additionalInfo": "ستتلقى رسالة تأكيد بالبريد الإلكتروني مع تفاصيل طلبك ومعلومات التتبع."
+  },
+  "SplitPayment": {
+    "splitInto": "قسّط على دفعات",
+    "shariaCompliant": "• متوافقة مع الشريعة الإسلامية"
   },
   "Metadata": {
     "search": {

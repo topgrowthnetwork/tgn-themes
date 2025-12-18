@@ -240,3 +240,7 @@ button {
     @apply bg-background text-foreground;
   }
 }
+
+.tamara-summary-widget__container {
+  @apply !rounded-lg !p-4;
+}

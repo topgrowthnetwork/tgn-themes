@@ -56,14 +56,14 @@ export default function ProductPage({
           settings={settings}
         />
         <Suspense>
-          <RelatedProducts product={product} currency={settings.site_global_currency} />
+          <RelatedProducts product={product} currency={settings.site_global_currency} settings={settings} />
         </Suspense>
       </div>
     </>
   );
 }
 
-async function RelatedProducts({ product, currency }: { product: Product; currency: string }) {
+async function RelatedProducts({ product, currency, settings }: { product: Product; currency: string; settings: GlobalSettings }) {
   const locale = await getLocale();
   const api = createApi({ language: locale });
   const relatedProductsResult = await api.getProducts({
@@ -84,12 +84,13 @@ async function RelatedProducts({ product, currency }: { product: Product; curren
         {relatedProducts.map((relatedProduct: Product) => (
           <li
             key={relatedProduct.slug}
-            className="aspect-square w-full flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
+            className="aspect-square w-[48%] flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
           >
             <ProductCard
               product={relatedProduct}
               currency={currency}
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+              settings={settings}
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 46vw"
               className="h-full w-full"
             />
           </li>

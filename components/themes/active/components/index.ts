@@ -7,11 +7,16 @@ export { default as OpengraphImage } from './opengraph-image';
 export { default as Price } from './price';
 export { ProductsCarousel } from './products-carousel';
 export { default as Prose } from './prose';
+export { SplitPaymentWidget } from './split-payment-widget';
+export { TabbyPromoWidget, TabbyWidgetScript } from './tabby-widget';
 export { TamaraSummaryWidget, TamaraWidgetScript } from './tamara-widget';
 
 // Product components
 export { Gallery } from './product/gallery';
 export { ProductDescription } from './product/product-description';
+export { ProductQuickViewModal } from './product/quick-view-modal';
+export { QuickViewGallery } from './product/quick-view-gallery';
+export { QuickViewVariantSelector } from './product/quick-view-variant-selector';
 export { VariantSelector } from './product/variant-selector';
 
 // Cart components

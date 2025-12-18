@@ -61,6 +61,10 @@
     "enlargeProductImage": "Enlarge product image",
     "relatedProducts": "Related Products"
   },
+  "QuickView": {
+    "close": "Close quick view",
+    "viewDetails": "View Full Details"
+  },
   "Products": {
     "bestSelling": "Best Selling Products",
     "bestsellers": "Bestsellers",
@@ -169,6 +173,10 @@
     "continueShopping": "Continue Shopping",
     "backToHome": "Back to Home",
     "additionalInfo": "You'll receive an email confirmation with your order details and tracking information."
+  },
+  "SplitPayment": {
+    "splitInto": "Split into installments",
+    "shariaCompliant": "• Sharia-compliant"
   },
   "Metadata": {
     "search": {

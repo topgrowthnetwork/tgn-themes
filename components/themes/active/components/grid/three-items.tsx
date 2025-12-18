@@ -5,12 +5,14 @@ function ThreeItemGridItem({
   item,
   size,
   priority,
-  currency
+  currency,
+  settings
 }: {
   item: Product;
   size: 'full' | 'half';
   priority?: boolean;
   currency: string;
+  settings: GlobalSettings;
 }) {
   const sizes =
     size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw';
@@ -24,6 +26,7 @@ function ThreeItemGridItem({
         currency={currency}
         sizes={sizes}
         priority={priority}
+        settings={settings}
         className="aspect-[6/5] h-full w-full"
       />
     </div>
@@ -48,14 +51,16 @@ export function ThreeItemGrid({
         item={firstProduct}
         priority={true}
         currency={settings.site_global_currency}
+        settings={settings}
       />
       <ThreeItemGridItem
         size="half"
         item={secondProduct}
         priority={true}
         currency={settings.site_global_currency}
+        settings={settings}
       />
-      <ThreeItemGridItem size="half" item={thirdProduct} currency={settings.site_global_currency} />
+      <ThreeItemGridItem size="half" item={thirdProduct} currency={settings.site_global_currency} settings={settings} />
     </section>
   );
 }

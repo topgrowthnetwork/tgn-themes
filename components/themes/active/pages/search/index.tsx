@@ -28,7 +28,7 @@ export default function SearchPage({ productsResult, searchValue, settings }: Se
 
       {products.length > 0 ? (
         <Grid className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <ProductGridItems products={products} currency={settings.site_global_currency} />
+          <ProductGridItems products={products} currency={settings.site_global_currency} settings={settings} />
         </Grid>
       ) : null}
 
