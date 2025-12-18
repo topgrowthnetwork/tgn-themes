@@ -1,28 +1,31 @@
 'use client';
 
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { removeItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
+import { createApi } from 'lib/api';
+import { ActionResponse } from 'lib/api/types';
 import { useCart } from 'lib/context/cart-context';
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useLocale, useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
 import LoadingDots from '../loading-dots';
 
-function SubmitButton({ item }: { item: any }) {
-  const { pending } = useFormStatus();
+function DeleteButton({ item, loading, onClick }: { item: any; loading?: boolean; onClick: () => void }) {
   const t = useTranslations('Cart');
 
   return (
     <button
       aria-label={t('removeCartItem')}
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending) e.preventDefault();
+        e.preventDefault();
+        if (!loading) {
+          onClick();
+        }
       }}
-      disabled={pending}
-      className="ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200 dark:bg-neutral-400 dark:hover:bg-black dark:hover:text-white"
+      disabled={loading}
+      className="ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200 dark:bg-neutral-400 dark:hover:bg-black dark:hover:text-white disabled:opacity-50"
     >
-      {pending ? (
+      {loading ? (
         <LoadingDots className="bg-white dark:bg-gray-600" />
       ) : (
         <TrashIcon className="mx-[1px] h-4 w-4 text-white transition-all ease-in-out hover:text-white" />
@@ -33,30 +36,69 @@ function SubmitButton({ item }: { item: any }) {
 
 export function DeleteItemButton({ item }: { item: any }) {
   const { setCartResponse } = useCart();
-  const [state, formAction] = useFormState(removeItemV2, {
+  const locale = useLocale();
+  const [cookies] = useCookies(['guest_token']);
+  const [state, setState] = useState<ActionResponse>({
     message: '',
     success: false
   });
+  const [loading, setLoading] = useState(false);
 
-  // Update cart context when cart data is returned from server action
-  useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
+  const handleDeleteItem = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    setState({ message: '', success: false });
+
+    try {
+      const guestToken = cookies.guest_token;
+      const api = createApi({ language: locale, guestToken });
+
+      const result = await api.deleteCartItem(item.id);
+
+      if (result.isErr()) {
+        setState({
+          message: 'Failed to remove item from cart.',
+          success: false
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Fetch updated cart data
+      const cartResult = await api.getCart();
+      const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
+      setState({
+        message: result.value.message || 'Removed from cart successfully',
+        success: true,
+        cartData
+      });
+
+      // Update cart context
+      if (cartData) {
+        setCartResponse(cartData);
+      }
+    } catch (error: any) {
+      setState({
+        message: 'Error removing item from cart.',
+        success: false
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [state.success, state.cartData, setCartResponse]);
+  };
 
   return (
     <>
-      <form action={formAction.bind(null, item.id)}>
-        <SubmitButton item={item} />
-        <p aria-live="polite" className="sr-only" role="status">
-          {state.message}
-        </p>
-      </form>
+      <DeleteButton item={item} loading={loading} onClick={handleDeleteItem} />
+      <p aria-live="polite" className="sr-only" role="status">
+        {state.message}
+      </p>
 
       <ToastNotification
         type={state.success ? 'success' : 'error'}
-        message={state.message}
+        message={state.message || null}
         autoClose={3000}
       />
     </>

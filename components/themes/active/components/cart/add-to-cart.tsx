@@ -1,26 +1,29 @@
 'use client';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { addItemV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import clsx from 'clsx';
-import { Product, ProductVariant } from 'lib/api/types';
+import { createApi } from 'lib/api';
+import { ActionResponse, Product, ProductVariant } from 'lib/api/types';
 import { useCart } from 'lib/context/cart-context';
 import { useLocale, useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
 import LoadingDots from '../loading-dots';
 
-function SubmitButton({
+function AddToCartButton({
   availableForSale,
   selectedVariantId,
-  selectedVariant
+  selectedVariant,
+  loading,
+  onClick
 }: {
   availableForSale: boolean;
   selectedVariantId: number | undefined;
   selectedVariant: ProductVariant | null;
+  loading?: boolean;
+  onClick: () => void;
 }) {
-  const { pending } = useFormStatus();
   const t = useTranslations('Cart');
   const buttonClasses = 'button w-full relative';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
@@ -53,18 +56,21 @@ function SubmitButton({
   return (
     <button
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending) e.preventDefault();
+        e.preventDefault();
+        if (!loading) {
+          onClick();
+        }
       }}
       aria-label={t('addToCart')}
-      aria-disabled={pending}
+      aria-disabled={loading}
       className={clsx(buttonClasses, {
-        'hover:opacity-90': true,
-        disabledClasses: pending
+        'hover:opacity-90': !loading,
+        [disabledClasses]: loading
       })}
       data-testid="add-to-cart-button"
     >
       <div className={clsx('absolute me-4', isRTL ? 'left-0' : 'right-0')}>
-        {pending ? (
+        {loading ? (
           <LoadingDots className="mb-3 bg-white dark:bg-gray-800" />
         ) : (
           <PlusIcon className="h-5" />
@@ -85,40 +91,89 @@ export function AddToCart({
   availableForSale: boolean;
 }) {
   const { setCartResponse } = useCart();
-  const [state, formAction] = useFormState(addItemV2, {
+  const locale = useLocale();
+  const [cookies, setCookie] = useCookies(['guest_token', 'cartId']);
+  const [state, setState] = useState<ActionResponse>({
     message: '',
     success: false
   });
+  const [loading, setLoading] = useState(false);
   const selectedVariantId = selectedVariant?.id;
 
   // Check if the selected variant is out of stock
   const isOutOfStock = selectedVariant && selectedVariant.stock <= 0;
 
-  // Update cart context when cart data is returned from server action
-  useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
-    }
-  }, [state.success, state.cartData, setCartResponse]);
+  const handleAddToCart = async () => {
+    if (loading || !availableForSale) return;
 
-  const actionWithVariant = formAction.bind(null, {
-    selectedProductId: product.id,
-    selectedVariantId: selectedVariantId || NaN
-  });
+    setLoading(true);
+    setState({ message: '', success: false });
+
+    try {
+      const guestToken = cookies.guest_token;
+      const api = createApi({ language: locale, guestToken });
+
+      const result = await api.addToCart({
+        qyt: 1,
+        product_id: product.id,
+        product_variant_id: selectedVariantId || NaN
+      });
+
+      if (result.isErr()) {
+        setState({
+          message: 'Failed to add item to cart.',
+          success: false
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Set cartId cookie if available
+      if (result.value.data.cart_item?.cart_id) {
+        setCookie('cartId', result.value.data.cart_item.cart_id.toString(), {
+          path: '/',
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production'
+        });
+      }
+
+      // Fetch updated cart data
+      const cartResult = await api.getCart();
+      const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
+      setState({
+        message: result.value.message || 'Added to cart successfully',
+        success: true,
+        cartData
+      });
+
+      // Update cart context
+      if (cartData) {
+        setCartResponse(cartData);
+      }
+    } catch (error: any) {
+      setState({
+        message: 'Error adding item to cart.',
+        success: false
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-3">
-      <form action={actionWithVariant}>
-        <SubmitButton
-          availableForSale={availableForSale}
-          selectedVariantId={selectedVariantId}
-          selectedVariant={selectedVariant}
-        />
-      </form>
+      <AddToCartButton
+        availableForSale={availableForSale}
+        selectedVariantId={selectedVariantId}
+        selectedVariant={selectedVariant}
+        loading={loading}
+        onClick={handleAddToCart}
+      />
 
       <ToastNotification
         type={state.success ? 'success' : 'error'}
-        message={state.message}
+        message={state.message || null}
         autoClose={3000}
       />
     </div>

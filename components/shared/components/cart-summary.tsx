@@ -1,30 +1,44 @@
 'use client';
 
-import { applyCouponV2 } from '@shared/components/cart-actions';
 import { ToastNotification } from '@shared/components/toast-notification';
 import LoadingDots from '@theme/components/loading-dots';
 import Price from '@theme/components/price';
+import { createApi } from 'lib/api';
+import { ActionResponse } from 'lib/api/types';
 import { useCart } from 'lib/context/cart-context';
 import { useShipping } from 'lib/context/shipping-context';
 import { getFullPath, getItemPrice } from 'lib/utils';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 interface CartSummaryProps {}
 
-function CouponSubmitButton({ disabled }: { disabled: boolean }) {
-  const { pending } = useFormStatus();
+function CouponSubmitButton({
+  disabled,
+  loading,
+  onClick
+}: {
+  disabled: boolean;
+  loading?: boolean;
+  onClick: () => void;
+}) {
   const t = useTranslations('Cart');
 
   return (
     <button
-      type="submit"
-      disabled={disabled || pending}
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        if (!loading && !disabled) {
+          onClick();
+        }
+      }}
+      disabled={disabled || loading}
       className="button flex items-center justify-center gap-2"
     >
-      {pending && <LoadingDots className="bg-white dark:bg-gray-800" />}
+      {loading && <LoadingDots className="bg-white dark:bg-gray-800" />}
       {t('apply')}
     </button>
   );
@@ -34,28 +48,68 @@ export default function CartSummary({}: CartSummaryProps) {
   const t = useTranslations('Cart');
   const { cartResponse, currency, setCartResponse } = useCart();
   const { shippingAmount } = useShipping();
-  const [state, formAction] = useFormState(applyCouponV2, {
+  const locale = useLocale();
+  const [cookies] = useCookies(['guest_token']);
+  const [state, setState] = useState<ActionResponse>({
     message: '',
     success: false
   });
-
-  // Update cart context when cart data is returned from server action
-  useEffect(() => {
-    if (state.success && state.cartData) {
-      setCartResponse(state.cartData);
-    }
-  }, [state.success, state.cartData, setCartResponse]);
+  const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
 
   if (!cartResponse.cart || cartResponse.cart.cart_items.length === 0) {
     return null;
   }
 
-  const handleCouponSubmit = (formData: FormData) => {
-    const code = formData.get('couponCode') as string;
-    if (code?.trim()) {
-      return formAction(code.trim());
+  const handleCouponSubmit = async () => {
+    const code = couponCode.trim();
+    if (!code || loading) return;
+
+    setLoading(true);
+    setState({ message: '', success: false });
+
+    try {
+      const guestToken = cookies.guest_token;
+      const api = createApi({ language: locale, guestToken });
+
+      const result = await api.applyCoupon(code);
+
+      if (result.isErr()) {
+        setState({
+          message: 'Failed to apply coupon.',
+          success: false
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Fetch updated cart data
+      const cartResult = await api.getCart();
+      const cartData = cartResult.isOk() ? cartResult.value.data : undefined;
+
+      setState({
+        message: result.value.message || 'Coupon applied successfully',
+        success: true,
+        cartData
+      });
+
+      // Update cart context
+      if (cartData) {
+        setCartResponse(cartData);
+      }
+
+      // Clear the coupon code input on success
+      if (cartData) {
+        setCouponCode('');
+      }
+    } catch (error: any) {
+      setState({
+        message: 'Error applying coupon.',
+        success: false
+      });
+    } finally {
+      setLoading(false);
     }
-    return null;
   };
 
   // Calculate total with shipping
@@ -111,22 +165,33 @@ export default function CartSummary({}: CartSummaryProps) {
 
       {/* Coupon Section */}
       <div className="mb-4 border-t border-gray-200 pt-4 dark:border-gray-600">
-        <form action={handleCouponSubmit} className="space-y-2">
+        <div className="space-y-2">
           <div className="flex gap-2">
             <input
               type="text"
-              name="couponCode"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleCouponSubmit();
+                }
+              }}
               placeholder={t('couponCode')}
               className="input flex-1"
             />
-            <CouponSubmitButton disabled={false} />
+            <CouponSubmitButton
+              disabled={!couponCode.trim()}
+              loading={loading}
+              onClick={handleCouponSubmit}
+            />
           </div>
           <ToastNotification
             type={state.success ? 'success' : 'error'}
-            message={state.message}
+            message={state.message || null}
             autoClose={3000}
           />
-        </form>
+        </div>
       </div>
 
       {/* Totals */}
