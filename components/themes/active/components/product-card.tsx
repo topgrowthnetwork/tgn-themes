@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath } from 'lib/utils';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { GridTileImage } from './grid/tile';
 import { ProductQuickViewModal } from './product/quick-view-modal';
@@ -81,6 +82,17 @@ export function ProductCard({
       return attrs;
     })();
 
+  const handleQuickViewClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsQuickViewOpen(true);
+  };
+
+  const handleQuickViewMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   const tileImage = (
     <GridTileImage
       alt={product.title}
@@ -98,51 +110,40 @@ export function ProductCard({
     />
   );
 
-  // If quick view is enabled and we have settings, check screen size
-  if (ENABLE_QUICK_VIEW && settings) {
-    // On desktop: show modal, on mobile: navigate to product page
-    if (isDesktop) {
-      return (
-        <>
-          <button
-            type="button"
-            onClick={() => setIsQuickViewOpen(true)}
-            className={clsx('group block w-full text-left', className)}
-            data-testid="product-card-link"
-          >
-            {tileImage}
-          </button>
-          <ProductQuickViewModal
-            product={product}
-            images={images}
-            attributes={attributes}
-            settings={settings}
-            isOpen={isQuickViewOpen}
-            onClose={() => setIsQuickViewOpen(false)}
-          />
-        </>
-      );
-    }
-    // On mobile: navigate to product page
-    return (
+  // Quick view plus button - only on desktop
+  const quickViewButton = ENABLE_QUICK_VIEW && settings && isDesktop && (
+    <button
+      type="button"
+      onClick={handleQuickViewClick}
+      onMouseDown={handleQuickViewMouseDown}
+      className="absolute end-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-neutral-900 shadow-md transition-all hover:scale-110 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+      aria-label="Quick view"
+    >
+      <Plus className="h-5 w-5" strokeWidth={2} />
+    </button>
+  );
+
+  return (
+    <>
       <Link
         href={buildProductUrlWithCheapestVariant(product)}
-        className={clsx('group block', className)}
+        className={clsx('group relative block', className)}
         data-testid="product-card-link"
       >
         {tileImage}
+        {quickViewButton}
       </Link>
-    );
-  }
 
-  // Default: render as link to product page
-  return (
-    <Link
-      href={buildProductUrlWithCheapestVariant(product)}
-      className={clsx('group block', className)}
-      data-testid="product-card-link"
-    >
-      {tileImage}
-    </Link>
+      {ENABLE_QUICK_VIEW && settings && isDesktop && (
+        <ProductQuickViewModal
+          product={product}
+          images={images}
+          attributes={attributes}
+          settings={settings}
+          isOpen={isQuickViewOpen}
+          onClose={() => setIsQuickViewOpen(false)}
+        />
+      )}
+    </>
   );
 }
