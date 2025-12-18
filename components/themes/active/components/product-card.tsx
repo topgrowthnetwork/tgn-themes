@@ -1,5 +1,6 @@
 'use client';
 
+import { useMediaQuery } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
@@ -38,6 +39,7 @@ export function ProductCard({
   const currencyCode = currency || 'EGP';
   const cheapestVariant = getCheapestVariant(product);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   // Gets the display price for the product
   const getDisplayPrice = () => {
@@ -96,27 +98,40 @@ export function ProductCard({
     />
   );
 
-  // If quick view is enabled and we have settings, render clickable div with modal
+  // If quick view is enabled and we have settings, check screen size
   if (ENABLE_QUICK_VIEW && settings) {
+    // On desktop: show modal, on mobile: navigate to product page
+    if (isDesktop) {
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => setIsQuickViewOpen(true)}
+            className={clsx('group block w-full text-left', className)}
+            data-testid="product-card-link"
+          >
+            {tileImage}
+          </button>
+          <ProductQuickViewModal
+            product={product}
+            images={images}
+            attributes={attributes}
+            settings={settings}
+            isOpen={isQuickViewOpen}
+            onClose={() => setIsQuickViewOpen(false)}
+          />
+        </>
+      );
+    }
+    // On mobile: navigate to product page
     return (
-      <>
-        <button
-          type="button"
-          onClick={() => setIsQuickViewOpen(true)}
-          className={clsx('group block w-full text-left', className)}
-          data-testid="product-card-link"
-        >
-          {tileImage}
-        </button>
-        <ProductQuickViewModal
-          product={product}
-          images={images}
-          attributes={attributes}
-          settings={settings}
-          isOpen={isQuickViewOpen}
-          onClose={() => setIsQuickViewOpen(false)}
-        />
-      </>
+      <Link
+        href={buildProductUrlWithCheapestVariant(product)}
+        className={clsx('group block', className)}
+        data-testid="product-card-link"
+      >
+        {tileImage}
+      </Link>
     );
   }
 
