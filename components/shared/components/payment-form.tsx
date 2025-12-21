@@ -3,11 +3,13 @@
 import LoadingDots from '@theme/components/loading-dots';
 import clsx from 'clsx';
 import { CheckoutRequest, PaymentSettings } from 'lib/api/types';
+import { useCart } from 'lib/context/cart-context';
 import { getAllPaymentGateways } from 'lib/payment-gateways';
+import { checkTabbyAvailability } from 'lib/tabby/client';
 import { paymentInfoSchema } from 'lib/validation/checkout';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 import FieldError from './field-error';
@@ -26,14 +28,39 @@ export default function PaymentForm({
   onBack
 }: PaymentFormProps) {
   const t = useTranslations('Checkout');
+  const locale = useLocale();
   const { pending } = useFormStatus();
+  const { cartResponse, currency } = useCart();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isTabbyAvailable, setIsTabbyAvailable] = useState<boolean | null>(null);
+
+  // Check Tabby availability when shipping address is available
+  useEffect(() => {
+    const checkTabby = async () => {
+      const isAvailable = await checkTabbyAvailability(cartResponse, formData, currency, locale);
+      console.log('Tabby availability:', isAvailable);
+      setIsTabbyAvailable(isAvailable);
+    };
+
+    if (paymentSettings.tabby_gateway === '1') {
+      checkTabby();
+    } else {
+      setIsTabbyAvailable(false);
+    }
+  }, [cartResponse, formData, currency, locale, paymentSettings.tabby_gateway]);
 
   // Get payment gateways configuration from shared config
   const gatewayConfigs = getAllPaymentGateways();
 
   const paymentGateways = gatewayConfigs
-    .filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1')
+    .filter((gateway) => {
+      const isEnabled = paymentSettings[gateway.key as keyof PaymentSettings] === '1';
+      // For Tabby, also check if installments are available
+      if (gateway.key === 'tabby_gateway') {
+        return isEnabled && isTabbyAvailable === true;
+      }
+      return isEnabled;
+    })
     .map((gateway) => ({
       key: gateway.key,
       label: t(gateway.key as any),
