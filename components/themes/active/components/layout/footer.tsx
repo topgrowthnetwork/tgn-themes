@@ -33,7 +33,7 @@ export default async function Footer() {
       <div className="mx-auto flex w-full flex-col gap-6 pb-12 text-sm md:flex-row md:gap-12">
         <div>
           <Link className="flex items-center gap-2 text-white md:pt-1" href="/">
-            <LogoSquare size="sm" />
+            <LogoSquare size="sm" isFooter />
             <span className="uppercase">{settings.site_title}</span>
           </Link>
         </div>
