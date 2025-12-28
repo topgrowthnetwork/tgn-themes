@@ -383,7 +383,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "qyt": {
+                  "qty": {
                     "type": "integer",
                     "example": "1"
                   },
@@ -436,7 +436,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "qyt": {
+                  "qty": {
                     "type": "integer",
                     "example": "1"
                   }

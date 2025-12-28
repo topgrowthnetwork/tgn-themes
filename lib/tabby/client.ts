@@ -67,7 +67,7 @@ export async function checkTabbyAvailability(
         reference_id: cart.cart.id.toString(),
         items: cart.cart.cart_items.map((item) => ({
           title: item.product.title,
-          quantity: item.qyt,
+          quantity: item.qty,
           unit_price: (item.variant?.final_price ?? item.product.final_price).toString(),
           category: 'General'
         }))

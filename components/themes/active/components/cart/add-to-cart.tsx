@@ -114,7 +114,7 @@ export function AddToCart({
       const api = createApi({ language: locale, guestToken });
 
       const result = await api.addToCart({
-        qyt: 1,
+        qty: 1,
         product_id: product.id,
         product_variant_id: selectedVariantId || NaN
       });

@@ -123,7 +123,7 @@ export default function CartSummary({}: CartSummaryProps) {
       <div className="mb-4 space-y-3">
         {cartResponse.cart.cart_items.slice(0, 3).map((item, index) => {
           const itemPrice = getItemPrice(item.product, item.variant);
-          const totalPrice = itemPrice * item.qyt;
+          const totalPrice = itemPrice * item.qty;
 
           return (
             <div key={index} className="flex items-center gap-x-3">
@@ -146,7 +146,7 @@ export default function CartSummary({}: CartSummaryProps) {
                   </p>
                 ) : null}
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {t('quantity')}: {item.qyt}
+                  {t('quantity')}: {item.qty}
                 </p>
               </div>
               <div className="text-sm font-medium text-gray-900 dark:text-white">

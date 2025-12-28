@@ -134,19 +134,19 @@ export interface CartItemDetail {
   cart_id: number;
   product_id: number;
   product_variant_id: number;
-  qyt: number;
+  qty: number;
   product: Product;
   variant?: ProductVariant;
 }
 
 export interface AddToCartRequest {
-  qyt: number;
+  qty: number;
   product_id: number;
   product_variant_id?: number;
 }
 
 export interface UpdateCartRequest {
-  qyt: number;
+  qty: number;
 }
 
 // Response for addToCart() - single cart item
@@ -156,7 +156,7 @@ export interface CartItemResponse {
     cart_id: number;
     product_id: number;
     product_variant_id: number;
-    qyt: number;
+    qty: number;
     product: Product;
     variant: ProductVariant;
   };

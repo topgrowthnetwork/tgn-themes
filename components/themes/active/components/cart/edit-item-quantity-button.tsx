@@ -83,7 +83,7 @@ export function EditItemQuantityButton({
   });
   const [loading, setLoading] = useState(false);
 
-  const quantity = type === 'plus' ? item.qyt + 1 : item.qyt - 1;
+  const quantity = type === 'plus' ? item.qty + 1 : item.qty - 1;
 
   const canIncrease = (function canIncrease() {
     const availableStock = item.variant ? item.variant.stock : item.product.stock;
@@ -118,7 +118,7 @@ export function EditItemQuantityButton({
         }
       } else {
         // Otherwise update the quantity normally
-        const updateResult = await api.updateCartItem(item.id, { qyt: quantity });
+        const updateResult = await api.updateCartItem(item.id, { qty: quantity });
 
         if (updateResult.isErr()) {
           setState({

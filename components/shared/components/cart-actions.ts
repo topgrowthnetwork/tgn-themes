@@ -19,7 +19,7 @@ export async function addItemV2(
 
   try {
     const result = await api.addToCart({
-      qyt: 1,
+      qty: 1,
       product_id: selectedProductId,
       product_variant_id: selectedVariantId
     });
@@ -101,7 +101,7 @@ export async function updateItemQuantityV2(
 
   try {
     // Otherwise update the quantity normally
-    const result = await api.updateCartItem(lineId, { qyt: quantity });
+    const result = await api.updateCartItem(lineId, { qty: quantity });
 
     if (result.isErr()) {
       return {

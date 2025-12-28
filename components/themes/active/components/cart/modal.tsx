@@ -130,7 +130,7 @@ export default function CartModal() {
 
                       // Get the correct price: variant price if available, otherwise product price
                       const itemPrice = getItemPrice(item.product, item.variant);
-                      const totalPrice = itemPrice * item.qyt;
+                      const totalPrice = itemPrice * item.qty;
 
                       return (
                         <li
@@ -176,7 +176,7 @@ export default function CartModal() {
                               <div className="ms-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 bg-white">
                                 <EditItemQuantityButton item={item} type="minus" minStock={0} />
                                 <p className="w-6 text-center">
-                                  <span className="w-full text-sm">{item.qyt}</span>
+                                  <span className="w-full text-sm">{item.qty}</span>
                                 </p>
                                 <EditItemQuantityButton item={item} type="plus" minStock={0} />
                               </div>
