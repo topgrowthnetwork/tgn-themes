@@ -5,7 +5,7 @@ import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath } from 'lib/utils';
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
+import { parseAsString, useQueryState } from 'nuqs';
 import { GridTileImage } from './grid/tile';
 import { ProductQuickViewModal } from './product/quick-view-modal';
 
@@ -38,7 +38,20 @@ export function ProductCard({
 }: ProductCardProps) {
   const currencyCode = currency || 'EGP';
   const cheapestVariant = getCheapestVariant(product);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [quickViewProductId, setQuickViewProductId] = useQueryState(
+    'quickView',
+    parseAsString.withOptions({ history: 'push' })
+  );
+
+  const isQuickViewOpen = quickViewProductId === product.id.toString();
+
+  const handleOpenQuickView = () => {
+    setQuickViewProductId(product.id.toString(), { shallow: false });
+  };
+
+  const handleCloseQuickView = () => {
+    setQuickViewProductId(null, { shallow: false });
+  };
 
   // Gets the display price for the product
   const getDisplayPrice = () => {
@@ -83,12 +96,7 @@ export function ProductCard({
   const handleQuickViewClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsQuickViewOpen(true);
-  };
-
-  const handleQuickViewMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    handleOpenQuickView();
   };
 
   const tileImage = (
@@ -113,7 +121,6 @@ export function ProductCard({
     <button
       type="button"
       onClick={handleQuickViewClick}
-      onMouseDown={handleQuickViewMouseDown}
       className="absolute end-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-neutral-900 shadow-md transition-all hover:scale-110 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
       aria-label="Quick view"
     >
@@ -141,7 +148,7 @@ export function ProductCard({
           attributes={attributes}
           settings={settings}
           isOpen={isQuickViewOpen}
-          onClose={() => setIsQuickViewOpen(false)}
+          onClose={handleCloseQuickView}
         />
       )}
     </>
