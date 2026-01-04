@@ -159,7 +159,7 @@
 
   /* Active Theme Button Styles */
   [data-theme='active'] .button {
-    @apply flex items-center justify-center bg-primary-600 px-4 py-2 text-white transition-colors duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-900;
+    @apply flex items-center justify-center border border-transparent bg-primary-600 px-4 py-2 text-white transition-colors duration-200 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-gray-900;
   }
 
   [data-theme='active'] .textarea {

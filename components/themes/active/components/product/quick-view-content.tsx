@@ -115,10 +115,7 @@ export function QuickViewContent({
 
             {/* Payment widget */}
             <div className="mt-3">
-              <SplitPaymentWidget
-                price={displayPrice}
-                currency={settings.site_global_currency}
-              />
+              <SplitPaymentWidget price={displayPrice} currency={settings.site_global_currency} />
             </div>
           </div>
 
@@ -134,7 +131,7 @@ export function QuickViewContent({
           </div>
 
           {/* Add to Cart */}
-          <div className="mt-auto space-y-3 pt-4">
+          <div className="mt-auto space-y-3">
             <AddToCart
               product={product}
               selectedVariant={selectedVariant}
@@ -155,4 +152,3 @@ export function QuickViewContent({
     </>
   );
 }
-
