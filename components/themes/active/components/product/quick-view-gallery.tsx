@@ -60,7 +60,7 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
       </div>
 
       {/* Main Image */}
-      <div className="relative aspect-square max-h-[200px] w-full overflow-hidden rounded-xl bg-white dark:bg-white md:max-w-none">
+      <div className="relative aspect-square max-h-[200px] w-full overflow-hidden rounded-xl bg-white dark:bg-white md:max-h-none">
         {displayImages[imageIndex] && (
           <Image
             key={imageIndex}

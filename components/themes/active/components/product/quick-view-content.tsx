@@ -1,6 +1,7 @@
 'use client';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { cn } from '@theme/lib/utils';
 import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes, ProductVariant } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
@@ -52,6 +53,10 @@ export function QuickViewContent({
   })();
 
   const productUrl = buildProductUrlWithCheapestVariant(product);
+
+  const hasNoOptionsOrJustOneOption =
+    !Object.keys(attributes).length ||
+    (Object.keys(attributes).length === 1 && Object.values(attributes)[0]?.length === 1);
 
   return (
     <>
@@ -120,7 +125,7 @@ export function QuickViewContent({
           </div>
 
           {/* Variant Selector */}
-          <div className="flex-grow">
+          <div className={cn('flex-grow', hasNoOptionsOrJustOneOption ? '' : 'mb-4')}>
             <QuickViewVariantSelector
               options={attributes}
               variants={product.variants}
