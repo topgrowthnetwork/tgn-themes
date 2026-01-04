@@ -35,10 +35,35 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
 
   return (
     <div className="relative flex flex-col items-center">
+      {/* Preload adjacent images off-screen for instant navigation */}
+      <div className="sr-only">
+        {displayImages[nextImageIndex] && (
+          <Image
+            width={0}
+            height={0}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            alt=""
+            src={getFullPath(displayImages[nextImageIndex]?.src) || ''}
+            priority
+          />
+        )}
+        {displayImages[previousImageIndex] && (
+          <Image
+            width={0}
+            height={0}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            alt=""
+            src={getFullPath(displayImages[previousImageIndex]?.src) || ''}
+            priority
+          />
+        )}
+      </div>
+
       {/* Main Image */}
       <div className="relative aspect-square max-h-[200px] w-full overflow-hidden rounded-xl bg-white dark:bg-white md:max-w-none">
         {displayImages[imageIndex] && (
           <Image
+            key={imageIndex}
             className="h-full w-full object-contain"
             width={0}
             height={0}
