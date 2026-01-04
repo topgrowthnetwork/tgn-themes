@@ -34,13 +34,14 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
   const goToPrevious = () => setImageIndex(previousImageIndex);
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col items-center">
       {/* Main Image */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white dark:bg-white">
+      <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-xl bg-white dark:bg-white">
         {displayImages[imageIndex] && (
           <Image
             className="h-full w-full object-contain"
-            fill
+            width={0}
+            height={0}
             sizes="(min-width: 768px) 50vw, 100vw"
             alt={displayImages[imageIndex]?.altText || 'Product image'}
             src={getFullPath(displayImages[imageIndex]?.src) || ''}
@@ -55,7 +56,7 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
               onClick={goToPrevious}
               className={clsx(
                 'absolute top-1/2 -translate-y-1/2 p-2',
-                'bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm',
+                'bg-white/90 backdrop-blur-sm dark:bg-neutral-800/90',
                 'rounded-full shadow-md',
                 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white',
                 'transition-all duration-200 hover:scale-110',
@@ -64,13 +65,17 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
               )}
               aria-label={t('previousProductImage')}
             >
-              {isRTL ? <ArrowRightIcon className="h-4 w-4" /> : <ArrowLeftIcon className="h-4 w-4" />}
+              {isRTL ? (
+                <ArrowRightIcon className="h-4 w-4" />
+              ) : (
+                <ArrowLeftIcon className="h-4 w-4" />
+              )}
             </button>
             <button
               onClick={goToNext}
               className={clsx(
                 'absolute top-1/2 -translate-y-1/2 p-2',
-                'bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm',
+                'bg-white/90 backdrop-blur-sm dark:bg-neutral-800/90',
                 'rounded-full shadow-md',
                 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white',
                 'transition-all duration-200 hover:scale-110',
@@ -79,7 +84,11 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
               )}
               aria-label={t('nextProductImage')}
             >
-              {isRTL ? <ArrowLeftIcon className="h-4 w-4" /> : <ArrowRightIcon className="h-4 w-4" />}
+              {isRTL ? (
+                <ArrowLeftIcon className="h-4 w-4" />
+              ) : (
+                <ArrowRightIcon className="h-4 w-4" />
+              )}
             </button>
           </>
         )}
@@ -87,16 +96,16 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
 
       {/* Bullet indicators - only show if more than 1 image */}
       {displayImages.length > 1 && (
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="mt-4 flex justify-center gap-2">
           {displayImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setImageIndex(index)}
               className={clsx(
-                'w-2.5 h-2.5 rounded-full transition-all duration-200',
+                'h-2.5 w-2.5 rounded-full transition-all duration-200',
                 index === imageIndex
-                  ? 'bg-primary-600 scale-110'
-                  : 'bg-neutral-300 dark:bg-neutral-600 hover:bg-neutral-400 dark:hover:bg-neutral-500'
+                  ? 'scale-110 bg-primary-600'
+                  : 'bg-neutral-300 hover:bg-neutral-400 dark:bg-neutral-600 dark:hover:bg-neutral-500'
               )}
               aria-label={`Go to image ${index + 1}`}
             />
@@ -106,4 +115,3 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
     </div>
   );
 }
-

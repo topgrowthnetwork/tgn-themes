@@ -1,11 +1,10 @@
 'use client';
 
-import { useMediaQuery } from '@uidotdev/usehooks';
 import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath } from 'lib/utils';
-import { Plus } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { GridTileImage } from './grid/tile';
 import { ProductQuickViewModal } from './product/quick-view-modal';
@@ -40,7 +39,6 @@ export function ProductCard({
   const currencyCode = currency || 'EGP';
   const cheapestVariant = getCheapestVariant(product);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   // Gets the display price for the product
   const getDisplayPrice = () => {
@@ -110,8 +108,8 @@ export function ProductCard({
     />
   );
 
-  // Quick view plus button - only on desktop
-  const quickViewButton = ENABLE_QUICK_VIEW && settings && isDesktop && (
+  // Quick view cart button
+  const quickViewButton = ENABLE_QUICK_VIEW && settings && (
     <button
       type="button"
       onClick={handleQuickViewClick}
@@ -119,22 +117,24 @@ export function ProductCard({
       className="absolute end-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white text-neutral-900 shadow-md transition-all hover:scale-110 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
       aria-label="Quick view"
     >
-      <Plus className="h-5 w-5" strokeWidth={2} />
+      <ShoppingCart className="h-5 w-5" strokeWidth={2} />
     </button>
   );
 
   return (
     <>
-      <Link
-        href={buildProductUrlWithCheapestVariant(product)}
-        className={clsx('group relative block', className)}
-        data-testid="product-card-link"
-      >
-        {tileImage}
+      <div className={clsx('group relative block', className)}>
+        <Link
+          href={buildProductUrlWithCheapestVariant(product)}
+          className="block h-full w-full"
+          data-testid="product-card-link"
+        >
+          {tileImage}
+        </Link>
         {quickViewButton}
-      </Link>
+      </div>
 
-      {ENABLE_QUICK_VIEW && settings && isDesktop && (
+      {ENABLE_QUICK_VIEW && settings && (
         <ProductQuickViewModal
           product={product}
           images={images}
