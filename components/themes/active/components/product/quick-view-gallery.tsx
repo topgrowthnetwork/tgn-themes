@@ -36,7 +36,7 @@ export function QuickViewGallery({ images, selectedVariant }: QuickViewGalleryPr
   return (
     <div className="relative flex flex-col items-center">
       {/* Main Image */}
-      <div className="relative aspect-square w-full max-w-[250px] overflow-hidden rounded-xl bg-white dark:bg-white md:max-w-none">
+      <div className="relative aspect-square max-h-[200px] w-full overflow-hidden rounded-xl bg-white dark:bg-white md:max-w-none">
         {displayImages[imageIndex] && (
           <Image
             className="h-full w-full object-contain"
