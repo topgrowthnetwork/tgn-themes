@@ -26,10 +26,10 @@ export function useAddressCascade({
   const [availableStates, setAvailableStates] = useState<State[]>([]);
   const [availableCities, setAvailableCities] = useState<City[]>([]);
 
-  // Filter states based on selected country
+  // Filter states based on selected country (using code)
   useEffect(() => {
     if (selectedCountry) {
-      const selectedCountryObj = countries.find((c) => c.name === selectedCountry);
+      const selectedCountryObj = countries.find((c) => c.code === selectedCountry);
       if (selectedCountryObj) {
         const filteredStates = states.filter((s) => s.country_id === selectedCountryObj.id);
         setAvailableStates(filteredStates);
@@ -39,10 +39,10 @@ export function useAddressCascade({
     }
   }, [selectedCountry, countries, states]);
 
-  // Filter cities based on selected state
+  // Filter cities based on selected state (using code)
   useEffect(() => {
     if (selectedState) {
-      const selectedStateObj = availableStates.find((s) => s.name === selectedState);
+      const selectedStateObj = availableStates.find((s) => s.code?.toString() === selectedState);
       if (selectedStateObj) {
         const filteredCities = cities.filter((c) => c.state_id === selectedStateObj.id);
         setAvailableCities(filteredCities);

@@ -180,6 +180,7 @@ export interface CartResponse {
   discount: number;
   tax: number;
   total_items: number;
+  shipping_amount?: number;
 }
 
 export interface ApiConfig {
@@ -485,6 +486,8 @@ export interface ShippingAddress {
   state: string;
   city: string;
   address: string;
+  lat?: number;
+  lng?: number;
 }
 
 export interface CheckoutRequest {

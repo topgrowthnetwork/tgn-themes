@@ -34,7 +34,8 @@ export default function ShippingForm({
 }: ShippingFormProps) {
   const t = useTranslations('Checkout');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { setShipping, clearShipping } = useShipping();
+  const { setShipping, clearShipping, fetchShipping } = useShipping();
+  const [location, setLocation] = useState<{ lat?: number; lng?: number }>({});
 
   // Use custom hook for address cascade logic
   const { availableStates, availableCities, clearState, clearCity } = useAddressCascade({
@@ -45,13 +46,36 @@ export default function ShippingForm({
     selectedState: formData.shipping_address?.state || ''
   });
 
-  // Auto-set country to first in array if not already set
+  // Get user's geolocation
+  useEffect(() => {
+    if ('geolocation' in navigator && isActive) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          // Silently fail if geolocation is denied or unavailable
+          console.warn('Geolocation error:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    }
+  }, [isActive]);
+
+  // Auto-set country to first in array if not already set (use code)
   useEffect(() => {
     if (!formData.shipping_address?.country && countries.length > 0) {
       onFormDataChange({
         ...formData,
         shipping_address: {
-          country: countries[0].name,
+          country: countries[0].code,
           state: '',
           city: '',
           address: formData.shipping_address?.address || ''
@@ -60,24 +84,40 @@ export default function ShippingForm({
     }
   }, [countries]);
 
-  // Sync shipping context when state changes (including from localStorage)
+  // Fetch shipping from backend when address is complete (send codes)
   useEffect(() => {
-    const currentState = formData.shipping_address?.state;
+    const cityCode = formData.shipping_address?.city;
+    const stateCode = formData.shipping_address?.state;
+    const address = formData.shipping_address?.address;
 
-    if (currentState && states.length > 0) {
-      // Find the matching state and update shipping context
-      const selectedState = states.find((s) => s.name === currentState);
-      if (selectedState) {
-        setShipping(selectedState.shipping_amount, selectedState.name);
-      } else {
-        // State not found in available states, clear shipping
-        clearShipping();
+    if (cityCode && stateCode && address && cities.length > 0 && states.length > 0) {
+      const selectedCity = cities.find((c) => c.code.toString() === cityCode);
+      const selectedState = states.find((s) => s.code.toString() === stateCode);
+
+      if (selectedCity && selectedState) {
+        fetchShipping(
+          selectedCity.code,
+          selectedState.code.toString(),
+          address,
+          location.lat,
+          location.lng
+        ).catch(() => {
+          // Silently fail if fetch fails
+        });
       }
     } else {
-      // No state selected, clear shipping
       clearShipping();
     }
-  }, [formData.shipping_address?.state, states, setShipping, clearShipping]);
+  }, [
+    formData.shipping_address?.city,
+    formData.shipping_address?.state,
+    formData.shipping_address?.address,
+    cities,
+    states,
+    location
+    // fetchShipping,
+    // clearShipping
+  ]);
 
   // Validation using Zod - only validates shipping step fields
   const validateForm = (): boolean => {
@@ -133,14 +173,14 @@ export default function ShippingForm({
     }
   };
 
-  const handleStateChange = (state: string) => {
-    const isStateChanged = formData.shipping_address?.state !== state;
+  const handleStateChange = (stateCode: string) => {
+    const isStateChanged = formData.shipping_address?.state !== stateCode;
 
     onFormDataChange({
       ...formData,
       shipping_address: {
         country: formData.shipping_address?.country || '',
-        state,
+        state: stateCode,
         city: isStateChanged ? '' : formData.shipping_address?.city || '',
         address: formData.shipping_address?.address || ''
       }
@@ -148,14 +188,6 @@ export default function ShippingForm({
 
     if (isStateChanged) {
       clearCity();
-    }
-
-    // Update shipping amount in context
-    const selectedState = states.find((s) => s.name === state);
-    if (selectedState) {
-      setShipping(selectedState.shipping_amount, selectedState.name);
-    } else {
-      clearShipping();
     }
   };
 

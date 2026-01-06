@@ -45,11 +45,17 @@ export class ApiEndpoints {
   }
 
   async getAllCities(params?: AddressListParams) {
-    return this.client.get<{ cities: City[] }>('/api/addresses/all-cities', params);
+    const response = await this.client.get<{ cities: City[] }>('/api/addresses/all-cities', params);
+    console.log('✨✨', response.isOk() ? response.value.data : 'Error');
+    return response;
   }
 
   async getAllStates(params?: AddressListParams) {
-    return this.client.get<{ states: State[] }>('/api/addresses/all-states', params);
+    const response = await this.client.get<{ states: State[] }>(
+      '/api/addresses/all-states',
+      params
+    );
+    return response;
   }
 
   // Categories
@@ -96,8 +102,14 @@ export class ApiEndpoints {
   }
 
   // Cart
-  async getCart() {
-    return this.client.get<CartResponse>('/api/carts', undefined, [TAGS.cart]);
+  async getCart(params?: {
+    city?: string;
+    state?: string;
+    address?: string;
+    lat?: number;
+    lng?: number;
+  }) {
+    return this.client.get<CartResponse>('/api/carts', params, [TAGS.cart]);
   }
 
   async addToCart(data: AddToCartRequest) {

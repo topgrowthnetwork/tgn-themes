@@ -35,7 +35,8 @@ export default function FormDropdown({
   dataTestId,
   id
 }: FormDropdownProps) {
-  const selectedOption = options.find((option) => option.name === value);
+  const getValue = (option: Option) => option.code?.toString() ?? option.name;
+  const selectedOption = options.find((option) => getValue(option) === value);
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
@@ -79,7 +80,7 @@ export default function FormDropdown({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-gray-800 dark:ring-gray-700">
+            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-theme bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 sm:text-sm">
               {options.map((option, index) => (
                 <Listbox.Option
                   key={option.id}
@@ -91,7 +92,7 @@ export default function FormDropdown({
                         : 'text-gray-900 dark:text-gray-100'
                     )
                   }
-                  value={option.name}
+                  value={getValue(option)}
                   data-testid={`${dataTestId}-option-${index}`}
                 >
                   {({ selected, active }) => (

@@ -135,8 +135,8 @@ export default async function LocaleLayout({
           <NProgressProvider>
             <NuqsAdapter>
               <NextIntlClientProvider>
-                <ShippingProvider>
-                  <CartProviderWrapper>
+                <CartProviderWrapper>
+                  <ShippingProvider>
                     <ThemeContent>
                       <Suspense>
                         <main>{children}</main>
@@ -144,8 +144,8 @@ export default async function LocaleLayout({
                     </ThemeContent>
                     <ToastContainerWrapper />
                     <ThemeSwitcher />
-                  </CartProviderWrapper>
-                </ShippingProvider>
+                  </ShippingProvider>
+                </CartProviderWrapper>
               </NextIntlClientProvider>
             </NuqsAdapter>
           </NProgressProvider>
