@@ -10,7 +10,8 @@ import { getFullPath, getItemPrice } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
+import { Fragment, useEffect, useRef } from 'react';
 import Price from '../price';
 import { SplitPaymentWidget } from '../split-payment-widget';
 import CloseCart from './close-cart';
@@ -24,28 +25,32 @@ type MerchandiseSearchParams = {
 
 export default function CartModal() {
   const { cartResponse, currency } = useCart();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useQueryState(
+    'cart',
+    parseAsBoolean.withOptions({ history: 'push' })
+  );
   const quantityRef = useRef(cartResponse?.total_items);
   const pathname = usePathname();
   const { shippingAmount } = useShipping();
-  const openCart = () => {
-    if (!isCheckoutOrThankYouPage) {
-      setIsOpen(true);
-    }
-  };
-  const closeCart = () => setIsOpen(false);
   const t = useTranslations('Cart');
   const locale = useLocale();
   const isRTL = locale === 'ar';
+
+  // Check if we're on checkout or thank-you pages
+  const isCheckoutOrThankYouPage =
+    pathname.includes('/checkout') || pathname.includes('/thank-you');
+
+  const openCart = () => {
+    if (!isCheckoutOrThankYouPage) {
+      setIsOpen(true, { shallow: false });
+    }
+  };
+  const closeCart = () => setIsOpen(null, { shallow: false });
 
   // Calculate total with shipping
   const totalWithShipping = (cartResponse?.total_price || 0) + shippingAmount;
   const cartTotalAmount =
     totalWithShipping || cartResponse?.total_price || cartResponse?.sub_total || 0;
-
-  // Check if we're on checkout or thank-you pages
-  const isCheckoutOrThankYouPage =
-    pathname.includes('/checkout') || pathname.includes('/thank-you');
 
   useEffect(() => {
     // Open cart modal when quantity changes.
@@ -53,20 +58,20 @@ export default function CartModal() {
       // But only if it's not already open (quantity also changes when editing items in cart).
       // And only if we're not on checkout or thank-you pages
       if (!isOpen && !isCheckoutOrThankYouPage) {
-        setIsOpen(true);
+        setIsOpen(true, { shallow: false });
       }
 
       // Always update the quantity reference
       quantityRef.current = cartResponse?.total_items;
     }
-  }, [isOpen, cartResponse?.total_items, quantityRef, isCheckoutOrThankYouPage]);
+  }, [isOpen, cartResponse?.total_items, quantityRef, isCheckoutOrThankYouPage, setIsOpen]);
 
   return (
     <>
       <button aria-label={t('openCart')} onClick={openCart}>
         <OpenCart quantity={cartResponse?.total_items} />
       </button>
-      <Transition show={isOpen}>
+      <Transition show={isOpen ?? false}>
         <Dialog onClose={closeCart} data-testid="cart-modal" className="relative z-50">
           <Transition.Child
             as={Fragment}
