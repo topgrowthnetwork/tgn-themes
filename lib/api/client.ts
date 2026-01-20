@@ -339,20 +339,49 @@ export class ApiClient {
     }
   }
 
+  /**
+   * Converts a nested object to a query string with bracket notation
+   * Example: { shipping_address: { city: 'CAI', state: 'CAI' } }
+   * becomes: shipping_address[city]=CAI&shipping_address[state]=CAI
+   */
+  private buildQueryString(params: Record<string, any>): string {
+    const pairs: string[] = [];
+
+    const encode = (key: string, value: any): void => {
+      if (value === undefined || value === null) {
+        return;
+      }
+
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        // Handle nested objects
+        Object.keys(value).forEach((nestedKey) => {
+          encode(`${key}[${nestedKey}]`, value[nestedKey]);
+        });
+      } else {
+        // Handle primitive values
+        pairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+      }
+    };
+
+    Object.keys(params).forEach((key) => {
+      encode(key, params[key]);
+    });
+
+    return pairs.join('&');
+  }
+
   async get<T>(
     endpoint: string,
-    params?: Record<string, string | number | undefined>,
+    params?: Record<string, any>,
     tags?: string[]
   ): Promise<Result<ApiResponse<T>, ApiError>> {
     const filteredParams = params
       ? (Object.fromEntries(
-          Object.entries(params).filter(([_, value]) => value !== undefined)
-        ) as Record<string, string | number>)
+        Object.entries(params).filter(([_, value]) => value !== undefined && value !== null)
+      ) as Record<string, any>)
       : undefined;
 
-    const queryString = filteredParams
-      ? '?' + new URLSearchParams(filteredParams as Record<string, string>).toString()
-      : '';
+    const queryString = filteredParams ? '?' + this.buildQueryString(filteredParams) : '';
     return this.fetchWithRetry<T>(`${endpoint}${queryString}`, { method: 'GET' }, tags);
   }
 

@@ -109,7 +109,20 @@ export class ApiEndpoints {
     lat?: number;
     lng?: number;
   }) {
-    return this.client.get<CartResponse>('/api/carts', params, [TAGS.cart]);
+    const queryParams = params
+      ? {
+          shipping_address: Object.fromEntries(
+            Object.entries({
+              city: params.city,
+              state: params.state,
+              address: params.address,
+              lat: params.lat,
+              lng: params.lng
+            }).filter(([_, value]) => value !== undefined)
+          )
+        }
+      : undefined;
+    return this.client.get<CartResponse>('/api/carts', queryParams, [TAGS.cart]);
   }
 
   async addToCart(data: AddToCartRequest) {

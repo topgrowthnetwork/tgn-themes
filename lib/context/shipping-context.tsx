@@ -62,8 +62,8 @@ export function ShippingProvider({ children }: { children: ReactNode }) {
 
     if (result.isOk()) {
       const cartData = result.value.data;
-      if (cartData.shipping_amount !== undefined) {
-        setShippingAmount(cartData.shipping_amount);
+      if (cartData.shipping_cost !== undefined) {
+        setShippingAmount(cartData.shipping_cost);
       }
       setCartResponse(cartData);
     }

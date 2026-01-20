@@ -180,7 +180,7 @@ export interface CartResponse {
   discount: number;
   tax: number;
   total_items: number;
-  shipping_amount?: number;
+  shipping_cost?: number;
 }
 
 export interface ApiConfig {
@@ -351,14 +351,14 @@ export interface ProductListParams {
   recomended?: string;
   order_by?: 'selling_count' | 'created_at';
   sort?:
-    | 'name'
-    | 'selling_count'
-    | 'best_selling'
-    | 'recommended'
-    | 'newest'
-    | 'oldest'
-    | 'price_asc'
-    | 'price_desc';
+  | 'name'
+  | 'selling_count'
+  | 'best_selling'
+  | 'recommended'
+  | 'newest'
+  | 'oldest'
+  | 'price_asc'
+  | 'price_desc';
   per_page?: string;
   [key: string]: string | undefined;
 }
@@ -496,13 +496,13 @@ export interface CheckoutRequest {
   email: string;
   phone: string;
   payment_gateway:
-    | 'cash_on_site'
-    | 'cash_on_delivery'
-    | 'fawaterk_gateway'
-    | 'send_receipt'
-    | 'paymob_card_gateway'
-    | 'paymob_wallet_gateway'
-    | '';
+  | 'cash_on_site'
+  | 'cash_on_delivery'
+  | 'fawaterk_gateway'
+  | 'send_receipt'
+  | 'paymob_card_gateway'
+  | 'paymob_wallet_gateway'
+  | '';
   coupon_code?: string;
   receipt_image?: string;
   wallet_number?: string;
