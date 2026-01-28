@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'lib/i18n/navigation';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Pagination } from './pagination';
 
@@ -10,8 +9,6 @@ interface PaginationWithUrlProps {
 }
 
 export function PaginationWithUrl({ currentPage, totalPages }: PaginationWithUrlProps) {
-  const router = useRouter();
-
   // Use nuqs for URL state management
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(currentPage));
 

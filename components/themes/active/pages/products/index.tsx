@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import { Category, GlobalSettings, ProductsResponse } from 'lib/api/types';
 import { getSortingOptions } from 'lib/constants';
 import { useTranslations } from 'next-intl';
-import { useQueryState } from 'nuqs';
+import { parseAsInteger, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 
 interface ProductsPageProps {
@@ -32,14 +32,12 @@ export default function ProductsPage({
   const commonT = useTranslations('Common');
   const sortingT = useTranslations('Sorting');
 
+  const [, setPage] = useQueryState('page', parseAsInteger.withDefault(currentPage));
   const [category, setCategory] = useQueryState('category', { shallow: false });
   const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(null);
 
   // Filter categories based on client
   let filteredCategories = categories;
-  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-  //   filteredCategories = categories.filter((cat) => cat.id !== 44);
-  // }
 
   // Get top-level categories (no parent)
   const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);
@@ -85,6 +83,7 @@ export default function ProductsPage({
 
   const handleAllCategoriesClick = () => {
     setCategory(null);
+    setPage(1);
     setSelectedParentCategory(null);
   };
 
@@ -92,11 +91,13 @@ export default function ProductsPage({
   const handleParentCategoryChange = (categoryId: number) => {
     setSelectedParentCategory(categoryId);
     setCategory(categoryId.toString());
+    setPage(1);
   };
 
   // Handle child category selection
   const handleChildCategoryChange = (categoryId: number) => {
     setCategory(categoryId.toString());
+    setPage(1);
   };
 
   const sortingOptions = getSortingOptions(sortingT);
