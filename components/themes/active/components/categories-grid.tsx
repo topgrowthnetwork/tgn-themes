@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { createApi } from 'lib/api';
 import { Category, GlobalSettings } from 'lib/api/types';
 import { useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Pagination } from './pagination';
 import { ProductsList } from './products-list';
@@ -41,14 +41,26 @@ const fetcher = async (params: { categoryId: number; page: number; locale: strin
 
 export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
   const locale = useLocale();
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(
-    categories?.[0]?.id || null
-  );
-  const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(
-    categories?.[0]?.parent_id === null ? categories[0].id : categories[0].parent_id
-  );
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedParentCategory, setSelectedParentCategory] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const t = useTranslations('Products');
+
+  // Initialize default selected parent & category based on highest products_count
+  useEffect(function initializeDefaultCategory() {
+    if (!categories?.length) return;
+
+    const topLevel = categories.filter((cat) => cat.parent_id === null);
+    const sortedTopLevel = [...topLevel].sort(
+      (a, b) => Number(b.products_count) - Number(a.products_count)
+    );
+    const defaultParent = sortedTopLevel[0] || categories[0];
+
+    if (!defaultParent) return;
+
+    setSelectedParentCategory((prev) => (prev === null ? defaultParent.id : prev));
+    setSelectedCategory((prev) => (prev === null ? defaultParent.id : prev));
+  }, [categories]);
 
   // SWR hook for fetching products
   const { data, error, isLoading } = useSWR(
