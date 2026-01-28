@@ -60,12 +60,15 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
 
   // Filter categories based on client
   let filteredCategories = categories;
-  // if (process.env.NEXT_PUBLIC_CLIENT === 'arkan') {
-  //   filteredCategories = categories.filter((cat) => cat.id !== 44);
-  // }
 
-  // Get top-level categories (no parent)
-  const topLevelCategories = filteredCategories.filter((cat) => cat.parent_id === null);
+  // Helper to sort categories by products_count (descending)
+  const sortByProductsCountDesc = (a: Category, b: Category) =>
+    Number(b.products_count) - Number(a.products_count);
+
+  // Get top-level categories (no parent) sorted by products_count
+  const topLevelCategories = filteredCategories
+    .filter((cat) => cat.parent_id === null)
+    .sort(sortByProductsCountDesc);
 
   // Flatten all categories (including nested children) for easy searching
   const allCategories = filteredCategories.reduce((acc: Category[], cat) => {
@@ -78,7 +81,7 @@ export function CategoriesGrid({ categories, settings }: CategoriesGridProps) {
 
   // Get current parent category and its children
   const currentParentCategory = allCategories.find((cat) => cat.id === selectedParentCategory);
-  const childCategories = currentParentCategory?.children || [];
+  const childCategories = (currentParentCategory?.children || []).slice().sort(sortByProductsCountDesc);
 
   // Get selected category data and build breadcrumb
   const selectedCategoryData = allCategories.find((cat) => cat.id === selectedCategory);
