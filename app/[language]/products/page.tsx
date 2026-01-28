@@ -1,6 +1,7 @@
 import ProductsPage from '@theme/pages/products';
 import { createApi } from 'lib/api';
 import { getProductParams } from 'lib/utils';
+import _ from 'lodash';
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
@@ -48,7 +49,7 @@ export default async function Page({
   }
 
   const settings = settingsResult.value.data;
-  const categories = categoriesResult.value.data.categories;
+  const categories = _.sortBy(categoriesResult.value.data.categories, 'products_count').reverse();
 
   return (
     <ProductsPage
