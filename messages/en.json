@@ -178,6 +178,12 @@
     "splitInto": "Split into installments",
     "shariaCompliant": "• Sharia-compliant"
   },
+  "Error": {
+    "title": "Oh no!",
+    "description": "There was an issue with our storefront. This could be a temporary issue, please try your action again.",
+    "tryAgain": "Try Again",
+    "goToHomepage": "Go to Homepage"
+  },
   "Metadata": {
     "search": {
       "title": "Search",
