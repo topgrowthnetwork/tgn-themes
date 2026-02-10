@@ -272,6 +272,7 @@ export class ApiClient {
           // Try to parse as JSON to determine if it's JSON
           JSON.parse(options.body);
           headers.set('Content-Type', 'application/json');
+          headers.set('Accept', 'application/json');
         } catch {
           // If it's not valid JSON, don't set Content-Type
         }
@@ -377,8 +378,8 @@ export class ApiClient {
   ): Promise<Result<ApiResponse<T>, ApiError>> {
     const filteredParams = params
       ? (Object.fromEntries(
-        Object.entries(params).filter(([_, value]) => value !== undefined && value !== null)
-      ) as Record<string, any>)
+          Object.entries(params).filter(([_, value]) => value !== undefined && value !== null)
+        ) as Record<string, any>)
       : undefined;
 
     const queryString = filteredParams ? '?' + this.buildQueryString(filteredParams) : '';
