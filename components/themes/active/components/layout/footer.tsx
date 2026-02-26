@@ -80,7 +80,7 @@ export default async function Footer() {
 
       <div className="border-t border-neutral-500 py-6 text-sm">
         <div className="mx-auto flex w-full flex-col items-center gap-4 md:flex-row md:justify-between md:gap-0 ">
-          <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-left">
+          <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-start">
             <p>
               &copy; {copyrightDate} {copyrightName}
               {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''}{' '}
