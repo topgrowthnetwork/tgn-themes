@@ -80,11 +80,20 @@ export default async function Footer() {
 
       <div className="border-t border-neutral-500 py-6 text-sm">
         <div className="mx-auto flex w-full flex-col items-center gap-4 md:flex-row md:justify-between md:gap-0 ">
-          <p>
-            &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''}{' '}
-            {t('allRightsReserved')}
-          </p>
+          <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-left">
+            <p>
+              &copy; {copyrightDate} {copyrightName}
+              {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''}{' '}
+              {t('allRightsReserved')}
+            </p>
+            {process.env.NEXT_PUBLIC_CLIENT === 'arkan' && (
+              <p className="text-xs text-neutral-400">
+                C.R : 2055007433 / 7014086958
+                <br />
+                VAT NO : 311381708300003
+              </p>
+            )}
+          </div>
           <LanguageSwitcher />
         </div>
       </div>
