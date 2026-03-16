@@ -2,7 +2,7 @@
 
 import { createApi } from 'lib/api';
 import { useLocale } from 'next-intl';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useCart } from './cart-context';
 
@@ -29,7 +29,14 @@ export function ShippingProvider({ children }: { children: ReactNode }) {
   const locale = useLocale();
 
   // Get cart context - ShippingProvider should be inside CartProvider
-  const { setCartResponse } = useCart();
+  const { cartResponse, setCartResponse } = useCart();
+
+  // Keep shipping in sync with backend: when cart response includes shipping_cost, use it
+  useEffect(() => {
+    if (cartResponse.shipping_cost !== undefined) {
+      setShippingAmount(cartResponse.shipping_cost);
+    }
+  }, [cartResponse.shipping_cost]);
 
   const setShipping = (amount: number, stateName: string) => {
     setShippingAmount(amount);

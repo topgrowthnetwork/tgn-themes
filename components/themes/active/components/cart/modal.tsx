@@ -36,6 +36,17 @@ export default function CartModal() {
   const locale = useLocale();
   const isRTL = locale === 'ar';
 
+  // Prefer backend-calculated shipping when available; otherwise use context (set after checkout address)
+  const effectiveShipping =
+    cartResponse?.shipping_cost !== undefined ? cartResponse.shipping_cost : shippingAmount;
+  // Backend sends total_price as final total when it includes shipping; only add shipping when not in response
+  const totalWithShipping =
+    cartResponse?.shipping_cost !== undefined
+      ? (cartResponse?.total_price ?? 0)
+      : (cartResponse?.total_price ?? 0) + shippingAmount;
+  const cartTotalAmount =
+    totalWithShipping || cartResponse?.total_price || cartResponse?.sub_total || 0;
+
   // Check if we're on checkout or thank-you pages
   const isCheckoutOrThankYouPage =
     pathname.includes('/checkout') || pathname.includes('/thank-you');
@@ -46,11 +57,6 @@ export default function CartModal() {
     }
   };
   const closeCart = () => setIsOpen(null, { shallow: false });
-
-  // Calculate total with shipping
-  const totalWithShipping = (cartResponse?.total_price || 0) + shippingAmount;
-  const cartTotalAmount =
-    totalWithShipping || cartResponse?.total_price || cartResponse?.sub_total || 0;
 
   useEffect(() => {
     // Open cart modal when quantity changes.
@@ -206,10 +212,10 @@ export default function CartModal() {
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>{t('shipping')}</p>
-                      {shippingAmount > 0 ? (
+                      {effectiveShipping > 0 ? (
                         <Price
                           className="text-end text-base text-black dark:text-white"
-                          amount={shippingAmount.toString()}
+                          amount={effectiveShipping.toString()}
                           currencyCode={currency}
                         />
                       ) : (

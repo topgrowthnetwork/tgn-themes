@@ -57,6 +57,15 @@ export default function CartSummary({}: CartSummaryProps) {
   const [loading, setLoading] = useState(false);
   const [couponCode, setCouponCode] = useState('');
 
+  // Prefer backend-calculated shipping when available; otherwise use context (set after checkout address)
+  const effectiveShipping =
+    cartResponse.shipping_cost !== undefined ? cartResponse.shipping_cost : shippingAmount;
+  // Backend sends total_price as final total when it includes shipping; only add shipping when not in response
+  const orderTotal =
+    cartResponse.shipping_cost !== undefined
+      ? cartResponse.total_price
+      : cartResponse.total_price + shippingAmount;
+
   if (!cartResponse.cart || cartResponse.cart.cart_items.length === 0) {
     return null;
   }
@@ -111,9 +120,6 @@ export default function CartSummary({}: CartSummaryProps) {
       setLoading(false);
     }
   };
-
-  // Calculate total with shipping
-  const totalWithShipping = cartResponse.total_price + shippingAmount;
 
   return (
     <div className="rounded-theme border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
@@ -217,10 +223,10 @@ export default function CartSummary({}: CartSummaryProps) {
           </div>
         )}
 
-        {shippingAmount > 0 && (
+        {effectiveShipping > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-300">{t('shipping')}</span>
-            <Price amount={shippingAmount.toString()} currencyCode={currency} />
+            <Price amount={effectiveShipping.toString()} currencyCode={currency} />
           </div>
         )}
 
@@ -228,7 +234,7 @@ export default function CartSummary({}: CartSummaryProps) {
           <span className="font-semibold text-gray-900 dark:text-white">{t('total')}</span>
           <Price
             className="font-semibold text-gray-900 dark:text-white"
-            amount={totalWithShipping.toString()}
+            amount={orderTotal.toString()}
             currencyCode={currency}
           />
         </div>
