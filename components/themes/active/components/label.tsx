@@ -31,14 +31,14 @@ const Label = ({
               className="text-xs line-through opacity-70"
               amount={originalAmount}
               currencyCode={currencyCode}
-              currencyCodeClassName="hidden sm:inline"
+              // currencyCodeClassName="hidden sm:inline"
             />
           )}
           <Price
             className="text-sm"
             amount={amount}
             currencyCode={currencyCode}
-            currencyCodeClassName="hidden sm:inline"
+            // currencyCodeClassName="hidden sm:inline"
           />
         </div>
       </div>
