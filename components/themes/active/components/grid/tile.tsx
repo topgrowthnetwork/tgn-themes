@@ -1,11 +1,13 @@
 import clsx from 'clsx';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 import Label from '../label';
 
 export function GridTileImage({
   isInteractive = true,
   active,
   label,
+  overlays,
   outOfStock,
   outOfStockLabel,
   ...props
@@ -19,6 +21,7 @@ export function GridTileImage({
     originalAmount?: string;
     position?: 'bottom' | 'center';
   };
+  overlays?: ReactNode;
   /** When true, shows {@link outOfStockLabel} over the image and softens the tile styling. */
   outOfStock?: boolean;
   outOfStockLabel?: string;
@@ -28,10 +31,11 @@ export function GridTileImage({
       className={clsx(
         'group flex h-full w-full items-center justify-center overflow-hidden rounded-theme border bg-white dark:bg-black',
         {
-          relative: label || outOfStock,
+          relative: label || outOfStock || overlays,
           'border-2 border-primary-600': active,
-          'border-neutral-200 hover:border-primary-600 dark:border-neutral-800': !active && !outOfStock,
-          'cursor-not-allowed border-neutral-200 opacity-85 dark:border-neutral-700': outOfStock
+          'border-neutral-200 hover:border-primary-600 dark:border-neutral-800':
+            !active && !outOfStock,
+          'border-neutral-200 opacity-65 dark:border-neutral-700': outOfStock
         }
       )}
     >
@@ -39,7 +43,8 @@ export function GridTileImage({
         // eslint-disable-next-line jsx-a11y/alt-text -- `alt` is inherited from `props`, which is being enforced with TypeScript
         <Image
           className={clsx('relative h-full w-full object-contain p-2', {
-            'transition duration-300 ease-in-out group-hover:scale-105': isInteractive && !outOfStock,
+            'transition duration-300 ease-in-out group-hover:scale-105':
+              isInteractive && !outOfStock,
             'pb-4': label,
             'grayscale-[0.4]': outOfStock
           })}
@@ -47,12 +52,13 @@ export function GridTileImage({
         />
       ) : null}
       {outOfStock && outOfStockLabel ? (
-        <div className="pointer-events-none absolute start-3 top-3 z-20">
-          <span className="flex h-8 items-center rounded-full bg-neutral-900/85 px-3 text-[0.65rem] font-semibold uppercase tracking-wide text-white shadow-sm">
+        <div className="pointer-events-none absolute end-3 top-3 z-20">
+          <span className="flex h-8 items-center rounded-full bg-red-500 px-3 text-[0.65rem] font-semibold uppercase tracking-wide text-white shadow-md">
             {outOfStockLabel}
           </span>
         </div>
       ) : null}
+      {overlays}
       {label ? (
         <Label
           title={label.title}

@@ -3,7 +3,12 @@
 import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
-import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath, isProductOutOfStock } from 'lib/utils';
+import {
+  buildProductUrlWithCheapestVariant,
+  getCheapestVariant,
+  getFullPath,
+  isProductOutOfStock
+} from 'lib/utils';
 import { ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { parseAsString, useQueryState } from 'nuqs';
@@ -117,25 +122,6 @@ export function ProductCard({
     </div>
   );
 
-  const tileImage = (
-    <GridTileImage
-      alt={product.title}
-      isInteractive={isInteractive}
-      outOfStock={outOfStock}
-      outOfStockLabel={outOfStock ? outOfStockLabel : undefined}
-      label={{
-        title: product.title,
-        amount: getDisplayPrice().toString(),
-        currencyCode: currencyCode,
-        originalAmount: getOriginalPrice().toString()
-      }}
-      src={getFullPath(product.thumbnail?.path)}
-      fill
-      sizes={sizes}
-      priority={priority}
-    />
-  );
-
   // Quick view cart button
   const quickViewButton = ENABLE_QUICK_VIEW && settings && !outOfStock && (
     <button
@@ -151,26 +137,35 @@ export function ProductCard({
   return (
     <>
       <div className={clsx('group relative block', className)}>
-        {outOfStock ? (
-          <div
-            className="block h-full w-full cursor-not-allowed"
-            data-testid="product-card-link-disabled"
-            aria-label={`${product.title}, ${outOfStockLabel}`}
-            aria-disabled="true"
-          >
-            {tileImage}
-          </div>
-        ) : (
-          <Link
-            href={buildProductUrlWithCheapestVariant(product)}
-            className="block h-full w-full"
-            data-testid="product-card-link"
-          >
-            {tileImage}
-          </Link>
-        )}
-        {discountBadge}
-        {quickViewButton}
+        <Link
+          href={buildProductUrlWithCheapestVariant(product)}
+          className="block h-full w-full"
+          data-testid="product-card-link"
+          aria-label={outOfStock ? `${product.title}, ${outOfStockLabel}` : product.title}
+        >
+          <GridTileImage
+            alt={product.title}
+            isInteractive={isInteractive}
+            outOfStock={outOfStock}
+            outOfStockLabel={outOfStock ? outOfStockLabel : undefined}
+            label={{
+              title: product.title,
+              amount: getDisplayPrice().toString(),
+              currencyCode: currencyCode,
+              originalAmount: getOriginalPrice().toString()
+            }}
+            src={getFullPath(product.thumbnail?.path)}
+            fill
+            sizes={sizes}
+            priority={priority}
+            overlays={
+              <>
+                {discountBadge}
+                {quickViewButton}
+              </>
+            }
+          />
+        </Link>
       </div>
 
       {ENABLE_QUICK_VIEW && settings && (
