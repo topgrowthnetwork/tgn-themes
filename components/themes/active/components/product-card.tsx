@@ -103,6 +103,20 @@ export function ProductCard({
     handleOpenQuickView();
   };
 
+  // Calculate discount percentage badge
+  const displayPrice = getDisplayPrice();
+  const originalPrice = getOriginalPrice();
+  const discountPct =
+    originalPrice > 0 && displayPrice < originalPrice
+      ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100)
+      : 0;
+
+  const discountBadge = discountPct > 0 && (
+    <div className="absolute start-3 top-3 z-20 flex items-center justify-center rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white shadow-md">
+      -{discountPct}%
+    </div>
+  );
+
   const tileImage = (
     <GridTileImage
       alt={product.title}
@@ -155,6 +169,7 @@ export function ProductCard({
             {tileImage}
           </Link>
         )}
+        {discountBadge}
         {quickViewButton}
       </div>
 

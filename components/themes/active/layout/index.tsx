@@ -2,6 +2,7 @@ import Container from '@theme/components/container';
 import FontProvider from '@theme/components/font-provider';
 import Footer from '@theme/components/layout/footer';
 import Navbar from '@theme/components/layout/navbar';
+import { WhatsAppWidget } from '@theme/components/whatsapp-widget';
 import { Inter, Noto_Sans_Arabic } from 'next/font/google';
 import { ReactNode, Suspense } from 'react';
 
@@ -30,6 +31,7 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
           </Container>
         </div>
       </Suspense>
+      <WhatsAppWidget />
     </FontProvider>
   );
 }
