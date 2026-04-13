@@ -40,8 +40,8 @@
   },
   "Search": {
     "placeholder": "البحث عن المنتجات...",
-    "noResults": "لم يتم العثور على نتائج لـ '{query}'",
-    "showingResults": "عرض {count} نتيجة لـ '{query}'"
+    "noResults": "لم يتم العثور على نتائج لـ {query}",
+    "showingResults": "عرض {count} نتيجة لـ {query}"
   },
   "Navigation": {
     "openMobileMenu": "فتح القائمة المحمولة",
