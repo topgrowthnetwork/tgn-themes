@@ -3,8 +3,9 @@
 import clsx from 'clsx';
 import { GlobalSettings, Product, ProductAttributes } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
-import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath } from 'lib/utils';
+import { buildProductUrlWithCheapestVariant, getCheapestVariant, getFullPath, isProductOutOfStock } from 'lib/utils';
 import { ShoppingCart } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { parseAsString, useQueryState } from 'nuqs';
 import { GridTileImage } from './grid/tile';
 import { ProductQuickViewModal } from './product/quick-view-modal';
@@ -36,8 +37,11 @@ export function ProductCard({
   productImages,
   productAttributes
 }: ProductCardProps) {
+  const tCart = useTranslations('Cart');
   const currencyCode = currency || 'EGP';
   const cheapestVariant = getCheapestVariant(product);
+  const outOfStock = isProductOutOfStock(product);
+  const outOfStockLabel = tCart('outOfStock');
   const [quickViewProductId, setQuickViewProductId] = useQueryState(
     'quickView',
     parseAsString.withOptions({ history: 'push' })
@@ -103,6 +107,8 @@ export function ProductCard({
     <GridTileImage
       alt={product.title}
       isInteractive={isInteractive}
+      outOfStock={outOfStock}
+      outOfStockLabel={outOfStock ? outOfStockLabel : undefined}
       label={{
         title: product.title,
         amount: getDisplayPrice().toString(),
@@ -117,7 +123,7 @@ export function ProductCard({
   );
 
   // Quick view cart button
-  const quickViewButton = ENABLE_QUICK_VIEW && settings && (
+  const quickViewButton = ENABLE_QUICK_VIEW && settings && !outOfStock && (
     <button
       type="button"
       onClick={handleQuickViewClick}
@@ -131,13 +137,24 @@ export function ProductCard({
   return (
     <>
       <div className={clsx('group relative block', className)}>
-        <Link
-          href={buildProductUrlWithCheapestVariant(product)}
-          className="block h-full w-full"
-          data-testid="product-card-link"
-        >
-          {tileImage}
-        </Link>
+        {outOfStock ? (
+          <div
+            className="block h-full w-full cursor-not-allowed"
+            data-testid="product-card-link-disabled"
+            aria-label={`${product.title}, ${outOfStockLabel}`}
+            aria-disabled="true"
+          >
+            {tileImage}
+          </div>
+        ) : (
+          <Link
+            href={buildProductUrlWithCheapestVariant(product)}
+            className="block h-full w-full"
+            data-testid="product-card-link"
+          >
+            {tileImage}
+          </Link>
+        )}
         {quickViewButton}
       </div>
 

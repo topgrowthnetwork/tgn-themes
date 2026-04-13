@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
+    "@emran-alhaddad/saudi-riyal-font": "^1.1.0",
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/react-accordion": "^1.2.12",

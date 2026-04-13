@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { getCurrencySymbolDisplay } from 'lib/utils/currency-display';
 
 const Price = ({
   amount,
@@ -17,7 +18,9 @@ const Price = ({
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(parseFloat(amount))}`}
-    <span className={clsx('ms-1 inline', currencyCodeClassName)}>{`${currencyCode}`}</span>
+    <span className={clsx('ms-1 inline', currencyCodeClassName)}>
+      {getCurrencySymbolDisplay(currencyCode)}
+    </span>
   </p>
 );
 

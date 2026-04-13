@@ -32,6 +32,7 @@ function ProductsCarouselSkeleton() {
 }
 
 export async function ProductsCarousel({ settings }: { settings: GlobalSettings }) {
+  const themeVariant = process.env.NEXT_PUBLIC_THEME_VARIANT;
   const t = await getTranslations('Products');
   const language = await getLocale();
 

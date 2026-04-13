@@ -17,6 +17,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ReactNode, Suspense } from 'react';
 import { routing } from '../../lib/i18n/routing';
 import '../globals.css';
+import '@emran-alhaddad/saudi-riyal-font/index.css';
 
 export const revalidate = 60;
 

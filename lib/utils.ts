@@ -139,6 +139,18 @@ export function getCheapestVariant(product: Product): ProductVariant | null {
 }
 
 /**
+ * True when the product cannot be sold: no variants → product stock is not above {@link product.min_stock};
+ * with variants → every variant fails that same check (aligned with {@link getCheapestVariant}).
+ */
+export function isProductOutOfStock(product: Product): boolean {
+  const min = product.min_stock;
+  if (product.variants?.length) {
+    return product.variants.every((v) => v.stock <= min);
+  }
+  return product.stock <= min;
+}
+
+/**
  * Gets the cheapest variant price of a product (with stock > 0)
  * @param product - The product object containing variants
  * @returns The price of the cheapest available variant, or the product's final_price if no available variants exist

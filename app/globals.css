@@ -54,6 +54,24 @@
   --theme-border-radius: 0.5rem;
 }
 
+/* Arkan Theme - brand gold */
+[data-theme-variant='active.arkan'] {
+  --theme-color-50: #fffdf0;
+  --theme-color-100: #fff7cc;
+  --theme-color-200: #ffee99;
+  --theme-color-300: #ffe066;
+  --theme-color-400: #fdd92a;
+  --theme-color-500: #fdd716;
+  --theme-color-600: #e4be0a;
+  --theme-color-700: #b89808;
+  --theme-color-800: #8f7606;
+  --theme-color-900: #755f05;
+  --theme-color-950: #433703;
+  --theme-font-en: var(--font-inter), system-ui, sans-serif;
+  --theme-font-ar: var(--font-noto-sans-arabic), system-ui, sans-serif;
+  --theme-border-radius: 0.5rem;
+}
+
 /* Vela Theme - Fast & Energetic */
 [data-theme='vela'] {
   --theme-color-50: #eff6ff;
@@ -95,6 +113,7 @@
   .textarea {
     border-radius: var(--theme-border-radius);
   }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -123,6 +142,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -152,6 +172,7 @@
 }
 
 @layer components {
+
   /* Active Theme Input Styles */
   [data-theme='active'] .input {
     @apply mt-1 block w-full border border-gray-300 px-3 py-2 text-sm transition-colors duration-200 placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-white placeholder:dark:text-gray-400 dark:focus:border-primary-400 dark:focus:ring-primary-400;
@@ -175,8 +196,7 @@
   }
 
   [data-theme='active'] .button-secondary {
-    @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
-    focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
+    @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
   }
 
   [data-theme='vela'] .input {
@@ -201,20 +221,23 @@
   }
 
   [data-theme='vela'] .button-secondary {
-    @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none 
-    focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
+    @apply rounded-theme border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-900;
   }
 }
 
 @layer utilities {
+
   /* Hide scrollbars */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
   }
 }
 
@@ -236,6 +259,7 @@ button {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
