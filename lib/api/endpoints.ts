@@ -27,6 +27,7 @@ import {
   RegisterRequest,
   ResetPasswordRequest,
   SlidersResponse,
+  BannersResponse,
   State,
   UpdateCartRequest,
   VerifyEmailRequest
@@ -46,7 +47,6 @@ export class ApiEndpoints {
 
   async getAllCities(params?: AddressListParams) {
     const response = await this.client.get<{ cities: City[] }>('/api/addresses/all-cities', params);
-    console.log('✨✨', response.isOk() ? response.value.data : 'Error');
     return response;
   }
 
@@ -173,6 +173,10 @@ export class ApiEndpoints {
 
   async getSliders() {
     return this.client.get<SlidersResponse>('/api/sliders');
+  }
+
+  async getBanners() {
+    return this.client.get<BannersResponse>('/api/banners');
   }
 
   // Contact

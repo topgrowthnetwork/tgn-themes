@@ -25,7 +25,14 @@ const Label = ({
       <div className="flex w-full flex-col gap-1 rounded-2xl border bg-white/70 px-2 py-1.5 text-xs font-semibold text-black backdrop-blur-md">
         {/* sm:flex-row sm:items-center sm:gap-0 sm:rounded-full */}
         <h3 className="line-clamp-1 flex-grow tracking-tight">{title}</h3>
-        <div className="flex flex-none items-center gap-1 self-start rounded-full bg-primary-600 px-3 py-1 text-white">
+        <div
+          className={clsx(
+            'flex flex-none self-start rounded-full bg-primary-600 px-3 py-1 text-white',
+            hasDiscount
+              ? 'xs:flex-row xs:items-center xs:gap-1 flex-col items-start gap-0.5'
+              : 'items-center'
+          )}
+        >
           {hasDiscount && (
             <Price
               className="text-xs line-through opacity-70"

@@ -480,6 +480,43 @@ export interface SlidersResponse {
   sliders: Slider[];
 }
 
+// Banner types
+export interface BannerTranslation {
+  id: number;
+  banner_id: number;
+  locale: string;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  btn_text: string | null;
+}
+
+export interface Banner {
+  id: number;
+  position: string | null;
+  image: string;
+  mobile_image: string;
+  link: string | null;
+  open_in_new_tab: number;
+  is_active: number;
+  sort_order: number;
+  starts_at: string | null;
+  ends_at: string | null;
+  created_at: string;
+  updated_at: string;
+  title: string | null;
+  subtitle: string | null;
+  description: string | null;
+  btn_text: string | null;
+  img: ProductImage | null;
+  mob_img: ProductImage | null;
+  translations: BannerTranslation[];
+}
+
+export interface BannersResponse {
+  banners: Banner[];
+}
+
 // Order types
 export interface ShippingAddress {
   country: string;

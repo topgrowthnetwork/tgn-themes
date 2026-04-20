@@ -12,7 +12,7 @@ const Price = ({
   currencyCode: string;
   currencyCodeClassName?: string;
 } & React.ComponentProps<'p'>) => (
-  <p suppressHydrationWarning={true} className={className}>
+  <p suppressHydrationWarning={true} className={clsx(className, 'whitespace-nowrap')}>
     {`${new Intl.NumberFormat(undefined, {
       style: 'decimal',
       minimumFractionDigits: 2,
