@@ -4,6 +4,7 @@ import {
   AddressListParams,
   AddToCartRequest,
   AuthResponse,
+  BannersResponse,
   CartItemResponse,
   CartResponse,
   CategoriesResponse,
@@ -27,7 +28,6 @@ import {
   RegisterRequest,
   ResetPasswordRequest,
   SlidersResponse,
-  BannersResponse,
   State,
   UpdateCartRequest,
   VerifyEmailRequest
@@ -164,6 +164,7 @@ export class ApiEndpoints {
 
   async getPaymentSettings() {
     const response = await this.client.get<PaymentSettings>('/api/payment-settings');
+    console.log(response);
     return response;
   }
 

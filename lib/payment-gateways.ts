@@ -17,6 +17,7 @@
  * - paymob_wallet_gateway
  * - tabby_gateway
  * - tamara_gateway
+ * - mispay_gateway
  */
 
 /**
@@ -76,6 +77,12 @@ export const PAYMENT_GATEWAYS: Record<string, PaymentGatewayConfig> = {
     name: 'Tamara',
     faviconPath: '/image/gateways/favicons/tamara.png',
     imagePath: '/image/gateways/favicons/tamara.png'
+  },
+  mispay_gateway: {
+    key: 'mispay_gateway',
+    name: 'Mispay',
+    faviconPath: '/image/gateways/favicons/mispay.jpg',
+    imagePath: '/image/gateways/favicons/mispay.jpg'
   }
 };
 

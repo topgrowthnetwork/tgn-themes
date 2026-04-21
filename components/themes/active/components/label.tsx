@@ -25,24 +25,17 @@ const Label = ({
       <div className="flex w-full flex-col gap-1 rounded-2xl border bg-white/70 px-2 py-1.5 text-xs font-semibold text-black backdrop-blur-md">
         {/* sm:flex-row sm:items-center sm:gap-0 sm:rounded-full */}
         <h3 className="line-clamp-1 flex-grow tracking-tight">{title}</h3>
-        <div
-          className={clsx(
-            'flex flex-none self-start rounded-full bg-primary-600 px-3 py-1 text-white',
-            hasDiscount
-              ? 'xs:flex-row xs:items-center xs:gap-1 flex-col items-start gap-0.5'
-              : 'items-center'
-          )}
-        >
+        <div className="flex flex-none items-center gap-1 self-start xs:rounded-full xs:bg-primary-600 xs:px-3 xs:py-1 xs:text-white">
           {hasDiscount && (
             <Price
-              className="text-xs line-through opacity-70"
+              className={clsx('text-xs line-through opacity-70')}
               amount={originalAmount}
               currencyCode={currencyCode}
               // currencyCodeClassName="hidden sm:inline"
             />
           )}
           <Price
-            className="text-sm"
+            className={'text-sm'}
             amount={amount}
             currencyCode={currencyCode}
             // currencyCodeClassName="hidden sm:inline"

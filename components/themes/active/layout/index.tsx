@@ -20,6 +20,8 @@ const notoSansArabic = Noto_Sans_Arabic({
 });
 
 export default function ThemeContent({ children }: { children: ReactNode }) {
+  const isWhatsAppButtonEnabled = process.env.NEXT_PUBLIC_ENABLE_WHATSAPP_BUTTON === 'true';
+
   return (
     <FontProvider fontClasses={[inter.variable, notoSansArabic.variable]}>
       <Navbar />
@@ -31,7 +33,7 @@ export default function ThemeContent({ children }: { children: ReactNode }) {
           </Container>
         </div>
       </Suspense>
-      <WhatsAppWidget />
+      {isWhatsAppButtonEnabled && <WhatsAppWidget />}
     </FontProvider>
   );
 }

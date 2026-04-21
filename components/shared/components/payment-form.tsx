@@ -52,9 +52,13 @@ export default function PaymentForm({
   // Get payment gateways configuration from shared config
   const gatewayConfigs = getAllPaymentGateways();
 
+  console.log('😌😌', gatewayConfigs);
+
   const paymentGateways = gatewayConfigs
     .filter((gateway) => {
-      const isEnabled = paymentSettings[gateway.key as keyof PaymentSettings] === '1';
+      const isEnabled =
+        paymentSettings[gateway.key as keyof PaymentSettings] === '1' ||
+        paymentSettings[gateway.key as keyof PaymentSettings] === true;
       // For Tabby, also check if installments are available
       if (gateway.key === 'tabby_gateway') {
         return isEnabled && isTabbyAvailable === true;

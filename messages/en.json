@@ -115,6 +115,7 @@
     "tabby_gateway": "Tabby Gateway",
     "tamara_gateway": "Tamara Gateway",
     "fawaterk_gateway": "Fawaterk Gateway",
+    "mispay_gateway": "Mispay Gateway",
     "walletNumber": "Wallet Number",
     "receiptImage": "Receipt Image",
     "selectCountry": "Select a country",
