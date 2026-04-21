@@ -15,8 +15,8 @@ const Price = ({
   <p suppressHydrationWarning={true} className={clsx(className, 'whitespace-nowrap')}>
     {`${new Intl.NumberFormat(undefined, {
       style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(parseFloat(amount))}`}
     <span className={clsx('ms-1 inline', currencyCodeClassName)}>
       {getCurrencySymbolDisplay(currencyCode)}
