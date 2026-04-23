@@ -45,7 +45,7 @@ export function ThreeItemGrid({
   const [firstProduct, secondProduct, thirdProduct] = products;
 
   return (
-    <section className="grid gap-4 md:grid-cols-6 md:grid-rows-2">
+    <section className="grid grid-cols-6 grid-rows-2 gap-4">
       <ThreeItemGridItem
         size="full"
         item={firstProduct}
@@ -60,7 +60,12 @@ export function ThreeItemGrid({
         currency={settings.site_global_currency}
         settings={settings}
       />
-      <ThreeItemGridItem size="half" item={thirdProduct} currency={settings.site_global_currency} settings={settings} />
+      <ThreeItemGridItem
+        size="half"
+        item={thirdProduct}
+        currency={settings.site_global_currency}
+        settings={settings}
+      />
     </section>
   );
 }

@@ -57,9 +57,7 @@ function ThreeBannerGridItem({
   );
 
   return (
-    <div
-      className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
-    >
+    <div className={size === 'full' ? 'col-span-4 row-span-2' : 'col-span-2 row-span-1'}>
       {item.link ? (
         <a
           href={item.link}
@@ -82,7 +80,7 @@ export function ThreeBannerGrid({ banners }: { banners: Banner[] }) {
   const [first, second, third] = banners;
 
   return (
-    <section className="grid gap-4 md:grid-cols-6 md:grid-rows-2">
+    <section className="grid grid-cols-6 grid-rows-2 gap-4">
       <ThreeBannerGridItem size="full" item={first} priority={true} />
       <ThreeBannerGridItem size="half" item={second} priority={true} />
       <ThreeBannerGridItem size="half" item={third} />
