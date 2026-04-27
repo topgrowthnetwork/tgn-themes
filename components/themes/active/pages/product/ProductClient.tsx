@@ -25,10 +25,22 @@ export default function ProductClient({
     <div className="flex flex-col rounded-theme border border-neutral-200 bg-white p-8 dark:border-neutral-800 dark:bg-black md:p-12 lg:flex-row lg:gap-8">
       <div className="h-full w-full basis-full lg:sticky lg:top-8 lg:basis-4/6 lg:self-start">
         <Gallery
-          images={images.map((image) => ({
-            src: getFullPath(image.path),
-            altText: image.title
-          }))}
+          product={product}
+          images={images
+            .map((image) => ({
+              src: getFullPath(image.path),
+              altText: image.title
+            }))
+            .concat(
+              product.thumbnail
+                ? [
+                    {
+                      src: getFullPath(product.thumbnail?.path),
+                      altText: product.thumbnail?.title || product.title
+                    }
+                  ]
+                : []
+            )}
           selectedVariant={selectedVariant}
         />
       </div>

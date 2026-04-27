@@ -52,8 +52,6 @@ export default function PaymentForm({
   // Get payment gateways configuration from shared config
   const gatewayConfigs = getAllPaymentGateways();
 
-  console.log('😌😌', gatewayConfigs);
-
   const paymentGateways = gatewayConfigs
     .filter((gateway) => {
       const isEnabled =

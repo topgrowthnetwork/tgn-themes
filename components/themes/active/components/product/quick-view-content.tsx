@@ -141,12 +141,13 @@ export function QuickViewContent({
               product={product}
               selectedVariant={selectedVariant}
               availableForSale={availableForSale}
+              onAddSuccess={onClose}
             />
 
             {/* View Details Link */}
             <Link
               href={productUrl}
-              onClick={onClose}
+              // onClick={onClose}
               className={clsx('button-secondary block w-full text-center')}
             >
               {t('viewDetails')}

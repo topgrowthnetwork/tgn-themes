@@ -84,11 +84,14 @@ function AddToCartButton({
 export function AddToCart({
   selectedVariant,
   availableForSale,
-  product
+  product,
+  onAddSuccess
 }: {
   product: Product;
   selectedVariant: ProductVariant | null;
   availableForSale: boolean;
+  /** Called after a successful add (e.g. close quick view). Deferred so the success toast can show first. */
+  onAddSuccess?: () => void;
 }) {
   const { setCartResponse } = useCart();
   const locale = useLocale();
@@ -150,6 +153,10 @@ export function AddToCart({
       // Update cart context
       if (cartData) {
         setCartResponse(cartData);
+      }
+
+      if (onAddSuccess) {
+        setTimeout(() => onAddSuccess(), 0);
       }
     } catch (error: any) {
       setState({

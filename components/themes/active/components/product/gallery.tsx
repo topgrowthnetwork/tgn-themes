@@ -2,7 +2,7 @@
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from '@theme/components/grid/tile';
-import { ProductVariant } from 'lib/api/types';
+import { Product, ProductVariant } from 'lib/api/types';
 import { Link } from 'lib/i18n/navigation';
 import { getFullPath } from 'lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
@@ -10,9 +10,11 @@ import Image from 'next/image';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 export function Gallery({
+  product,
   images,
   selectedVariant
 }: {
+  product: Product;
   images: { src: string; altText: string }[];
   selectedVariant?: ProductVariant | null;
 }) {
@@ -22,7 +24,7 @@ export function Gallery({
   const isRTL = locale === 'ar';
 
   // Use variant images if available, otherwise fall back to product images
-  const displayImages = selectedVariant?.images_url?.length
+  let displayImages = selectedVariant?.images_url?.length
     ? selectedVariant.images_url.map((url, index) => ({
         src: url,
         altText: `Product image ${index + 1}`
