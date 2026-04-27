@@ -74,6 +74,7 @@ export async function processCheckout(
     case 'paymob_wallet_gateway':
     case 'tabby_gateway':
     case 'tamara_gateway':
+    case 'mispay_gateway':
       redirect(response?.redirect_url || '');
     default:
       return {
