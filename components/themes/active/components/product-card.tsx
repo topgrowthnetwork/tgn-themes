@@ -11,7 +11,7 @@ import {
 } from 'lib/utils';
 import { ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { parseAsString, useQueryState } from 'nuqs';
+import { useState } from 'react';
 import { GridTileImage } from './grid/tile';
 import { ProductQuickViewModal } from './product/quick-view-modal';
 
@@ -47,19 +47,14 @@ export function ProductCard({
   const cheapestVariant = getCheapestVariant(product);
   const outOfStock = isProductOutOfStock(product);
   const outOfStockLabel = tCart('outOfStock');
-  const [quickViewProductId, setQuickViewProductId] = useQueryState(
-    'quickView',
-    parseAsString.withOptions({ history: 'push' })
-  );
-
-  const isQuickViewOpen = quickViewProductId === product.id.toString();
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   const handleOpenQuickView = () => {
-    setQuickViewProductId(product.id.toString(), { shallow: false });
+    setIsQuickViewOpen(true);
   };
 
   const handleCloseQuickView = () => {
-    setQuickViewProductId(null, { shallow: false });
+    setIsQuickViewOpen(false);
   };
 
   // Gets the display price for the product
