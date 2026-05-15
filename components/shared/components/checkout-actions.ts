@@ -70,6 +70,7 @@ export async function processCheckout(
       redirectLocale({ href: '/thank-you', locale });
       return { message: '', success: true }; // Never reached, but satisfies TypeScript
     case 'fawaterk_gateway':
+    case 'moyasar_gateway':
     case 'paymob_card_gateway':
     case 'paymob_wallet_gateway':
     case 'tabby_gateway':

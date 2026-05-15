@@ -9,6 +9,7 @@
  *   Example: "tabby_gateway,tamara_gateway"
  *
  * Available gateway keys:
+ * - moyasar_gateway
  * - cash_on_delivery
  * - cash_on_site
  * - fawaterk_gateway
@@ -36,6 +37,12 @@ export interface PaymentGatewayConfig {
 }
 
 export const PAYMENT_GATEWAYS: Record<string, PaymentGatewayConfig> = {
+  moyasar_gateway: {
+    key: 'moyasar_gateway',
+    name: 'Moyasar',
+    faviconPath: '/image/gateways/favicons/moyasar.png',
+    imagePath: '/image/gateways/favicons/moyasar.png'
+  },
   cash_on_delivery: {
     key: 'cash_on_delivery',
     name: 'Cash on Delivery'

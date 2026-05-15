@@ -437,6 +437,7 @@ export interface GlobalSettings {
 }
 
 export interface PaymentSettings {
+  moyasar_gateway: string;
   fawaterk_gateway: string;
   paymob_card_gateway: string;
   paymob_wallet_gateway: string;
@@ -535,6 +536,7 @@ export interface CheckoutRequest {
   payment_gateway:
   | 'cash_on_site'
   | 'cash_on_delivery'
+  | 'moyasar_gateway'
   | 'fawaterk_gateway'
   | 'send_receipt'
   | 'paymob_card_gateway'
