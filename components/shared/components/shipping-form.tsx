@@ -91,8 +91,8 @@ export default function ShippingForm({
     const address = formData.shipping_address?.address;
 
     if (cityCode && stateCode && address && cities.length > 0 && states.length > 0) {
-      const selectedCity = cities.find((c) => c.code.toString() === cityCode);
-      const selectedState = states.find((s) => s.code.toString() === stateCode);
+      const selectedCity = cities.find((c) => c.id.toString() === cityCode);
+      const selectedState = states.find((s) => s.id.toString() === stateCode);
 
       if (selectedCity && selectedState) {
         fetchShipping(
@@ -279,7 +279,7 @@ export default function ShippingForm({
         <FormDropdown
           id="shipping-state"
           label={`${t('state')} *`}
-          options={availableStates}
+          options={availableStates.map((s) => ({ ...s, code: s.id }))}
           value={formData.shipping_address?.state || ''}
           onChange={handleStateChange}
           error={getFieldError('shipping_address.state')}
@@ -291,7 +291,7 @@ export default function ShippingForm({
         <FormDropdown
           id="shipping-city"
           label={`${t('city')} *`}
-          options={availableCities}
+          options={availableCities.map((c) => ({ ...c, code: c.id }))}
           value={formData.shipping_address?.city || ''}
           onChange={(city) => handleAddressChange('city', city)}
           error={getFieldError('shipping_address.city')}
@@ -333,8 +333,14 @@ export default function ShippingForm({
       </p>
       <p>
         <strong>{t('address')}:</strong> {formData.shipping_address?.address},{' '}
-        {formData.shipping_address?.city}, {formData.shipping_address?.state},{' '}
-        {formData.shipping_address?.country}
+        {cities.find((c) => c.id.toString() === formData.shipping_address?.city)?.name ??
+          formData.shipping_address?.city}
+        ,{' '}
+        {states.find((s) => s.id.toString() === formData.shipping_address?.state)?.name ??
+          formData.shipping_address?.state}
+        ,{' '}
+        {countries.find((c) => c.code === formData.shipping_address?.country)?.name ??
+          formData.shipping_address?.country}
       </p>
     </div>
   );
