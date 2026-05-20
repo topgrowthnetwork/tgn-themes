@@ -6,7 +6,7 @@
  *
  * Environment Variable Usage:
  * - NEXT_PUBLIC_FOOTER_GATEWAYS: Comma-separated list of gateway keys to display in footer
- *   Example: "tabby_gateway,tamara_gateway"
+ *   Example: "moyasar_gateway,tabby_gateway,tamara_gateway"
  *
  * Available gateway keys:
  * - moyasar_gateway
@@ -40,8 +40,8 @@ export const PAYMENT_GATEWAYS: Record<string, PaymentGatewayConfig> = {
   moyasar_gateway: {
     key: 'moyasar_gateway',
     name: 'Moyasar',
-    faviconPath: '/image/gateways/favicons/moyasar.png',
-    imagePath: '/image/gateways/favicons/moyasar.png'
+    faviconPath: '/image/gateways/favicons/bank-card.svg',
+    imagePath: '/image/gateways/favicons/bank-card.svg'
   },
   cash_on_delivery: {
     key: 'cash_on_delivery',
@@ -116,6 +116,14 @@ export function getAllPaymentGateways(): PaymentGatewayConfig[] {
   return Object.values(PAYMENT_GATEWAYS);
 }
 
+/** Default gateways shown in the footer when NEXT_PUBLIC_FOOTER_GATEWAYS is unset. */
+export const DEFAULT_FOOTER_GATEWAY_KEYS = [
+  'moyasar_gateway',
+  'tabby_gateway',
+  'tamara_gateway',
+  'mispay_gateway'
+] as const;
+
 /**
  * Parse comma-separated gateway keys from environment variable
  */
@@ -125,4 +133,16 @@ export function parseGatewayKeysFromEnv(envValue?: string): string[] {
     .split(',')
     .map((key) => key.trim())
     .filter((key) => key.length > 0);
+}
+
+/**
+ * Gateway keys for the footer: env override, or defaults. Moyasar is always included first.
+ */
+export function getFooterGatewayKeys(envValue?: string): string[] {
+  const envKeys = parseGatewayKeysFromEnv(envValue);
+  const keys = envKeys.length > 0 ? envKeys : [...DEFAULT_FOOTER_GATEWAY_KEYS];
+  if (keys.includes('moyasar_gateway')) {
+    return ['moyasar_gateway', ...keys.filter((k) => k !== 'moyasar_gateway')];
+  }
+  return ['moyasar_gateway', ...keys];
 }

@@ -1,14 +1,14 @@
 'use client';
 
-import { getPaymentGateways, parseGatewayKeysFromEnv } from 'lib/payment-gateways';
+import { getFooterGatewayKeys, getPaymentGateways } from 'lib/payment-gateways';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
 export default function FooterGateways() {
   const t = useTranslations('Footer');
+  const tCheckout = useTranslations('Checkout');
 
-  // Get gateway keys from environment variable
-  const gatewayKeys = parseGatewayKeysFromEnv(process.env.NEXT_PUBLIC_FOOTER_GATEWAYS);
+  const gatewayKeys = getFooterGatewayKeys(process.env.NEXT_PUBLIC_FOOTER_GATEWAYS);
 
   // If no gateways specified, don't render anything
   if (gatewayKeys.length === 0) {
@@ -44,7 +44,7 @@ export default function FooterGateways() {
               </div>
             )}
             <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
-              {gateway.name}
+              {tCheckout(gateway.key as any)}
             </span>
           </div>
         ))}
