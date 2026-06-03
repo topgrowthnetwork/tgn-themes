@@ -10,7 +10,7 @@ export interface FooterPaymentLogo {
 
 export const FOOTER_PAYMENT_LOGOS: FooterPaymentLogo[] = [
   { key: 'tabby', name: 'Tabby', imagePath: '/image/gateways/tabby.webp' },
-  { key: 'tamara', name: 'Tamara', imagePath: '/image/gateways/tamara.png' },
+  { key: 'tamara', name: 'Tamara', imagePath: '/image/gateways/tamara.jpg' },
   { key: 'mispay', name: 'MisPay', imagePath: '/image/gateways/mispay.png' },
   { key: 'madfu', name: 'Madfu', imagePath: '/image/gateways/madfu.png' },
   { key: 'mada', name: 'Mada', imagePath: '/image/gateways/mada.png' },
