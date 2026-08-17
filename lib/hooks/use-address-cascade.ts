@@ -39,10 +39,10 @@ export function useAddressCascade({
     }
   }, [selectedCountry, countries, states]);
 
-  // Filter cities based on selected state (stored value is state id string)
+  // Filter cities based on selected state (stored value is state code string)
   useEffect(() => {
     if (selectedState) {
-      const selectedStateObj = availableStates.find((s) => s.id.toString() === selectedState);
+      const selectedStateObj = availableStates.find((s) => s.code?.toString() === selectedState);
       if (selectedStateObj) {
         const filteredCities = cities.filter((c) => c.state_id === selectedStateObj.id);
         setAvailableCities(filteredCities);

@@ -42,11 +42,22 @@ export class ApiEndpoints {
 
   // Addresses
   async getAllCountries(params?: AddressListParams) {
-    return this.client.get<{ countries: Country[] }>('/api/addresses/all-countries', params);
+    const response = await this.client.get<{ countries: Country[] }>(
+      '/api/addresses/all-countries',
+      params
+    );
+
+    if (response.isOk()) {
+      console.log('getAllCountries ✨', response.value.data.countries[0]);
+    }
+    return response;
   }
 
   async getAllCities(params?: AddressListParams) {
     const response = await this.client.get<{ cities: City[] }>('/api/addresses/all-cities', params);
+    if (response.isOk()) {
+      console.log('getAllCities ✨', response.value.data.cities[0]);
+    }
     return response;
   }
 
@@ -55,6 +66,9 @@ export class ApiEndpoints {
       '/api/addresses/all-states',
       params
     );
+    if (response.isOk()) {
+      console.log('getAllStates ✨', response.value.data.states[0]);
+    }
     return response;
   }
 

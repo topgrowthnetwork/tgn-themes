@@ -76,14 +76,54 @@ export default function CheckoutPage({
     .filter((gateway) => paymentSettings[gateway.key as keyof PaymentSettings] === '1')
     .map((gateway) => gateway.key);
 
-  // Validate stored data to ensure payment_gateway is available
+  // Validate stored data: payment_gateway availability and legacy id → code address values
   const validateStoredData = (data: Partial<CheckoutRequest>): Partial<CheckoutRequest> => {
-    // If payment_gateway exists in stored data but is not available, remove it
-    if (data.payment_gateway && !availableGateways.includes(data.payment_gateway)) {
-      const { payment_gateway, wallet_number, receipt_image, ...rest } = data;
-      return rest;
+    let next = data;
+
+    if (next.payment_gateway && !availableGateways.includes(next.payment_gateway)) {
+      const { payment_gateway, wallet_number, receipt_image, ...rest } = next;
+      next = rest;
     }
-    return data;
+
+    const addr = next.shipping_address;
+    if (!addr) return next;
+
+    let state = addr.state || '';
+    let city = addr.city || '';
+
+    if (state) {
+      const byCode = states.find((s) => s.code.toString() === state);
+      if (!byCode) {
+        const byId = states.find((s) => s.id.toString() === state);
+        if (byId) {
+          state = byId.code.toString();
+        } else {
+          state = '';
+          city = '';
+        }
+      }
+    }
+
+    if (city && state) {
+      const byCode = cities.find((c) => c.code.toString() === city);
+      if (!byCode) {
+        const byId = cities.find((c) => c.id.toString() === city);
+        if (byId) {
+          city = byId.code.toString();
+        } else {
+          city = '';
+        }
+      }
+    }
+
+    if (state === addr.state && city === addr.city) {
+      return next;
+    }
+
+    return {
+      ...next,
+      shipping_address: { ...addr, state, city }
+    };
   };
 
   // Use form persistence hook
